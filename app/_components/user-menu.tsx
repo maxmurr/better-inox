@@ -42,6 +42,7 @@ export function UserMenu({
                 alt=""
                 width={AVATAR_RENDER_SIZE}
                 height={AVATAR_RENDER_SIZE}
+                unoptimized
               />
             }
           />
