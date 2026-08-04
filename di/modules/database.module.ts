@@ -1,5 +1,6 @@
 import { createModule } from '@evyweb/ioctopus';
 
+import { DatabaseHealthService } from '@/src/infrastructure/services/database-health.service';
 import { TransactionManagerService } from '@/src/infrastructure/services/transaction-manager.service';
 import { MockTransactionManagerService } from '@/src/infrastructure/services/transaction-manager.service.mock';
 
@@ -17,6 +18,10 @@ export function createTransactionManagerModule() {
       .bind(DI_SYMBOLS.ITransactionManagerService)
       .toClass(TransactionManagerService);
   }
+
+  transactionManagerModule
+    .bind(DI_SYMBOLS.IDatabaseHealthService)
+    .toClass(DatabaseHealthService);
 
   return transactionManagerModule;
 }

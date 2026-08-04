@@ -3,6 +3,7 @@ import { ITodosRepository } from '@/src/application/repositories/todos.repositor
 import { IUsersRepository } from '@/src/application/repositories/users.repository.interface';
 import { IAuthenticationService } from '@/src/application/services/authentication.service.interface';
 import { ICrashReporterService } from '@/src/application/services/crash-reporter.service.interface';
+import { IDatabaseHealthService } from '@/src/application/services/database-health.service.interface';
 import { IInstrumentationService } from '@/src/application/services/instrumentation.service.interface';
 import { IOAuthService } from '@/src/application/services/oauth.service.interface';
 import { ITransactionManagerService } from '@/src/application/services/transaction-manager.service.interface';
@@ -31,6 +32,7 @@ export const DI_SYMBOLS = {
   IAuthenticationService: Symbol.for('IAuthenticationService'),
   IOAuthService: Symbol.for('IOAuthService'),
   ITransactionManagerService: Symbol.for('ITransactionManagerService'),
+  IDatabaseHealthService: Symbol.for('IDatabaseHealthService'),
   IInstrumentationService: Symbol.for('IInstrumentationService'),
   ICrashReporterService: Symbol.for('ICrashReporterService'),
 
@@ -68,6 +70,7 @@ export interface DI_RETURN_TYPES {
   IAuthenticationService: IAuthenticationService;
   IOAuthService: IOAuthService;
   ITransactionManagerService: ITransactionManagerService;
+  IDatabaseHealthService: IDatabaseHealthService;
   IInstrumentationService: IInstrumentationService;
   ICrashReporterService: ICrashReporterService;
 
