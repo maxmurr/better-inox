@@ -5,6 +5,11 @@ const withMDX = createMDX();
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone',
+  outputFileTracingIncludes: {
+    '/*': ['./drizzle/migrations/**/*'],
+  },
+  deploymentId: process.env.RAILWAY_GIT_COMMIT_SHA,
   typedRoutes: true,
   reactCompiler: true,
   experimental: {
