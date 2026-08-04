@@ -1,0 +1,153 @@
+We've discussed how unit tests fare in terms of resistance to refactoring, so we
+should move one step up the test pyramid to explore Integration Tests.
+
+Let's see an example for a React Hook:
+
+```ts
+// useCreateQuiz.ts
+import { useState } from 'react';
+
+import { createQuizModel } from './createQuizModel';
+import { quizApi } from './quizApi';
+
+export function useCreateQuiz() {
+  const [isLoading, setIsLoading] = useState(false);
+
+  async function submit(form: QuizForm) {
+    setIsLoading(true);
+
+    const model = createQuizModel(form);
+    await quizApi.create(model);
+
+    setIsLoading(false);
+  }
+
+  return {
+    submit,
+    isLoading,
+  };
+}
+```
+
+Testing this React hook in isolation (with unit tests) is a common
+misunderstanding — a byproduct of not knowing the fundamentals we discussed in
+this course. Let's see why with the example below:
+
+**Unit Test:**
+
+```ts
+import { act, renderHook } from '@testing-library/react';
+
+import { createQuizModel } from './createQuizModel';
+import { quizApi } from './quizApi';
+import { useCreateQuiz } from './useCreateQuiz';
+
+jest.mock('./quizApi');
+jest.mock('./createQuizModel');
+
+describe('useCreateQuiz', () => {
+  it('calls createQuizModel and toggles loading state', async () => {
+    (createQuizModel as jest.Mock).mockReturnValue({ fake: 'model' });
+    (quizApi.create as jest.Mock).mockResolvedValue(undefined);
+
+    const { result } = renderHook(() => useCreateQuiz());
+
+    expect(result.current.isLoading).toBe(false);
+
+    await act(async () => {
+      await result.current.submit({
+        title: 'JS Basics',
+        questions: [],
+      });
+    });
+
+    expect(createQuizModel).toHaveBeenCalled();
+    expect(quizApi.create).toHaveBeenCalledWith({ fake: 'model' });
+    expect(result.current.isLoading).toBe(false);
+  });
+});
+```
+
+Although simple to set up and understand, this test will fail if you refactor
+**any** of the following — _even if observable behavior stays the same_:
+
+- Inline _createQuizModel()_ into the hook
+- Rename or remove _createQuizModel()_
+- Replace _useState()_ with _useTransition()_
+- Move loading state handling elsewhere
+- Change how the payload is assembled internally
+
+Yet, from the user's perspective:
+
+- The quiz is still being created
+- The UI still shows loading
+- The same API call is made
+- The same outcome is achieved
+
+The behavior did **not** change — but the test breaks anyway.
+
+The leading cause of that brittleness is the reliance on **mocks**, which is
+quite common in unit tests. Developers often believe mocks should replace
+interactions with anything outside the scope of the System Under Test (SUT), but
+those interactions are frequently implementation details. That's why we advise
+**against** unit-testing React hooks. Instead, we should test them indirectly
+through integration tests:
+
+**Integration Test:**
+
+```ts
+import { useCreateQuiz } from '@/features/quizzes/useCreateQuiz';
+import { useRetrieveQuizzes } from '@/features/quizzes/useRetrieveQuizzes';
+
+describe('Create Quiz — integration', () => {
+  it('creates a quiz successfully', () => {
+    // --- Fake backend adapters (observable boundary) ---
+    cy.injectFakeAdapter(useCreateQuiz, {
+      body: {
+        id: 'quiz-123',
+        title: 'JS Basics',
+        questionsCount: 0,
+      },
+    });
+    cy.injectFakeAdapter(useRetrieveQuizzes, {
+      body: [
+        {
+          id: 'quiz-123',
+          title: 'JS Basics',
+          questionsCount: 0,
+        },
+      ],
+    });
+
+    // --- Start user journey ---
+    cy.visit('/quizzes/create');
+    cy.getByLabel('Quiz Title').type('JS Basics');
+    cy.contains('Create Quiz').click();
+
+    // --- Assertions (observable behavior only) ---
+    cy.contains('Quiz created successfully').should('be.visible');
+    cy.url().should('match', /\/quizzes$/);
+    cy.contains('JS Basics').should('be.visible');
+  });
+});
+```
+
+This test **does not care** about:
+
+- Whether _createQuizModel()_ exists
+- How the hook builds the payload
+- How the loading state is implemented
+- Whether the hook uses _useState_, _useReducer_, or _useTransition_
+- Whether the API call lives in the hook or in a service
+
+You can freely refactor all of that.
+
+As long as:
+
+- The user fills the form
+- Clicks onto the "Create Quiz"
+- sees a success message
+- gets redirected
+- sees the quiz in the list
+
+...the test remains green.

@@ -1,0 +1,109 @@
+You now understand that public-facing functions provide more value when tested.
+But even so, we have to be careful not to make its unit test brittle. Let's see
+an example:
+
+```ts
+import { createQuizModel } from './createQuizModel';
+import * as validators from './validators';
+
+jest.spyOn(validators, 'validateTitle');
+jest.spyOn(validators, 'validateQuestions');
+jest.spyOn(validators, 'validateAnswers');
+
+describe('createQuizModel (brittle)', () => {
+  it('calls validation functions in order', () => {
+    validators.validateTitle.mockReturnValue('JS Basics');
+    validators.validateQuestions.mockReturnValue([
+      {
+        heading: 'What is JS?',
+        type: 'single',
+        answers: [{ id: '1', text: 'A language' }],
+      },
+    ]);
+    validators.validateAnswers.mockReturnValue(true);
+
+    const form = {
+      title: 'JS Basics',
+      questions: [],
+    } as any;
+
+    createQuizModel(form);
+
+    expect(validators.validateTitle).toHaveBeenCalledWith(form);
+    expect(validators.validateQuestions).toHaveBeenCalledWith(form);
+    expect(validators.validateAnswers).toHaveBeenCalled();
+  });
+});
+```
+
+The test case above uses jest spies to verify whether the validation functions
+were called with the correct arguments (the form). But what happens if we change
+their signature, for instance, the `validateQuestions`, so it accepts as an
+argument only the form's questions?
+
+```ts
+function validateQuestions(questions: Question[]) {
+  // implementation
+}
+```
+
+The unit test above will **break**, even if the **observable behavior** is the
+same. This is what we call a false positive, which hurts our trust in the test
+suite. This happens every time we focus our tests on the "steps to achieve a
+goal", instead of testing the input → output.
+
+So, how should we test this function? Again, focusing on the expected outputs
+for known inputs:
+
+```ts
+import { createQuizModel } from './createQuizModel';
+
+describe('createQuizModel (resistant)', () => {
+  it('returns a normalized quiz model when input is valid', () => {
+    const form = {
+      title: '  JS Basics  ',
+      questions: [
+        {
+          heading: ' What is JS? ',
+          type: 'single',
+          answers: [' A language '],
+        },
+      ],
+    };
+
+    const result = createQuizModel(form);
+
+    expect(result).toEqual({
+      title: 'JS Basics',
+      questions: [
+        {
+          heading: 'What is JS?',
+          type: 'single',
+          answers: [{ id: '1', text: 'A language' }],
+        },
+      ],
+    });
+  });
+
+  it('throws when answers are invalid', () => {
+    const form = {
+      title: 'JS Basics',
+      questions: [
+        {
+          heading: 'Question',
+          type: 'single',
+          answers: [],
+        },
+      ],
+    };
+
+    expect(() => createQuizModel(form)).toThrow();
+  });
+});
+```
+
+🎓 Lesson: (Almost) every time we use mocks or spies in unit tests, we're
+focusing on implementation details, making them brittle. Always identify the
+most public-facing function and test its **observable behavior**.
+
+The bigger the unit of behavior, the better.

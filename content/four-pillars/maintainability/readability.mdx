@@ -1,0 +1,47 @@
+You've just discovered the first characteristic that determines the
+**Maintainability** of a test - it's readability, or, in other words, how hard
+it is to understand that test.
+
+Let's recap the two test cases:
+
+**Test Case 1**
+
+```ts
+test('test1', () => {
+  const a = new BankAccount(100);
+  let x = 0;
+  for (let i = 0; i < 1; i++) {
+    x = a.withdraw(40);
+  }
+  expect(x).toBe(60);
+});
+```
+
+**Test Case 2**
+
+```ts
+describe('BankAccount.withdraw', () => {
+  it('reduces the balance when withdrawing less than available funds', () => {
+    // Arrange
+    const account = new BankAccount(100);
+
+    // Act
+    const remainingBalance = account.withdraw(40);
+
+    // Assert
+    expect(remainingBalance).toBe(60);
+  });
+});
+```
+
+Notice that in the first example, the test description is vague, we're using
+cryptic variable names like a = new BankAccount(100), x = 0, and even a for loop
+in the test. All of that makes the test case more difficult to understand.
+
+In contrast, the second test case uses a descriptive name (which includes
+scenario, action, and expected result) and is clearly divided into the three
+stages of the xUnit pattern: **Arranging** the test data, **Acting** on the
+data, and **Asserting** the expected outcome.
+
+However, that's not the only attribute that determines a test's maintainability.
+Let's see a different example in the next section.

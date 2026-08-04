@@ -1,0 +1,36 @@
+import { z } from 'zod';
+
+export const userSchema = z.object({
+  id: z.string(),
+  username: z.string().min(3).max(31),
+  password_hash: z.string().min(6).max(255).nullable(),
+  avatar_url: z.url().nullable(),
+});
+
+export type User = z.infer<typeof userSchema>;
+
+export const createUserSchema = userSchema
+  .pick({ id: true, username: true })
+  .extend({ password: z.string().min(6).max(255) });
+
+export type CreateUser = z.infer<typeof createUserSchema>;
+
+export const createOAuthUserSchema = userSchema
+  .pick({
+    id: true,
+    username: true,
+  })
+  .extend({ avatar_url: z.url().nullish() });
+
+export type CreateOAuthUser = z.infer<typeof createOAuthUserSchema>;
+
+const USERNAME_CANDIDATE_MAX_LENGTH = 25;
+
+export function usernameFromEmail(email: string): string {
+  const sanitized = email
+    .split('@')[0]
+    .toLowerCase()
+    .replace(/[^a-z0-9_-]/g, '')
+    .slice(0, USERNAME_CANDIDATE_MAX_LENGTH);
+  return sanitized.length >= 3 ? sanitized : `user${sanitized}`;
+}

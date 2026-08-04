@@ -1,0 +1,40 @@
+import { cache } from 'react';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
+
+import {
+  AuthenticationError,
+  UnauthenticatedError,
+} from '@/src/entities/errors/auth';
+
+import { SESSION_COOKIE } from '@/config';
+import { getInjection } from '@/di/container';
+
+export const getCurrentUser = cache(async () => {
+  const instrumentationService = getInjection('IInstrumentationService');
+  return await instrumentationService.startSpan(
+    {
+      name: 'getCurrentUser',
+      op: 'function.nextjs',
+    },
+    async () => {
+      const sessionId = (await cookies()).get(SESSION_COOKIE)?.value;
+      try {
+        const getCurrentUserController = getInjection(
+          'IGetCurrentUserController'
+        );
+        return await getCurrentUserController(sessionId);
+      } catch (err) {
+        if (
+          err instanceof UnauthenticatedError ||
+          err instanceof AuthenticationError
+        ) {
+          redirect('/sign-in');
+        }
+        const crashReporterService = getInjection('ICrashReporterService');
+        crashReporterService.report(err);
+        throw err;
+      }
+    }
+  );
+});

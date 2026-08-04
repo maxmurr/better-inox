@@ -1,0 +1,37 @@
+{
+  "semi": true,
+  "tabWidth": 2,
+  "arrowParens": "always",
+  "bracketSpacing": true,
+  "trailingComma": "es5",
+  "singleQuote": true,
+  "proseWrap": "always",
+  "plugins": [
+    "@ianvs/prettier-plugin-sort-imports",
+    "prettier-plugin-tailwindcss"
+  ],
+  "importOrder": [
+    "<BUILTIN_MODULES>",
+    "",
+    "^(react|react-dom|next)$",
+    "^(react|react-dom|next)/",
+    "",
+    "<THIRD_PARTY_MODULES>",
+    "",
+    "^@/src/entities/(.*)$",
+    "^@/src/application/(.*)$",
+    "^@/src/infrastructure/(.*)$",
+    "^@/src/interface-adapters/(.*)$",
+    "",
+    "^@/(config|drizzle)(/.*)?$",
+    "^@/di/(.*)$",
+    "",
+    "^@/app/(.*)$",
+    "^@/(.*)$",
+    "",
+    "^[./]"
+  ],
+  "importOrderTypeScriptVersion": "5.0.0",
+  "tailwindStylesheet": "./app/globals.css",
+  "tailwindFunctions": ["cn", "cva", "clsx", "twMerge"]
+}

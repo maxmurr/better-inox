@@ -1,0 +1,59 @@
+Refactoring is one of these words with overloaded usages. Some might understand
+it simply as "changing the code", while others might see it as a hazardous
+practice (especially if you don't have tests to cover your back 😉). Is there,
+however, a classical definition we can rely on? Well, we can probably stick with
+the
+[homonymous book "Refactoring", by Martin Fowler](https://martinfowler.com/books/refactoring.html):
+
+<img
+  src={'/images/four-pillars/refactoring-book-cover.jpg'}
+  alt={
+    'Cover of Refactoring: Improving the Design of Existing Code, second edition, by Martin Fowler with contributions by Kent Beck, from the Addison-Wesley Signature Series.'
+  }
+  width={434}
+  height={522}
+/>
+
+In the very preface, it defines **refactoring** as follows:
+
+> _Refactoring is the process of changing a software system in a way that does
+> not alter the external behavior of the code yet improves the internal
+> structure. It is a disciplined way to clean up code that minimizes the chance
+> of introducing bugs._ _— Martin Fowler_
+
+Two things stand out from this definition:
+
+1. It assumes the external (observable) behavior must not change.
+2. The goal is to reduce the chances of introducing bugs.
+
+The second point is very straightforward, and every sensible developer would
+agree it's a reasonable goal, but what about the first point - what is
+observable behavior? To simplify, think of a software system as a system that
+receives an **input,** processes it, and returns an **output**:
+
+<img
+  src={'/images/four-pillars/input-impl-output.png'}
+  alt={
+    'Hand-drawn diagram: an Input circle points into a dashed box holding red, blue, and green circles connected by arrows, which points out to an Output circle.'
+  }
+  width={1192}
+  height={749}
+/>
+
+The Observable Behavior is what the user of this system can measure. The
+**inputs** and **outputs** can be clearly defined and _observed_ from the client
+perspective, but the internal processing of those inputs is what we call
+**implementation detail**:
+
+<img
+  src={'/images/four-pillars/observable-behavior.png'}
+  alt={
+    'The same Input to Output diagram with the dashed box titled Impl. Detail, orange braces under the Input and Output circles labelled O.B, and a legend reading O.B = Observable Behavior.'
+  }
+  width={1192}
+  height={749}
+/>
+
+Hence, Refactoring occurs when we change the internal behavior of a system,
+while keeping the same input → output association. Let's see some examples in
+the next lesson.

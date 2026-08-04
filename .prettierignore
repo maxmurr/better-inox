@@ -1,0 +1,11 @@
+node_modules
+.next
+out
+build
+coverage
+tests/coverage
+drizzle
+pnpm-lock.yaml
+next-env.d.ts
+*.tsbuildinfo
+db.sqlite*

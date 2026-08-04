@@ -1,0 +1,29 @@
+In the previous lesson, we analyzed two very distinct test cases. The first one
+used [Cypress](https://www.cypress.io) to cover a specific user journey. The
+second one, asserted a low-level interaction with a simple input → output
+scenario:
+
+- **Test Case 1** → Replicates user action, intercepts API Request, asserts
+  against local storage.
+- **Test Case 2** → Feeds a function with an input, and asserts its output.
+
+It might be very intuitive to notice that the second test case is much simpler
+to understand and change. But why is that? It boils down to **the number of
+"out-of-process" dependencies** that we have to interact with and keep
+operational. Setting up external memory (Local Storage), intercepting and
+configuring APIs, and clearing databases all make these tests harder to
+maintain.
+
+<img
+  src={'/images/four-pillars/out-of-process-dependencies.png'}
+  alt={
+    'Test Case 1 reaching out to three out-of-process dependencies: Local Storage, API, and User Interface.'
+  }
+  width={979}
+  height={635}
+/>
+
+In summary, **Maintainability** is the sum of these two attributes:
+
+- Readability
+- Ease of setup

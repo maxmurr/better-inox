@@ -1,0 +1,83 @@
+End-to-end (E2E) tests are supposed to test your application from the user's
+perspective, ensuring all the external dependencies are spinned up — that
+includes:
+
+- APIs
+- Databases
+- File system
+- Cloud Storage
+- Authentication systems (when applicable)
+
+We could argue that this is what really matters for end users — after all, they
+don't use your app in limbo, with fake APIs and stubbed credentials.
+
+For that reason, we can safely assume E2E tests provide the highest level of
+protection against regressions. They can spot issues in components, pages,
+integration with APIs, and basically anything that your users interact with.
+
+Here's an example E2E test for the same quiz page:
+
+```ts
+describe('Create Quiz', () => {
+  it('creates a quiz successfully', () => {
+    // --- Start user journey ---
+    cy.visit('/quizzes/create');
+
+    // Fill quiz title
+    cy.getByLabel('Quiz Title').type('JavaScript Basics');
+
+    // Fill question 1
+    cy.getByLabel('Question Heading').type('What is a closure?');
+
+    cy.getByLabel('Image URL (Optional)').type(
+      'https://example.com/closure.jpg'
+    );
+
+    cy.getByLabel('Question Type').select('Single Choice');
+
+    // Add two answers
+    cy.contains('Add Answer').click();
+    cy.getByLabel('Enter answer')
+      .eq(0)
+      .type('A function with preserved lexical scope');
+
+    cy.contains('Add Answer').click();
+    cy.getByLabel('Enter answer').eq(1).type('A CSS feature');
+
+    // Submit
+    cy.contains('Create Quiz').click();
+
+    // --- Assertions ---
+
+    // Success message
+    cy.contains('Quiz created successfully').should('be.visible');
+
+    // Redirect to quizzes list
+    cy.url().should('match', /\/quizzes$/);
+
+    // list shows our newly-created quiz
+    cy.contains('JavaScript Basics').should('be.visible');
+  });
+});
+```
+
+Did you notice that this test is pretty much the same as the integration, but
+without the fake stubs?
+
+That sounds like a cleaner test, but don't be fooled — the real complexity is
+hidden.
+
+For this test to work as expected, all dependencies must be available and
+functioning correctly simultaneously. If we have, for instance, a unique
+constraint for quiz names, we would have to delete quizzes with the same name
+before the test begins.
+
+Moreover, E2E tests like that one rely on the speed of external dependencies. If
+an API under high load takes several seconds to respond, our test will also take
+longer to execute. Therefore, the trade-off we must pay for this high level of
+protection is the lowest **feedback speed** and **maintainability** in the test
+pyramid.
+
+For that reason, it's usually a best practice to employ E2E tests only for
+**Critical User Journeys**. That is, use cases that are critical for your app to
+work — things like authentication, payment, enrollment, etc.

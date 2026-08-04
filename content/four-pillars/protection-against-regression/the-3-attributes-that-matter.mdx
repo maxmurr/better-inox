@@ -1,0 +1,32 @@
+We've seen that Regression is just a fancy word for "Bug", and **Protection
+against Regression** means how well a test suite protects your code from bugs
+once you introduce a change. However, how can we determine how well a test
+offers that kind of protection?
+
+According to Vladimir Khorikov, there are three attributes we must consider:
+
+- The amount of code the test covers.
+- The complexity of that code
+- The code's domain significance
+
+The first one should be pretty straightforward. Higher-level tests that execute
+more code, more branches, and more interactions are more likely to spot bugs,
+whereas tests that cover only a small fraction of the code (like a function)
+will only detect bugs on that specific code.
+
+The code's **complexity** also plays a relevant role. Trivial code is less
+likely to have bugs because there is almost no room for mistakes. On the other
+hand, complex code, with potentially multiple branches, is fertile ground for
+regressions - especially if that code tends to grow over time.
+
+Finally, **domain significance** means how vital that code is to the business.
+Tests that cover critical business functions provide greater protection because
+these functions are usually the ones that change (and grow) most often.
+
+We can summarize the Protection against Regression score as follows: "A test
+that exercises as much of the production code as possible (along with
+dependencies), including highly complex and/or business-critical features".
+
+From that, you might assume that this pillar is the most relevant and that we
+should prioritize it. However, in the following sessions, we'll discuss that if
+we do so, we'll have to give up the other pillars.

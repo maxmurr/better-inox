@@ -1,0 +1,133 @@
+We've just discussed the importance of feedback speed, while also mentioning
+that there's a way to obtain that feedback very quickly - and that is through
+automated tests, the key topic of this course.
+
+When we develop a new feature in any system, a well-written automated test is a
+form of proof that the software works as intended. If we made an implementation
+mistake, the test will immediately signal that back to us.
+
+However, if we really want to maximize the gains of such tests and collect
+feedback fast, the best we can do is to create these tests closer (in time) to
+their implementation. As soon as we change the software's behavior, a test must
+follow.
+
+<img
+  src={'/images/four-pillars/slow-vs-fast-feedback.png'}
+  alt={
+    'Two feedback cycles separated by a blue arrow. Left: a Change step and an Assess step far apart with a clock labelled Time between them, and a red Feedback arrow returning from Assess to Change. Right: the same cycle compacted, with Assess immediately after Change and no clock.'
+  }
+  width={2137}
+  height={392}
+/>
+
+That's why Test-First development practices are generally good engineering
+practices too — you build the system with fast feedback in mind from the get-go.
+You describe the behavior you'd like to see before implementing it, and collect
+information on whether it works very quickly.
+
+But how fast is fast enough? Even automated tests will significantly vary in
+their execution speed. Let's see some examples.
+
+### Test Case 1
+
+```ts
+import { buildPermissionPayload } from './build-permission-payload';
+
+describe('buildPermissionPayload', () => {
+  it('should build a valid payload from form data', () => {
+    const formData = {
+      userId: 'abc-123',
+      resource: 'projects',
+      attributes: ['read', 'write'],
+    };
+
+    const payload = buildPermissionPayload(formData);
+
+    expect(payload).toEqual({
+      user_id: 'abc-123',
+      permissions: [
+        { resource: 'projects', attribute: 'read' },
+        { resource: 'projects', attribute: 'write' },
+      ],
+    });
+  });
+});
+```
+
+### Test Case 2
+
+```tsx
+describe('PermissionsForm', () => {
+  beforeEach(() => {
+    cy.intercept('POST', '/api/permissions', {
+      statusCode: 200,
+      body: { success: true },
+    }).as('savePermissions');
+
+    cy.mount(<PermissionsForm />);
+  });
+
+  it('should submit valid permissions data', () => {
+    cy.get('input[name="userId"]').type('abc-123');
+    cy.get('select[name="resource"]').select('projects');
+    cy.get('input[name="attributes"]').type('read,write');
+    cy.get('button').contains('Save').click();
+
+    cy.wait('@savePermissions')
+      .its('request.body')
+      .should('deep.equal', {
+        user_id: 'abc-123',
+        permissions: [
+          { resource: 'projects', attribute: 'read' },
+          { resource: 'projects', attribute: 'write' },
+        ],
+      });
+
+    cy.get('[data-testid="success-message"]').should('be.visible');
+  });
+});
+```
+
+### Test Case 3
+
+```ts
+describe('Attribute-Based Permissions Page - E2E', () => {
+  it('should register permissions end-to-end', () => {
+    cy.visit('http://localhost:3000/permissions');
+
+    cy.get('input[name="userId"]').type('abc-123');
+    cy.get('select[name="resource"]').select('projects');
+    cy.get('input[name="attributes"]').type('read,write');
+    cy.get('button').contains('Save').click();
+
+    // real API call to backend here
+    cy.get('[data-testid="success-message"]').should(
+      'contain.text',
+      'Permissions saved successfully'
+    );
+  });
+});
+```
+
+<PopQuestion
+  id={'pq-tests-as-feedback-longest'}
+  prompt={'Which test probably takes the longest to run?'}
+  correctOptionId={'c'}
+  options={[
+    {
+      id: 'a',
+      text: 'Test case #1',
+    },
+    {
+      id: 'b',
+      text: 'Test case #2',
+    },
+    {
+      id: 'c',
+      text: 'Test case #3',
+    },
+  ]}
+  explanation={
+    "**Test case 3** is a full end-to-end test case that spins up a UI, interacts with it, and sends requests over the network, which will be the most resource-intensive - hence, the slowest one. Test case 2 would be in second place, as it also depends on setting up a UI and interacting with it, although the API requests are stubbed. Lastly, test case 1 is a simple unit test that doesn't rely on any out-of-process dependencies, making it the fastest."
+  }
+/>

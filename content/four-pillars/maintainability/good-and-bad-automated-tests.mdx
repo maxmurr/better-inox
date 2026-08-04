@@ -1,0 +1,63 @@
+Not all tests are created equal. Poorly designed tests are harder to read,
+maintain, and comprehend. It is better **not to have tests** than to have a
+suite containing too many brittle and inconvenient tests.
+
+Hence, it is crucial to determine what makes **good, well-written** tests, so we
+can leverage their protection to give us **freedom to refactor**. Let's evaluate
+the first property of **good** automated tests, which might be very intuitive.
+
+**Example**
+
+Given that we have a banking application that supports bank accounts and various
+operations, such as depositing and withdrawing. Evaluate the two distinct test
+cases for the withdrawing feature:
+
+**Test case #1**
+
+```ts
+test('test1', () => {
+  const a = new BankAccount(100);
+  let x = 0;
+  for (let i = 0; i < 1; i++) {
+    x = a.withdraw(40);
+  }
+  expect(x).toBe(60);
+});
+```
+
+**Test case #2**
+
+```ts
+describe('BankAccount.withdraw', () => {
+  it('reduces the balance when withdrawing less than available funds', () => {
+    // Arrange
+    const account = new BankAccount(100);
+
+    // Act
+    const remainingBalance = account.withdraw(40);
+
+    // Assert
+    expect(remainingBalance).toBe(60);
+  });
+});
+```
+
+<PopQuestion
+  id={'pq-good-bad-tests'}
+  prompt={'Which test case is easier to read and change?'}
+  correctOptionId={'b'}
+  options={[
+    {
+      id: 'a',
+      text: 'Test case #1',
+    },
+    {
+      id: 'b',
+      text: 'Test case #2',
+    },
+  ]}
+  feedback={{
+    a: 'This test case, although small, has cryptic names and descriptions on top of added complexity due to the **for** loop.',
+    b: 'The **Test Case 2** clearly states the scenario and the desired output.',
+  }}
+/>

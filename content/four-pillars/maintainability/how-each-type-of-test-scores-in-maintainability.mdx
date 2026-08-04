@@ -1,0 +1,28 @@
+We have covered what defines each type of test in the front-end and how to
+assess a test's **Maintainability** score (ease of reading, changing and setting
+it up). We can now compare them and draw some conclusions:
+
+```
+|             | Maintainability           |
+|-------------|---------------------------|
+| Unit        | High (= easy to maintain) |
+| Integration | Medium                    |
+| E2E         | Low (= hard to maintain)  |
+```
+
+**Unit Tests** → These have a **high score** in maintainability because they
+usually don't require too much set up, and easier to ensure they are readable
+and compact.
+
+**Integration Tests** → Usually require more effort to set up additional
+dependencies and cover a broader part of a use case, making them a bit harder to
+maintain. Hence, they have a **medium** score.
+
+**E2E Tests** → Naturally harder to set up, write, and maintain in general,
+which makes them the **lowest** score of the three.
+
+The points above indicate how hard it might be to maintain each type of test by
+their intrinsic characteristics, but that does not mean we should just "accept"
+that Integration and E2E tests are gonna be harder to keep clean and concise. In
+fact, it's the opposite: It indicates we should put even more effort into making
+sure these tests are readable, easy to understand, and easy to change.

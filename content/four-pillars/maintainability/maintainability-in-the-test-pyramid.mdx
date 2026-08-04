@@ -1,0 +1,175 @@
+Now that we have a better understanding of what the pillar of Maintainability
+is, it's time to discuss its relationship with each type of test in the test
+pyramid. Specifically for the front-end, unit, integration, and e2e test cases
+can be (briefly) described as follows:
+
+- **Unit Tests** — Assert the behavior of **units**, which can be _functions_ or
+  _classes_ (e.g., different states of the ViewModel). Usually, these functions
+  are independent of any framework code (e.g., React or Next.js).
+  [Vitest](https://vitest.dev) and [Jest](https://jestjs.io) are the most common
+  test runners for this layer.
+- **Integration Tests** — These tests assert user journeys in the app, often
+  integrating components, hooks, and UI elements - but they should **not**
+  integrate with production APIs or external services.
+  [Cypress](https://www.cypress.io) and Playwright (in components mode) or
+  [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
+  are the most used tools for these tests.
+- **E2E Tests** — Also assert user journeys, but focused on the critical paths -
+  that is, the most crucial use cases in the platform. They demand the entire
+  system to be spun up (APIs, database, external services). Cypress and
+  [Playwright](https://playwright.dev) (in E2E testing mode) are the tools of
+  the trade here.
+
+<img
+  src={'/images/four-pillars/test-pyramid.png'}
+  alt={
+    'React/Next.js app testing pyramid. From the base upward: unit tests (fast feedback, weak confidence, business logic), integration tests (most user journeys), end-to-end tests (a few critical user journeys), and manual & exploratory tests (slow feedback, high confidence) at the top.'
+  }
+  width={1080}
+  height={903}
+/>
+
+Let's practice identifying each test type in the layer again. Check out the
+examples below:
+
+**TEST CASE 1**
+
+```ts
+describe('Login Flow', () => {
+  it('allows a user to log in and see dashboard', () => {
+    cy.intercept('POST', '/api/login', {
+      statusCode: 200,
+      body: {
+        token: generateToken('user@example.com'),
+      },
+    });
+
+    cy.visit('/login');
+    cy.get('input[name=email]').type('user@example.com');
+    cy.get('input[name=password]').type('123456');
+    cy.get('button[type=submit]').click();
+
+    cy.url().should('include', '/dashboard');
+    cy.contains('Welcome back,').should('be.visible');
+  });
+});
+```
+
+<PopQuestion
+  id={'pq-pyramid-tc1'}
+  prompt={'The test cases above can be classified as:'}
+  correctOptionId={'b'}
+  options={[
+    {
+      id: 'a',
+      text: 'Unit',
+    },
+    {
+      id: 'b',
+      text: 'Integration',
+    },
+    {
+      id: 'c',
+      text: 'E2E',
+    },
+  ]}
+  explanation={
+    '**Integration.** It drives a real user journey through the UI — visit, type, click — but stubs the API with **cy.intercept**, so no production backend or external service is exercised.'
+  }
+/>
+
+**TEST CASE 2**
+
+```ts
+import { describe, expect, it } from 'vitest';
+
+import { formatPrice } from './formatPrice';
+
+describe('formatPrice', () => {
+  it('formats a number as USD currency', () => {
+    expect(formatPrice(1234.5)).toBe('$1,234.50');
+  });
+});
+```
+
+<PopQuestion
+  id={'pq-pyramid-tc2'}
+  prompt={'The test cases above can be classified as:'}
+  correctOptionId={'a'}
+  options={[
+    {
+      id: 'a',
+      text: 'Unit',
+    },
+    {
+      id: 'b',
+      text: 'Integration',
+    },
+    {
+      id: 'c',
+      text: 'E2E',
+    },
+  ]}
+  explanation={
+    '**Unit.** It checks a single pure function, **formatPrice**, in isolation: input in, output asserted, with no framework, UI, or I/O.'
+  }
+/>
+
+**TEST CASE 3**
+
+```ts
+it('completes a checkout flow', () => {
+  // Setup: Create a user and some products
+  const credentials = { email: 'alice@doe.com', password: 'password' };
+  cy.signup(credentials);
+  cy.login(credentials);
+  cy.createProducts([
+    { name: 'Wireless Mouse' },
+    { name: 'Mechanical keyboard' },
+  ]);
+
+  // The user opens the cart page
+  cy.visit('/cart');
+
+  // The user reviews the cart and proceeds to checkout
+  cy.findByText('Wireless Mouse').should('be.visible');
+  cy.findByText('Mechanical Keyboard').should('be.visible');
+  cy.findByRole('button', { name: /Checkout/i }).click();
+
+  // Fill the checkout form
+  cy.get('input[name=fullName]').type('Alice Doe');
+  cy.get('input[name=address]').type('123 Main St');
+  cy.get('input[name=cardNumber]').type('4242424242424242');
+
+  // Submit order
+  cy.findByRole('button', { name: /Place Order/i }).click();
+
+  // The user sees a confirmation screen
+  cy.findByTestId('order-confirmation')
+    .should('be.visible')
+    .should('contain', 'Order placed successfully!');
+});
+```
+
+<PopQuestion
+  id={'pq-pyramid-tc3'}
+  prompt={'The test cases above can be classified as:'}
+  correctOptionId={'c'}
+  options={[
+    {
+      id: 'a',
+      text: 'Unit',
+    },
+    {
+      id: 'b',
+      text: 'Integration',
+    },
+    {
+      id: 'c',
+      text: 'E2E',
+    },
+  ]}
+  explanation={
+    '**E2E.** It spins up the whole system — real signup, product creation, cart, checkout, and confirmation — exercising a critical path end to end with nothing stubbed.'
+  }
+/>

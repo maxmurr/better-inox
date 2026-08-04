@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1722886647761,
+      "tag": "0000_broken_frank_castle",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1785519048146,
+      "tag": "0001_majestic_pete_wisdom",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1785523891395,
+      "tag": "0002_cool_grey_gargoyle",
+      "breakpoints": true
+    }
+  ]
+}

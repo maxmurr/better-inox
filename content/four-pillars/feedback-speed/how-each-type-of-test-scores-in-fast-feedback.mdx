@@ -1,0 +1,51 @@
+We have covered what defines feedback and how to assess a test's **Feedback
+Speed** score (how fast it runs). The fewer resources a test consumes, the
+faster it runs, and the quicker we can determine whether our implementation is
+correct. Tests that rely on databases, UI, network calls, and so on, will
+naturally take longer to execute — and that can add up to significant CI time
+over time if we're not cautious.
+
+We can now add this comparison to our previous table to expand our understanding
+of each type of automated test:
+
+```
+|             | Maintainability             | Feedback Speed  |
+|-------------|-----------------------------|-----------------|
+| Unit        | High (= easy to maintain)   | High (= fast)   |
+| Integration | Medium                      | Medium          |
+| E2E         | Low (= hard to maintain)    | Low (= slow)    |
+```
+
+**Unit Tests** → These have a **high score** in feedback speed because they
+usually don't involve out-of-process dependencies, nor framework (e.g., React,
+Nextjs), nor the browser/DOM to run. Everything is executed in-memory. Blazing
+fast.
+
+**Integration Tests** → Even though they stub the boundary (out-of-process
+dependencies), integration tests demand the browser and DOM to run. They have a
+**medium** speed score, therefore.
+
+**E2E Tests** → Naturally resource-heavy tests that communicate with all sorts
+of external processes and demand the browser to be booted, which makes them the
+**lowest** score.
+
+Let's review our testing pyramid. Now with the feedback's speed considered (see
+arrow to the left of the pyramid):
+
+<img
+  src={'/images/four-pillars/testing-strategy-speed.png'}
+  alt={
+    'Testing pyramid on a black background with four levels: manual and exploratory tests at the top, then end-to-end tests (a few critical user journeys), integration tests (most user journeys), and unit tests (business logic) at the base. A vertical arrow on the left runs from slow feedback at the top to fast feedback at the bottom.'
+  }
+  width={2065}
+  height={1522}
+/>
+
+So far, it sounds like unit tests are the best test cases we could invest our
+time in — they score high in both Maintainability and Feedback Speed.
+
+So, why should we care about building integration or end-to-end tests after all?
+
+We'll see that all the additional overhead actually pays off in the form of the
+two next attributes: **Resistance to Refactoring** and **Protection Against
+Regression**.

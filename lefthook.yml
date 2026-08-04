@@ -1,0 +1,38 @@
+# Git hooks manager — https://lefthook.dev/configuration/
+#
+# Skip everything: LEFTHOOK=0 git commit ...
+# Debug a hook:    LEFTHOOK_VERBOSE=1 git commit ...
+
+min_version: 2.1.0
+
+# Formatters/linters rewrite the same files, so these run sequentially:
+# eslint --fix first, prettier last so formatting always wins.
+pre-commit:
+  parallel: false
+  jobs:
+    - name: eslint
+      glob: '*.{js,jsx,mjs,cjs,ts,tsx,mts,cts}'
+      run: pnpm exec eslint --fix --no-warn-ignored {staged_files}
+      stage_fixed: true
+
+    - name: prettier
+      glob: '*.{js,jsx,mjs,cjs,ts,tsx,mts,cts,json,css,md,yml,yaml}'
+      run: pnpm exec prettier --write --ignore-unknown {staged_files}
+      stage_fixed: true
+
+commit-msg:
+  jobs:
+    - name: commitlint
+      run: pnpm exec commitlint --edit {1}
+
+pre-push:
+  parallel: true
+  jobs:
+    - name: typecheck
+      run: pnpm typecheck
+
+    - name: lint
+      run: pnpm lint
+
+    - name: test
+      run: pnpm test:run

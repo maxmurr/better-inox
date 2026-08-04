@@ -1,0 +1,75 @@
+Unit tests cover smaller pieces of code in our applications - they are generally
+tied to specific functions, classes, or a group comprised of both components.
+The fact that this type of test is more coupled to the production code makes it
+also slightly more brittle than the high-level tests. Hence, we have to be extra
+careful to ensure they are valuable and less coupled to implementation details.
+
+Let's recap what our quiz creation screen looks like to devise a practical
+example:
+
+<img
+  src={'/images/four-pillars/create-quiz-form.png'}
+  alt={
+    'Create Quiz page of the sample app: a Back to Quizzes link, a Quiz Details card with a Quiz Title input, a Question 1 card with Question Heading, optional Image URL, Question Type set to Single Choice, an Answers list with an Add Answer button, plus Add Question, Create Quiz, and Cancel buttons.'
+  }
+  width={1788}
+  height={1572}
+/>
+
+To create and validate the quiz fields, we have the _createQuizModel()_ function
+presented earlier. Suppose it has the following steps:
+
+```ts
+export function createQuizModel(form: QuizForm): QuizModel {
+  // Validation below
+  const validatedTitle = validateTitle(form);
+  const validatedQuestions = validateQuestions(form);
+  const maybeError = validateAnswers(
+    validatedQuestions.flatMap((q) => q.answers)
+  );
+  if (maybeError instanceof Error) {
+    throw answersOrError;
+  }
+
+  return {
+    title: validatedTitle,
+    questions: validatedQuestions,
+  };
+}
+```
+
+When deciding what should be unitarily tested, we have a few options:
+
+- _validateTitle()_ function
+- _validateQuestions()_ function
+- _validateAnswers()_ function
+- _createQuizModel()_ function
+
+<PopQuestion
+  id={'pq-resistance-unit-which-function'}
+  prompt={
+    'In light of what we have learned so far about Refactoring, which function should we test?'
+  }
+  correctOptionId={'d'}
+  options={[
+    {
+      id: 'a',
+      text: 'validateTitle',
+    },
+    {
+      id: 'b',
+      text: 'validateQuestions',
+    },
+    {
+      id: 'c',
+      text: 'validateAnswers',
+    },
+    {
+      id: 'd',
+      text: 'createQuizModel',
+    },
+  ]}
+  explanation={
+    'Each function within **createQuizModel** is a sub-step that builds the Quiz object. These functions are merely implementation details. It means that if we create tests for them, they can easily become obsolete as soon as we **refactor the parent function** (For instance, if we inline the **validateTitlte** function with something like **form.title.trim().length > 0**). Therefore, **createQuizModel** is the truly public API in this scenario, and unit tests for it are more resistant to refactors.'
+  }
+/>

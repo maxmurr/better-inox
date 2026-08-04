@@ -1,0 +1,58 @@
+Now that we know what protection against regressions means, we can discuss how
+each type of test in the Pyramid scores in that pillar. So, let's start with
+**Unit Tests** (tests that don't communicate with out-of-process dependencies).
+
+Suppose we're developing a web application that helps build quizzes for all
+sorts of purposes - online courses, games, feedback forms, etc. Our current task
+is to develop the page that creates new quizzes, which should look like this:
+
+<img
+  src={'/images/four-pillars/create-quiz-form.png'}
+  alt={
+    'Create Quiz page of the sample app: a Back to Quizzes link, a Quiz Details card with a Quiz Title input, a Question 1 card with Question Heading, optional Image URL, Question Type set to Single Choice, an Answers list with an Add Answer button, plus Add Question, Create Quiz, and Cancel buttons.'
+  }
+  width={1788}
+  height={1572}
+/>
+
+There are many pieces of code that we can decide to create a test for — let's
+list them below:
+
+1. Test for a utility function that validates the image URL.
+2. Test for the factory function that creates a Quiz as a whole.
+3. Test for the questions' initial state object, which could look something like
+   this:
+
+```tsx
+const [questions, setQuestions] = useState<Question[]>([
+  {
+    heading: '',
+    imageUrl: '',
+    questionType: 'single',
+    answers: [],
+  },
+]);
+```
+
+<PopQuestion
+  id={'pq-protection-unit'}
+  prompt={'Which test probably offers the best protection against regressions?'}
+  correctOptionId={'b'}
+  options={[
+    {
+      id: 'a',
+      text: 'Test scenario #1',
+    },
+    {
+      id: 'b',
+      text: 'Test scenario #2',
+    },
+    {
+      id: 'c',
+      text: 'Test scenario #3',
+    },
+  ]}
+  explanation={
+    "**Test case 2** checks all three attributes that determine the quality of protection: domain relevance, code coverage, and complexity. Creating the quiz object is one of the main outputs of this page, and its creation covers all other validations necessary for each field. Test case 1 covers only a small portion of the code in our use case. Ensuring that the URL is valid might be an important business concept, but the function in isolation doesn't give us much confidence that the Quiz is being created correctly. Test case 3 also covers only a tiny part of the code and has little business relevance. The initial state representation could be changed while the use case remains the same, which means it is most likely an implementation detail."
+  }
+/>

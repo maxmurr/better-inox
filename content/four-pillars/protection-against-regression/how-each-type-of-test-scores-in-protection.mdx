@@ -1,0 +1,28 @@
+We have covered what defines Protection Against Regressions and how each type of
+test provides it. We can now add this comparison to our table:
+
+```
+|             | Maintainability | Feedback Speed | Protection      |
+|-------------|-----------------|----------------|-----------------|
+| Unit        | High            | High           | Low to Medium   |
+| Integration | Medium          | Medium         | Medium  to High |
+| E2E         | Low             | Low            | High            |
+```
+
+**Unit Tests** → They cover smaller portions of the code (functions and
+classes), which limits how many regressions they can catch. When they focus on
+complex, business-critical units, their protection improves — hence the **low to
+medium** score.
+
+**Integration Tests** → They exercise entire user journeys, integrating
+components, hooks, and stubbed boundaries. Covering that much more code gives
+them a **medium to high** protection score.
+
+**E2E Tests** → They run the whole system — UI, APIs, database, and external
+services — exactly as the user experiences it. That makes them the **highest**
+level of protection against regressions.
+
+Notice how this pillar inverts the previous scores: the tests that are the
+hardest to maintain and the slowest to run are precisely the ones that protect
+us the most. In the next section, we'll see the last pillar that completes this
+trade-off.

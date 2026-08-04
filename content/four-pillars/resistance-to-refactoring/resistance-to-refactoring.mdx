@@ -1,0 +1,51 @@
+We've defined what a Refactor is; Therefore, we just have to understand the
+"resistance" part of the pillar.
+
+**Resistance to refactoring** is the degree to which an automated test continues
+to pass even after the underlying system has been refactored. In other words:
+
+- Given an existing test suite for a use case in our system
+- When the use case implementation is refactored
+- The test suite is still green ✅
+
+That's a crucial attribute for automated tests — it ensures our test cases don't
+produce **false positives**.
+
+> A false positive occurs when the automated test fails, not because the
+> behavior has changed, but because an implementation detail was refactored.
+> When a test suite produces false positives, the team loses confidence in it,
+> increasing the likelihood that a bug slips into production.
+
+But how can we design automated tests that are **resilient to refactorings?**
+
+We can start by understanding what makes them _brittle_ (the opposite of
+resistant): tests coupled to implementation details, rather than observable
+behavior:
+
+<img
+  src={'/images/four-pillars/brittle-test-case.png'}
+  alt={
+    'Hand-drawn diagram: the Input to Output flow with an Impl. Detail dashed box, and an orange diamond labelled (Brittle) Test Case below it firing three orange arrows into the red, blue, and green circles inside the implementation-detail box.'
+  }
+  width={1192}
+  height={749}
+/>
+
+Such test cases tend to rely on internal components, testing specific steps that
+our system takes to accomplish a use case. If any of these steps change their
+design, the tests will break.
+
+The counterpart to that is to create tests that assert the observable behavior:
+
+<img
+  src={'/images/four-pillars/resistant-test-case.png'}
+  alt={
+    'Hand-drawn diagram: the same Input to Output flow, but the orange diamond labelled (Resistant) Test Case connects only to the Input and Output circles, bypassing the implementation-detail box.'
+  }
+  width={1192}
+  height={749}
+/>
+
+These tests will stand the test of time. They only break when the behavior has
+changed, ensuring the development team will raise an eyebrow if a test case
+unexpectedly fails — this means there's definitely a bug there.

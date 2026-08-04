@@ -1,0 +1,131 @@
+Now that we understand refactoring as _changing the internal structure without
+altering the observable behavior_, let's make that concrete with a few examples
+in a React/Nextjs context.
+
+Frontend developers refactor all the time — sometimes knowingly, other times
+unintentionally breaking client-visible behavior. The difference between a
+_refactor_ and a _feature change_ is always the same test:
+
+> **Does the same input still produce the same observable output?** **If yes →
+> refactoring** **If no → behavior change**
+
+Let's walk through a few examples.
+
+### Example #1 — Extracting a component
+
+Before:
+
+```tsx
+export function QuizCard({ quiz }) {
+  return (
+    <div className="card">
+      <h2>{quiz.title}</h2>
+      <p>{quiz.questionsCount} questions</p>
+    </div>
+  );
+}
+```
+
+After (same output, internal structure improved)
+
+```tsx
+function QuizTitle({ title }: { title: string }) {
+  return <h2>{title}</h2>;
+}
+
+function QuizMeta({ count }: { count: number }) {
+  return <p>{count} questions</p>;
+}
+
+export function QuizCard({ quiz }) {
+  return (
+    <div className="card">
+      <QuizTitle title={quiz.title} />
+      <QuizMeta count={quiz.questionsCount} />
+    </div>
+  );
+}
+```
+
+We didn't change what the user sees. We only improved the structure and
+readability.
+
+**This is refactoring ✅**
+
+### Example #2 — Changing what the user can do
+
+**Before**
+
+```tsx
+return (
+  {error && (
+    <Alert
+      variant="error"
+      buttons={[
+        <Button onClick={handleDelete}>
+          Retry
+        </Button>,
+      ]}
+    >
+      Deleting the quiz failed.
+    </Alert>
+  )}
+  ...
+```
+
+**After**
+
+```tsx
+return (
+  {error && (
+    <Alert variant="error">
+      Deleting the quiz failed.
+    </Alert>
+  )}
+  ...
+```
+
+This change alters observable behavior: ↳ The user no longer has the option to
+retry the deletion.
+
+One of our integration tests should definitely break.
+
+**This is not a refactoring ❌**
+
+### Example #3 — Quizzes sorting algorithm
+
+Let's see an example code change for our Quiz app that involves showing the
+quizzes sorted by title:
+
+**Before**
+
+```ts
+const sorted = quizzes.sort((a, b) => a.title.localeCompare(b.title));
+```
+
+**After**
+
+```ts
+const sorted = quizzes.toSorted((a, b) => {
+  return a.title.localeCompare(b.title);
+});
+```
+
+<PopQuestion
+  id={'pq-examples-refactoring'}
+  prompt={'Is this a refactoring?'}
+  correctOptionId={'a'}
+  options={[
+    {
+      id: 'a',
+      text: 'Yes',
+    },
+    {
+      id: 'b',
+      text: 'No',
+    },
+  ]}
+  explanation={
+    "**This is refactoring ✅** The user still sees quizzes sorted the same way. The observable behavior did not change; only the implementation detail has changed to make it safer (the .sort() function mutates the array and can mess with React's state)."
+  }
+/>

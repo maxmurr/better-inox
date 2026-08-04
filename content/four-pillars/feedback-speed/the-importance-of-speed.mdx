@@ -1,0 +1,55 @@
+In the previous lesson, we argued that feedback is crucial for achieving any
+goal. Now, we must stress the importance of speed in that cycle. It may sound
+obvious that speed is a desirable attribute, but it's worth making it explicit.
+
+Imagine that you're working on a new feature for your app - a whole new page
+with forms to register attribute-based permissions for other users in the
+platform. There are multiple steps to make it work:
+
+- Ensuring the page has all the required form fields
+- Ensuring the form fields are validated and masked
+- Ensuring the data structure to hold the form data is appropriate
+- Ensuring the communication with the back-end API
+
+After evaluating all the requirements, you concluded that it might take one week
+to finish that new page. Let us visualize that:
+
+<img
+  src={'/images/four-pillars/one-week-of-changes.png'}
+  alt={
+    'Activity diagram: from Start, three sequential Change steps lead to the Goal end state, with a blue hand-drawn brace spanning the whole flow labelled 1 Week.'
+  }
+  width={1681}
+  height={405}
+/>
+
+In that scenario, what happens if we only collect **feedback\*** at the end of
+that week? We might have introduced a bug on day 2 and built the remaining
+sub-features on top of it. The amount of rework would probably be considerable,
+affecting most components and logic we've designed so far - and no one likes to
+waste work and code. So, how do we improve that workflow? The answer is feedback
+**speed.** We must collect feedback more quickly, so we can adjust the code,
+requirements, and design accordingly. That means we'll work on shorter, mini
+cycles of feedback:
+
+<img
+  src={'/images/four-pillars/iterative-changes.png'}
+  alt={
+    'Activity diagram: from Start, three dashed containers labelled iterartive and captioned Step 1, Step 2, and Step 3 run in sequence, each holding its own Change step with a decision diamond and a [No] loop back, before reaching the Goal end state.'
+  }
+  width={2548}
+  height={449}
+/>
+
+_**Feedback** in this scenario is two-fold: determining whether we built the
+right thing (the resulting page/component matches the requirement), and whether
+we built the thing correctly (there are no bugs)_
+
+Considering that each cycle above takes around a day, we can identify and
+resolve bugs and misunderstandings of requirements **much faster**. Hence, we
+acknowledge the importance of not only receiving feedback on our work but also
+receiving it promptly.
+
+But can this be improved even further? Collecting feedback after a day's work
+could still make you lose an entire day if you did something wrong at the very
+beginning. Let's find out in the next lessons.

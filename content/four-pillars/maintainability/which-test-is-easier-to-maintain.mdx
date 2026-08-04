@@ -1,0 +1,77 @@
+As mentioned before, readability is one part of the "Maintainability" score, but
+there's more to it. Let's compare the two test cases below:
+
+**Test Case 1**
+
+```ts
+// cypress/e2e/login.cy.ts
+describe('Login Flow', () => {
+  it('logs in successfully and stores token in local storage', () => {
+    // Arrange – visit login page
+    cy.visit('/login');
+
+    // Act – fill form and submit
+    cy.get('input[name="email"]').type('user@example.com');
+    cy.get('input[name="password"]').type('password123');
+    cy.get('button[type="submit"]').click();
+
+    // Assert – verify API request and local storage side effects
+    cy.intercept('POST', '/api/login').as('loginRequest');
+    cy.wait('@loginRequest').then(({ response }) => {
+      expect(response?.statusCode).to.eq(200);
+      const token = response?.body.token;
+      expect(localStorage.getItem('auth_token')).to.eq(token);
+    });
+
+    // Assert – user is redirected to dashboard
+    cy.url().should('include', '/dashboard');
+  });
+});
+```
+
+**Test Case 2**
+
+```ts
+// login.service.spec.ts
+import { handleLoginResponse } from './login.service';
+
+describe('handleLoginResponse', () => {
+  it('returns token when response contains one', () => {
+    const response = { token: 'abc123' };
+
+    const result = handleLoginResponse(response);
+
+    expect(result).toBe('abc123');
+  });
+
+  it('returns null when response has no token', () => {
+    const response = {};
+
+    const result = handleLoginResponse(response);
+
+    expect(result).toBeNull();
+  });
+});
+```
+
+<PopQuestion
+  id={'pq-maintainability'}
+  prompt={
+    'Which test from the previous example is easier to maintain, that is, is easier to change and evolve?'
+  }
+  correctOptionId={'b'}
+  options={[
+    {
+      id: 'a',
+      text: 'Test case #1',
+    },
+    {
+      id: 'b',
+      text: 'Test case #2',
+    },
+  ]}
+  feedback={{
+    a: 'This test case handles external API interaction, local storage, and business logic, all in one place. Keeping everything correctly coordinated is an additional chore.',
+    b: 'The **Test Case 2** is a simple input → output scenario using in-process memory and execution, which makes it quite straightforward.',
+  }}
+/>
