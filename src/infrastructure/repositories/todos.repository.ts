@@ -28,7 +28,7 @@ export class TodosRepository implements ITodosRepository {
             {
               name: query.toSQL().sql,
               op: 'db.query',
-              attributes: { 'db.system': 'sqlite' },
+              attributes: { 'db.system': 'postgresql' },
             },
             () => query.execute()
           );
@@ -64,7 +64,7 @@ export class TodosRepository implements ITodosRepository {
             {
               name: query.toSQL().sql,
               op: 'db.query',
-              attributes: { 'db.system': 'sqlite' },
+              attributes: { 'db.system': 'postgresql' },
             },
             () => query.execute()
           );
@@ -94,7 +94,7 @@ export class TodosRepository implements ITodosRepository {
             {
               name: query.toSQL().sql,
               op: 'db.query',
-              attributes: { 'db.system': 'sqlite' },
+              attributes: { 'db.system': 'postgresql' },
             },
             () => query.execute()
           );
@@ -127,7 +127,7 @@ export class TodosRepository implements ITodosRepository {
             {
               name: query.toSQL().sql,
               op: 'db.query',
-              attributes: { 'db.system': 'sqlite' },
+              attributes: { 'db.system': 'postgresql' },
             },
             () => query.execute()
           );
@@ -162,7 +162,7 @@ export class TodosRepository implements ITodosRepository {
             {
               name: query.toSQL().sql,
               op: 'db.query',
-              attributes: { 'db.system': 'sqlite' },
+              attributes: { 'db.system': 'postgresql' },
             },
             () => query.execute()
           );

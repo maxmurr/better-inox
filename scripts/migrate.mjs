@@ -1,17 +1,14 @@
 // Applies pending Drizzle migrations, then exits. Runs as part of the Railway
-// start command rather than the pre-deploy command, because volumes are only
-// mounted once the service container starts.
+// start command so it uses the same private-network DATABASE_URL as the app.
 //
-// Deliberately uses runtime dependencies only (drizzle-orm, @libsql/client) so
-// it keeps working if the deploy image prunes devDependencies like drizzle-kit.
-import { createClient } from '@libsql/client';
-import { drizzle } from 'drizzle-orm/libsql';
-import { migrate } from 'drizzle-orm/libsql/migrator';
+// Deliberately uses runtime dependencies only (drizzle-orm, pg) so it keeps
+// working if the deploy image prunes devDependencies like drizzle-kit.
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { migrate } from 'drizzle-orm/node-postgres/migrator';
+import { Pool } from 'pg';
 
-const client = createClient({
-  url: process.env.DATABASE_URL ?? 'file:sqlite.db',
-});
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
-await migrate(drizzle(client), { migrationsFolder: './drizzle/migrations' });
+await migrate(drizzle(pool), { migrationsFolder: './drizzle/migrations' });
 
-client.close();
+await pool.end();

@@ -1,19 +1,17 @@
-import { createClient, ResultSet } from '@libsql/client';
-import { DrizzleSQLiteAdapter } from '@lucia-auth/adapter-drizzle';
+import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
 import { ExtractTablesWithRelations } from 'drizzle-orm';
-import { drizzle } from 'drizzle-orm/libsql';
-import { SQLiteTransaction } from 'drizzle-orm/sqlite-core';
+import { drizzle, NodePgTransaction } from 'drizzle-orm/node-postgres';
+import { Pool } from 'pg';
 
 import { oauthAccounts, sessions, todos, users } from './schema';
 
-const client = createClient({
-  url: process.env.DATABASE_URL ?? 'file:sqlite.db',
-});
-export const db = drizzle(client, {
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+
+export const db = drizzle(pool, {
   schema: { users, sessions, todos, oauthAccounts },
 });
 
-export const luciaAdapter = new DrizzleSQLiteAdapter(db, sessions, users);
+export const luciaAdapter = new DrizzlePostgreSQLAdapter(db, sessions, users);
 
 type Schema = {
   users: typeof users;
@@ -21,9 +19,7 @@ type Schema = {
   todos: typeof todos;
   oauthAccounts: typeof oauthAccounts;
 };
-export type Transaction = SQLiteTransaction<
-  'async',
-  ResultSet,
+export type Transaction = NodePgTransaction<
   Schema,
   ExtractTablesWithRelations<Schema>
 >;
