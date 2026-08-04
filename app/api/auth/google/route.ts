@@ -1,8 +1,8 @@
-import { NextResponse, type NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 
 import { getInjection } from '@/di/container';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   const instrumentationService = getInjection('IInstrumentationService');
   return await instrumentationService.startSpan(
     { name: 'GET /api/auth/google', op: 'http.server' },
@@ -24,9 +24,12 @@ export async function GET(request: NextRequest) {
         const crashReporterService = getInjection('ICrashReporterService');
         crashReporterService.report(err);
 
-        return NextResponse.redirect(
-          new URL('/sign-in?error=google', request.url)
-        );
+        // Relative Location: see the note in the callback route about
+        // `request.url` resolving to the container address behind the proxy.
+        return new NextResponse(null, {
+          status: 307,
+          headers: { Location: '/sign-in?error=google' },
+        });
       }
     }
   );

@@ -20,11 +20,10 @@ export async function GET(request: NextRequest) {
     { name: 'GET /api/auth/google/callback', op: 'http.server' },
     async () => {
       const signInWith = (error?: string) => {
-        const url = new URL('/sign-in', request.url);
-        if (error) {
-          url.searchParams.set('error', error);
-        }
-        return redirectAndClearOAuthCookies(url);
+        const path = error
+          ? `/sign-in?error=${encodeURIComponent(error)}`
+          : '/sign-in';
+        return redirectAndClearOAuthCookies(path);
       };
 
       if (request.nextUrl.searchParams.has('error')) {
@@ -42,9 +41,7 @@ export async function GET(request: NextRequest) {
           codeVerifier: request.cookies.get(GOOGLE_CODE_VERIFIER_COOKIE)?.value,
         });
 
-        const response = redirectAndClearOAuthCookies(
-          new URL(POST_SIGN_IN_REDIRECT, request.url)
-        );
+        const response = redirectAndClearOAuthCookies(POST_SIGN_IN_REDIRECT);
         response.cookies.set(
           sessionCookie.name,
           sessionCookie.value,
@@ -72,8 +69,15 @@ export async function GET(request: NextRequest) {
   );
 }
 
-function redirectAndClearOAuthCookies(url: URL) {
-  const response = NextResponse.redirect(url);
+// Redirects with a relative Location so the browser resolves it against
+// whichever host it is already on. Absolute URLs built from `request.url` are
+// wrong behind Railway's proxy: route handlers see the container's internal
+// address (https://localhost:8080), not the public hostname.
+function redirectAndClearOAuthCookies(path: string) {
+  const response = new NextResponse(null, {
+    status: 307,
+    headers: { Location: path },
+  });
   response.cookies.delete(GOOGLE_STATE_COOKIE);
   response.cookies.delete(GOOGLE_CODE_VERIFIER_COOKIE);
   return response;
