@@ -2,10 +2,20 @@
   "$schema": "https://railway.com/railway.schema.json",
   "build": {
     "builder": "RAILPACK",
-    "buildCommand": null
+    "buildCommand": null,
+    "watchPatterns": [
+      "**",
+      "!/*.md",
+      "!/.github/**",
+      "!/.vscode/**",
+      "!/.claude/**",
+      "!/.agents/**",
+      "!/tests/**"
+    ]
   },
   "deploy": {
-    "startCommand": "pnpm db:deploy && pnpm start",
+    "preDeployCommand": ["node scripts/migrate.mjs"],
+    "startCommand": "node_modules/.bin/next start",
     "healthcheckPath": "/api/health",
     "healthcheckTimeout": 120,
     "restartPolicyType": "ON_FAILURE",
