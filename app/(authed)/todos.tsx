@@ -99,7 +99,7 @@ export function Todos({ todos }: { todos: Todo[] }) {
                 />
                 <label
                   htmlFor={`checkbox-${todo.id}`}
-                  className={cn('min-w-0 flex-1 break-words', {
+                  className={cn('min-w-0 flex-1 wrap-break-word', {
                     'cursor-pointer': !isDeleted && !loading,
                     'text-muted-foreground line-through': isCompleted,
                     'text-destructive line-through': isDeleted,

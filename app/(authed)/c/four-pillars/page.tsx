@@ -39,7 +39,7 @@ export default async function Page() {
           >
             <h2
               id="four-pillars-welcome"
-              className="min-w-0 flex-1 font-heading text-2xl font-bold tracking-tight text-balance break-words text-foreground sm:text-3xl"
+              className="min-w-0 flex-1 font-heading text-2xl font-bold tracking-tight text-balance wrap-break-word text-foreground sm:text-3xl"
             >
               Welcome, {user.username}.
             </h2>
