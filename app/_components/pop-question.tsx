@@ -16,7 +16,31 @@ export type PopQuestionOption = {
   text: string;
 };
 
-function renderEmphasis(text: string) {
+type PopQuestionResponse =
+  | { explanation: string; feedback?: Record<string, string> }
+  | { explanation?: string; feedback: Record<string, string> };
+
+export function resolvePopQuestionResponse({
+  explanation,
+  feedback,
+  selected,
+}: {
+  explanation?: string;
+  feedback?: Record<string, string>;
+  selected?: string;
+}) {
+  if (selected && feedback?.[selected]) {
+    return feedback[selected];
+  }
+
+  return explanation;
+}
+
+function renderEmphasis(text: string | undefined) {
+  if (!text) {
+    return null;
+  }
+
   return text.split('**').map((part, index) =>
     index % 2 === 0 ? (
       part
@@ -66,19 +90,24 @@ export function PopQuestion({
   options,
   correctOptionId,
   explanation,
+  feedback,
 }: {
   id: string;
   prompt: string;
   options: readonly PopQuestionOption[];
   correctOptionId: string;
-  explanation: string;
-}) {
+} & PopQuestionResponse) {
   const [selected, setSelected] = useState<string>();
   const [submitted, setSubmitted] = useState(false);
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
   const optionsRef = useRef<HTMLDivElement>(null);
   const correct = selected === correctOptionId;
   const answeredText = options.find((option) => option.id === selected)?.text;
+  const response = resolvePopQuestionResponse({
+    explanation,
+    feedback,
+    selected,
+  });
   const missingAnswer = attemptedSubmit && !selected;
   const errorId = `${id}-error`;
 
@@ -126,9 +155,11 @@ export function PopQuestion({
               {correct ? 'Correct!' : 'Not quite.'}
             </p>
           </div>
-          <div className="text-[0.975rem]/7 text-foreground/90">
-            {renderEmphasis(explanation)}
-          </div>
+          {response ? (
+            <div className="text-[0.975rem]/7 text-foreground/90">
+              {renderEmphasis(response)}
+            </div>
+          ) : null}
         </div>
       ) : (
         <>
