@@ -20,9 +20,12 @@ import {
 
 export const COURSE_PANEL_ID = 'course-panel';
 
+const SIDE_BY_SIDE_QUERY = '(min-width: 64rem)';
+
 type CoursePanelContextValue = {
   panel: CoursePanelId;
   isOpen: boolean;
+  isModal: boolean;
   panelRef: React.RefObject<HTMLElement | null>;
   toggle: (panel: CoursePanelId, trigger: HTMLElement | null) => void;
   close: () => void;
@@ -57,6 +60,9 @@ export function CoursePanelProvider({
 }) {
   const [panel, setPanel] = useState(initialState.panel);
   const [isOpen, setIsOpen] = useState(initialState.isOpen);
+  // Assume side-by-side until measured, so a cookie-restored panel never marks
+  // the page inert during hydration.
+  const [isSideBySide, setIsSideBySide] = useState(true);
   const panelRef = useRef<HTMLElement>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
   // Only a user-initiated open moves focus. A panel restored from the cookie
@@ -87,6 +93,15 @@ export function CoursePanelProvider({
   );
 
   useEffect(() => {
+    const media = window.matchMedia(SIDE_BY_SIDE_QUERY);
+    const sync = () => setIsSideBySide(media.matches);
+
+    sync();
+    media.addEventListener('change', sync);
+    return () => media.removeEventListener('change', sync);
+  }, []);
+
+  useEffect(() => {
     if (isOpen && focusOnOpenRef.current) {
       focusOnOpenRef.current = false;
       panelRef.current?.focus();
@@ -99,7 +114,7 @@ export function CoursePanelProvider({
     }
 
     function onKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') {
+      if (event.key === 'Escape' && !event.defaultPrevented) {
         close();
       }
     }
@@ -110,7 +125,14 @@ export function CoursePanelProvider({
 
   return (
     <CoursePanelContext.Provider
-      value={{ panel, isOpen, panelRef, toggle, close }}
+      value={{
+        panel,
+        isOpen,
+        isModal: isOpen && !isSideBySide,
+        panelRef,
+        toggle,
+        close,
+      }}
     >
       {children}
     </CoursePanelContext.Provider>

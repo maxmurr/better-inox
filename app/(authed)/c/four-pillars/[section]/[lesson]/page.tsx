@@ -62,7 +62,10 @@ export default async function Page({
         <CourseHeaderActions />
       </header>
 
-      <main className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+      <main
+        id="main-content"
+        className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
+      >
         <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-5 py-8 sm:gap-10 sm:px-8 sm:py-10">
           <article className="flex flex-col gap-6">
             <LessonHeader
@@ -75,7 +78,7 @@ export default async function Page({
             />
 
             {Content ? (
-              <div className="flex flex-col gap-4 [&_img]:w-full [&_img]:rounded-xl [&_img]:border [&_img]:border-border">
+              <div className="flex flex-col gap-4">
                 <Content />
               </div>
             ) : null}

@@ -2,9 +2,10 @@
 
 import { useEffect, useRef, useState } from 'react';
 
+import { FormAlert } from '@/app/_components/form-alert';
+
 import { signIn } from '../actions';
 import { AuthField } from '../auth-field';
-import { FormAlert } from '../form-alert';
 import { SubmitButton } from '../submit-button';
 
 export function SignInForm() {
@@ -67,7 +68,7 @@ export function SignInForm() {
         required
       />
       <SubmitButton pending={pending} pendingLabel="Signing in…">
-        Sign in
+        Sign In
       </SubmitButton>
     </form>
   );

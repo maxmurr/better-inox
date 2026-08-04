@@ -1,24 +1,18 @@
-import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 
-import { findSection } from '../curriculum';
-
-export async function generateMetadata({
-  params,
-}: PageProps<'/c/four-pillars/[section]'>): Promise<Metadata> {
-  const { section } = await params;
-
-  return { title: findSection(section)?.title };
-}
+import { lessonHref } from '../course-href';
+import { findSection, FOUR_PILLARS_COURSE_SLUG } from '../curriculum';
 
 export default async function Page({
   params,
 }: PageProps<'/c/four-pillars/[section]'>) {
   const { section } = await params;
+  const found = findSection(section);
+  const firstLesson = found?.lessons[0];
 
-  if (!findSection(section)) {
+  if (!found || !firstLesson) {
     notFound();
   }
 
-  return null;
+  redirect(lessonHref(FOUR_PILLARS_COURSE_SLUG, found.slug, firstLesson.slug));
 }

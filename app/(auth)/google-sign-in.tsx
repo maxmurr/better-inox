@@ -48,7 +48,9 @@ export function GoogleSignIn() {
         render={<a href="/api/auth/google" />}
       >
         <GoogleIcon data-icon="inline-start" />
-        Continue with Google
+        <span>
+          Continue with <span translate="no">Google</span>
+        </span>
       </Button>
     </div>
   );

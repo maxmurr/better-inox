@@ -27,27 +27,26 @@ export function UserMenu({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        render={
-          <Avatar className="shrink-0 cursor-pointer transition-shadow outline-none before:absolute before:-inset-1.5 before:rounded-full focus-visible:ring-3 focus-visible:ring-ring/50 data-popup-open:ring-3 data-popup-open:ring-ring/30" />
-        }
-        nativeButton={false}
         aria-label={`Account menu for ${username}`}
+        className="relative shrink-0 cursor-pointer rounded-full transition-shadow outline-none before:absolute before:-inset-1.5 before:rounded-full focus-visible:ring-3 focus-visible:ring-ring/50 data-popup-open:ring-3 data-popup-open:ring-ring/30"
       >
-        {avatarUrl && (
-          <AvatarImage
-            src={avatarUrl}
-            render={
-              <Image
-                src={avatarUrl}
-                alt=""
-                width={AVATAR_RENDER_SIZE}
-                height={AVATAR_RENDER_SIZE}
-                unoptimized
-              />
-            }
-          />
-        )}
-        <AvatarFallback>{initials(username)}</AvatarFallback>
+        <Avatar>
+          {avatarUrl && (
+            <AvatarImage
+              src={avatarUrl}
+              render={
+                <Image
+                  src={avatarUrl}
+                  alt=""
+                  width={AVATAR_RENDER_SIZE}
+                  height={AVATAR_RENDER_SIZE}
+                  unoptimized
+                />
+              }
+            />
+          )}
+          <AvatarFallback>{initials(username)}</AvatarFallback>
+        </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuGroup>
@@ -55,7 +54,7 @@ export function UserMenu({
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="cursor-pointer" onClick={() => signOut()}>
-          Sign out
+          Sign Out
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

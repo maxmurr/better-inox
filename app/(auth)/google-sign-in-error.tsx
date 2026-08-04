@@ -4,7 +4,7 @@ import { useSearchParams } from 'next/navigation';
 
 import { ALLOWED_GOOGLE_HD } from '@/config';
 
-import { FormAlert } from './form-alert';
+import { FormAlert } from '@/app/_components/form-alert';
 
 export function GoogleSignInError() {
   const error = useSearchParams().get('error');

@@ -10,10 +10,7 @@ export function LessonFooter({ completed }: { completed: boolean }) {
   const [isCompleted, setIsCompleted] = useState(completed);
 
   return (
-    <footer
-      aria-live="polite"
-      className="flex shrink-0 items-center justify-center border-t border-border bg-background px-5 py-3"
-    >
+    <footer className="flex shrink-0 items-center justify-center border-t border-border bg-background px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
       <Button
         type="button"
         size="lg"
@@ -29,7 +26,7 @@ export function LessonFooter({ completed }: { completed: boolean }) {
           </>
         ) : (
           <>
-            Complete lesson
+            Complete Lesson
             <ArrowRightIcon aria-hidden />
           </>
         )}

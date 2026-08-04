@@ -68,7 +68,7 @@ export function LessonHeader({
     <header className="flex flex-col gap-5">
       <div className="flex items-center justify-between gap-3">
         <p className="min-w-0 text-sm text-muted-foreground tabular-nums">
-          Lesson {position} of {total}
+          Lesson&nbsp;{position} of {total}
         </p>
         <nav
           aria-label="Lesson navigation"

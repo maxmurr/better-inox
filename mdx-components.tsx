@@ -64,6 +64,16 @@ const components: MDXComponents = {
       {...props}
     />
   ),
+  img: ({ alt = '', ...props }) => (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      alt={alt}
+      loading="lazy"
+      decoding="async"
+      className="h-auto w-full rounded-xl border border-border"
+      {...props}
+    />
+  ),
   hr: (props) => <hr className="border-border" {...props} />,
   PopQuestion,
 };

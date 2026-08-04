@@ -2,9 +2,10 @@
 
 import { useEffect, useRef, useState } from 'react';
 
+import { FormAlert } from '@/app/_components/form-alert';
+
 import { signUp } from '../actions';
 import { AuthField } from '../auth-field';
-import { FormAlert } from '../form-alert';
 import { SubmitButton } from '../submit-button';
 
 export function SignUpForm() {
@@ -45,6 +46,8 @@ export function SignUpForm() {
     if (res && res.error) {
       setError(res.error);
       setPending(false);
+      usernameRef.current?.focus();
+      usernameRef.current?.select();
     }
   };
 
@@ -93,7 +96,7 @@ export function SignUpForm() {
         required
       />
       <SubmitButton pending={pending} pendingLabel="Creating your account…">
-        Create account
+        Create Account
       </SubmitButton>
     </form>
   );

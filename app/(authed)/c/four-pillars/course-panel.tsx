@@ -37,18 +37,20 @@ export function CoursePanel({
   courseSlug: string;
   sections: readonly CourseSection[];
 }) {
-  const { panel, isOpen, panelRef, close } = useCoursePanel();
+  const { panel, isOpen, isModal, panelRef, close } = useCoursePanel();
   const title = PANEL_TITLES[panel];
 
   return (
     <aside
       ref={panelRef}
       id={COURSE_PANEL_ID}
+      role={isModal ? 'dialog' : undefined}
+      aria-modal={isModal || undefined}
       aria-label={title}
       tabIndex={-1}
       inert={!isOpen}
       data-open={isOpen}
-      className="fixed inset-y-0 right-0 z-30 flex w-full flex-col border-l border-border bg-background transition-transform duration-250 ease-out-quart outline-none data-[open=false]:translate-x-full data-[open=false]:duration-200 motion-reduce:transition-none lg:w-(--course-panel-width)"
+      className="fixed inset-y-0 right-0 z-30 flex w-full flex-col border-l border-border bg-background pb-[env(safe-area-inset-bottom)] transition-transform duration-250 ease-out-quart outline-none data-[open=false]:translate-x-full data-[open=false]:duration-200 motion-reduce:transition-none lg:w-(--course-panel-width)"
     >
       <div className="flex h-14 shrink-0 items-center justify-between gap-3 border-b border-border px-3 sm:px-4">
         <h2 className="min-w-0 truncate font-heading text-base leading-snug font-semibold tracking-tight text-foreground sm:text-lg">
@@ -236,12 +238,18 @@ function CommentsPanel() {
       >
         <div className="relative rounded-xl border border-input bg-muted/40 transition-colors focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50">
           <textarea
+            name="comment"
             value={message}
             onChange={(event) => setMessage(event.target.value)}
             onKeyDown={(event) => {
               if (event.key === 'Enter' && !event.shiftKey) {
                 event.preventDefault();
                 send();
+                return;
+              }
+
+              if (event.key === 'Escape' && canSend) {
+                event.preventDefault();
               }
             }}
             rows={3}

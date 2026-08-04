@@ -4,11 +4,10 @@ import { useState } from 'react';
 
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
 
+import { FormAlert } from '@/app/_components/form-alert';
 import { Input } from '@/app/_components/ui/input';
 import { Label } from '@/app/_components/ui/label';
 import { cn } from '@/app/_components/utils';
-
-import { FormAlert } from './form-alert';
 
 type AuthFieldProps = Omit<React.ComponentProps<'input'>, 'id'> & {
   id: string;

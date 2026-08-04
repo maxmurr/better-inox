@@ -38,7 +38,11 @@ function ResultBanner({
   result: QuizAttemptResult;
 }) {
   const { retakeQuiz } = useCourse();
-  const pct = Math.round(result.score * 100);
+  const [confirmingRetake, setConfirmingRetake] = useState(false);
+  const score = new Intl.NumberFormat(undefined, {
+    style: 'percent',
+    maximumFractionDigits: 0,
+  }).format(result.score);
 
   return (
     <output
@@ -50,8 +54,9 @@ function ResultBanner({
           <p className="text-base/relaxed">
             {result.passed ? (
               <>
-                🎉 You <span className="font-medium text-success">passed</span>{' '}
-                the quiz. Great job!
+                <span aria-hidden>🎉</span> You{' '}
+                <span className="font-medium text-success">passed</span> the
+                quiz. Great job!
               </>
             ) : (
               <>
@@ -60,16 +65,43 @@ function ResultBanner({
               </>
             )}
           </p>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => retakeQuiz(lesson.id)}
-          >
-            Retake quiz
-          </Button>
+          {confirmingRetake ? (
+            <div className="flex flex-col items-start gap-2">
+              <p className="text-sm text-pretty text-muted-foreground">
+                Retaking clears every answer for this quiz.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setConfirmingRetake(false);
+                    retakeQuiz(lesson.id);
+                  }}
+                >
+                  Retake &amp; Clear Answers
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setConfirmingRetake(false)}
+                >
+                  Keep My Answers
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setConfirmingRetake(true)}
+            >
+              Retake Quiz
+            </Button>
+          )}
         </div>
         <div className="flex gap-10">
-          <Stat label="Score" value={`${pct}%`} />
+          <Stat label="Score" value={score} />
           <Stat
             label="Correct answers"
             value={`${result.correct}/${result.total}`}
@@ -294,7 +326,7 @@ export function QuizView({ lesson }: { lesson: QuizLesson }) {
 
         {!result ? (
           <div className="flex flex-col gap-2">
-            <Button onClick={handleSubmit}>Submit answers</Button>
+            <Button onClick={handleSubmit}>Submit Answers</Button>
             {!complete ? (
               attemptedSubmit ? (
                 <p

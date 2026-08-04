@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { Radio as RadioPrimitive } from '@base-ui/react/radio';
 import { ArrowRightIcon, CornerDownRightIcon } from 'lucide-react';
@@ -75,8 +75,22 @@ export function PopQuestion({
 }) {
   const [selected, setSelected] = useState<string>();
   const [submitted, setSubmitted] = useState(false);
+  const [attemptedSubmit, setAttemptedSubmit] = useState(false);
+  const optionsRef = useRef<HTMLDivElement>(null);
   const correct = selected === correctOptionId;
   const answeredText = options.find((option) => option.id === selected)?.text;
+  const missingAnswer = attemptedSubmit && !selected;
+  const errorId = `${id}-error`;
+
+  const handleSubmit = () => {
+    if (!selected) {
+      setAttemptedSubmit(true);
+      optionsRef.current?.querySelector<HTMLElement>('[role="radio"]')?.focus();
+      return;
+    }
+
+    setSubmitted(true);
+  };
 
   return (
     <fieldset className="mt-3 flex flex-col gap-4 border-t border-border pt-8">
@@ -119,10 +133,13 @@ export function PopQuestion({
       ) : (
         <>
           <RadioGroup
+            ref={optionsRef}
             name={id}
             value={selected ?? ''}
             onValueChange={(value) => setSelected(String(value))}
             aria-label={prompt}
+            aria-invalid={missingAnswer || undefined}
+            aria-describedby={missingAnswer ? errorId : undefined}
           >
             {options.map((option, index) => (
               <Option
@@ -134,11 +151,20 @@ export function PopQuestion({
             ))}
           </RadioGroup>
 
-          <div className="border-t border-border pt-5">
-            <Button onClick={() => setSubmitted(true)} disabled={!selected}>
+          <div className="flex flex-col gap-2 border-t border-border pt-5">
+            <Button className="self-start" onClick={handleSubmit}>
               Submit
               <ArrowRightIcon data-icon="inline-end" aria-hidden />
             </Button>
+            {missingAnswer ? (
+              <p
+                id={errorId}
+                role="alert"
+                className="text-xs font-medium text-destructive"
+              >
+                Choose an answer to submit.
+              </p>
+            ) : null}
           </div>
         </>
       )}

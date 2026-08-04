@@ -12,65 +12,61 @@ import { bulkUpdate, toggleTodo } from './actions';
 
 type Todo = { id: number; todo: string; userId: string; completed: boolean };
 
+function toggled(ids: ReadonlySet<number>, id: number) {
+  const next = new Set(ids);
+
+  if (!next.delete(id)) {
+    next.add(id);
+  }
+
+  return next;
+}
+
 export function Todos({ todos }: { todos: Todo[] }) {
   const [bulkMode, setBulkMode] = useState(false);
-  const [dirty, setDirty] = useState<number[]>([]);
-  const [deleted, setDeleted] = useState<number[]>([]);
+  const [dirty, setDirty] = useState<ReadonlySet<number>>(new Set());
+  const [deleted, setDeleted] = useState<ReadonlySet<number>>(new Set());
   const [loading, setLoading] = useState(false);
 
   const handleToggle = useCallback(
     async (id: number) => {
       if (bulkMode) {
-        const dirtyIndex = dirty.findIndex((t) => t === id);
-        if (dirtyIndex > -1) {
-          const newDirty = Object.assign([], dirty);
-          newDirty.splice(dirtyIndex, 1);
-          setDirty(newDirty);
-        } else {
-          setDirty([...dirty, id]);
-        }
-      } else {
-        const res = await toggleTodo(id);
-        if (res) {
-          if (res.error) {
-            toast.error(res.error);
-          } else if (res.success) {
-            toast.success('Todo toggled!');
-          }
+        setDirty((current) => toggled(current, id));
+        return;
+      }
+
+      const res = await toggleTodo(id);
+      if (res) {
+        if (res.error) {
+          toast.error(res.error);
+        } else if (res.success) {
+          toast.success('Todo toggled!');
         }
       }
     },
-    [bulkMode, dirty]
+    [bulkMode]
   );
 
-  const markForDeletion = useCallback(
-    (id: number) => {
-      const dirtyIndex = dirty.findIndex((t) => t === id);
-      if (dirtyIndex > -1) {
-        const newDirty = Object.assign([], dirty);
-        newDirty.splice(dirtyIndex, 1);
-        setDirty(newDirty);
+  const markForDeletion = useCallback((id: number) => {
+    setDirty((current) => {
+      if (!current.has(id)) {
+        return current;
       }
 
-      const deletedIndex = deleted.findIndex((t) => t === id);
-      if (deletedIndex === -1) {
-        setDeleted((d) => [...d, id]);
-      } else {
-        const newDeleted = Object.assign([], deleted);
-        newDeleted.splice(deletedIndex, 1);
-        setDeleted(newDeleted);
-      }
-    },
-    [deleted, dirty]
-  );
+      const next = new Set(current);
+      next.delete(id);
+      return next;
+    });
+    setDeleted((current) => toggled(current, id));
+  }, []);
 
   const updateAll = async () => {
     setLoading(true);
-    const res = await bulkUpdate(dirty, deleted);
+    const res = await bulkUpdate([...dirty], [...deleted]);
     setLoading(false);
     setBulkMode(false);
-    setDirty([]);
-    setDeleted([]);
+    setDirty(new Set());
+    setDeleted(new Set());
     if (res) {
       if (res.error) {
         toast.error(res.error);
@@ -82,65 +78,89 @@ export function Todos({ todos }: { todos: Todo[] }) {
 
   return (
     <>
-      <ul className="w-full">
-        {todos.length > 0 ? (
-          todos.map((todo) => (
-            <li
-              key={todo.id}
-              className="flex h-10 w-full items-center gap-2 rounded-sm p-1 hover:bg-muted/50 active:bg-muted"
-            >
-              <Checkbox
-                checked={
-                  dirty.findIndex((t) => t === todo.id) > -1
-                    ? !todo.completed
-                    : todo.completed
-                }
-                onCheckedChange={() => handleToggle(todo.id)}
-                id={`checkbox-${todo.id}`}
-                disabled={
-                  deleted.findIndex((t) => t === todo.id) > -1 || loading
-                }
-              />
-              <label
-                htmlFor={`checkbox-${todo.id}`}
-                className={cn('flex-1 cursor-pointer', {
-                  'text-muted-foreground line-through':
-                    dirty.findIndex((t) => t === todo.id) > -1
-                      ? !todo.completed
-                      : todo.completed,
-                  'text-destructive line-through':
-                    deleted.findIndex((t) => t === todo.id) > -1,
-                })}
+      {todos.length > 0 ? (
+        <ul className="w-full">
+          {todos.map((todo) => {
+            const isDeleted = deleted.has(todo.id);
+            const isCompleted = dirty.has(todo.id)
+              ? !todo.completed
+              : todo.completed;
+
+            return (
+              <li
+                key={todo.id}
+                className="flex min-h-10 w-full items-center gap-2 rounded-sm p-1 [contain-intrinsic-size:auto_2.5rem] [content-visibility:auto] hover:bg-muted/50 active:bg-muted pointer-coarse:min-h-11"
               >
-                {todo.todo}
-              </label>
-              {bulkMode && (
-                <Button
-                  size="icon-sm"
-                  variant="destructive"
-                  disabled={loading}
-                  onClick={() => markForDeletion(todo.id)}
+                <Checkbox
+                  checked={isCompleted}
+                  onCheckedChange={() => handleToggle(todo.id)}
+                  id={`checkbox-${todo.id}`}
+                  disabled={isDeleted || loading}
+                />
+                <label
+                  htmlFor={`checkbox-${todo.id}`}
+                  className={cn('min-w-0 flex-1 break-words', {
+                    'cursor-pointer': !isDeleted && !loading,
+                    'text-muted-foreground line-through': isCompleted,
+                    'text-destructive line-through': isDeleted,
+                  })}
                 >
-                  <Trash />
-                </Button>
-              )}
-            </li>
-          ))
-        ) : (
-          <p>No todos. Create some to get started!</p>
-        )}
-      </ul>
+                  {todo.todo}
+                </label>
+                {bulkMode && (
+                  <Button
+                    size="icon-sm"
+                    variant="destructive"
+                    disabled={loading}
+                    aria-label={
+                      isDeleted
+                        ? `Keep “${todo.todo}”`
+                        : `Delete “${todo.todo}”`
+                    }
+                    aria-pressed={isDeleted}
+                    onClick={() => markForDeletion(todo.id)}
+                  >
+                    <Trash aria-hidden />
+                  </Button>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <p className="text-sm text-muted-foreground">
+          No todos yet. Add one above to get started.
+        </p>
+      )}
       {bulkMode ? (
         <div className="grid w-full grid-cols-2 gap-2">
-          <Button disabled={loading} onClick={updateAll}>
-            {loading ? <Loader className="animate-spin" /> : 'Update all'}
+          <Button disabled={loading} aria-busy={loading} onClick={updateAll}>
+            {loading ? (
+              <>
+                <Loader
+                  aria-hidden
+                  className="animate-spin motion-reduce:animate-none"
+                />
+                Updating…
+              </>
+            ) : (
+              'Update All'
+            )}
           </Button>
-          <Button variant="secondary" onClick={() => setBulkMode(false)}>
+          <Button
+            variant="secondary"
+            disabled={loading}
+            onClick={() => {
+              setBulkMode(false);
+              setDirty(new Set());
+              setDeleted(new Set());
+            }}
+          >
             Cancel
           </Button>
         </div>
       ) : (
-        <Button onClick={() => setBulkMode(true)}>Bulk operations</Button>
+        <Button onClick={() => setBulkMode(true)}>Bulk Operations</Button>
       )}
     </>
   );

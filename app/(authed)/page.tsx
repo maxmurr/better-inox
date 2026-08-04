@@ -59,18 +59,20 @@ export default async function Page() {
   ]);
 
   return (
-    <Card className="w-full max-w-lg">
-      <CardHeader>
-        <CardTitle>TODOs</CardTitle>
-        <CardAction>
-          <UserMenu username={user.username} avatarUrl={user.avatarUrl} />
-        </CardAction>
-      </CardHeader>
-      <Separator />
-      <CardContent className="flex flex-col gap-4">
-        <CreateTodo />
-        <Todos todos={todos} />
-      </CardContent>
-    </Card>
+    <main id="main-content" className="w-full max-w-lg">
+      <Card>
+        <CardHeader>
+          <CardTitle as="h1">TODOs</CardTitle>
+          <CardAction>
+            <UserMenu username={user.username} avatarUrl={user.avatarUrl} />
+          </CardAction>
+        </CardHeader>
+        <Separator />
+        <CardContent className="flex flex-col gap-4">
+          <CreateTodo />
+          <Todos todos={todos} />
+        </CardContent>
+      </Card>
+    </main>
   );
 }

@@ -56,7 +56,7 @@ export function CourseOutline({
     <div className="flex flex-col gap-3">
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-border pb-3">
         <p className="min-w-0 text-sm text-pretty text-muted-foreground tabular-nums">
-          {sections.length} sections • {lessonCount} lessons
+          {sections.length}&nbsp;sections • {lessonCount}&nbsp;lessons
         </p>
         <Button
           type="button"
@@ -69,7 +69,7 @@ export function CourseOutline({
             )
           }
         >
-          {allExpanded ? 'Collapse all' : 'Expand all'}
+          {allExpanded ? 'Collapse All' : 'Expand All'}
         </Button>
       </div>
 
@@ -93,7 +93,7 @@ export function CourseOutline({
                 {section.title}
               </span>
               <span className="shrink-0 text-xs text-muted-foreground tabular-nums">
-                {section.lessons.length} lessons
+                {section.lessons.length}&nbsp;lessons
               </span>
             </AccordionTrigger>
             <AccordionContent className="bg-background px-4 pt-1 pb-3 [&_a]:no-underline">

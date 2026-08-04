@@ -28,7 +28,10 @@ export default async function Page() {
         <CourseHeaderActions />
       </header>
 
-      <main className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+      <main
+        id="main-content"
+        className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
+      >
         <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-5 py-8 sm:gap-10 sm:px-8 sm:py-10">
           <section
             aria-labelledby="four-pillars-welcome"
@@ -36,7 +39,7 @@ export default async function Page() {
           >
             <h2
               id="four-pillars-welcome"
-              className="min-w-0 flex-1 font-heading text-2xl font-bold tracking-tight text-balance text-foreground sm:text-3xl"
+              className="min-w-0 flex-1 font-heading text-2xl font-bold tracking-tight text-balance break-words text-foreground sm:text-3xl"
             >
               Welcome, {user.username}.
             </h2>
@@ -47,6 +50,7 @@ export default async function Page() {
                   next.section.slug,
                   next.lesson.slug
                 )}
+                aria-label={`Continue with lesson: ${next.lesson.title}`}
                 className={cn(
                   buttonVariants({ size: 'lg', variant: 'outline' })
                 )}
