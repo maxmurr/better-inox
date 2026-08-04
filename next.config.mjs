@@ -34,7 +34,7 @@ export default withSentryConfig(withMDX(nextConfig), {
   // For all available options, see:
   // https://github.com/getsentry/sentry-webpack-plugin#options
 
-  org: 'sentry-devrel',
+  org: 'inoxth',
   project: 'better-inox',
 
   // An auth token is required for uploading source maps.
