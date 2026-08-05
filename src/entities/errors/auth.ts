@@ -33,3 +33,13 @@ export class OAuthDomainNotAllowedError extends Error {
     super(message, options);
   }
 }
+
+export class RateLimitError extends Error {
+  constructor(
+    message: string,
+    public readonly retryAfterSeconds: number,
+    options?: ErrorOptions
+  ) {
+    super(message, options);
+  }
+}

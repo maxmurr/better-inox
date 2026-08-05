@@ -4,6 +4,7 @@ import {
   OAuthDomainNotAllowedError,
   OAuthProviderError,
   OAuthStateMismatchError,
+  RateLimitError,
 } from '@/src/entities/errors/auth';
 import { InputParseError } from '@/src/entities/errors/common';
 
@@ -13,6 +14,8 @@ import {
   POST_SIGN_IN_REDIRECT,
 } from '@/config';
 import { getInjection } from '@/di/container';
+
+import { clientIpFrom } from '@/app/client-ip';
 
 export async function GET(request: NextRequest) {
   const instrumentationService = getInjection('IInstrumentationService');
@@ -34,12 +37,16 @@ export async function GET(request: NextRequest) {
         const googleCallbackController = getInjection(
           'IGoogleCallbackController'
         );
-        const sessionCookie = await googleCallbackController({
-          code: request.nextUrl.searchParams.get('code') ?? undefined,
-          state: request.nextUrl.searchParams.get('state') ?? undefined,
-          storedState: request.cookies.get(GOOGLE_STATE_COOKIE)?.value,
-          codeVerifier: request.cookies.get(GOOGLE_CODE_VERIFIER_COOKIE)?.value,
-        });
+        const sessionCookie = await googleCallbackController(
+          {
+            code: request.nextUrl.searchParams.get('code') ?? undefined,
+            state: request.nextUrl.searchParams.get('state') ?? undefined,
+            storedState: request.cookies.get(GOOGLE_STATE_COOKIE)?.value,
+            codeVerifier: request.cookies.get(GOOGLE_CODE_VERIFIER_COOKIE)
+              ?.value,
+          },
+          clientIpFrom(request.headers)
+        );
 
         const response = redirectAndClearOAuthCookies(POST_SIGN_IN_REDIRECT);
         response.cookies.set(
@@ -50,6 +57,10 @@ export async function GET(request: NextRequest) {
 
         return response;
       } catch (err) {
+        if (err instanceof RateLimitError) {
+          return signInWith('rate_limit');
+        }
+
         if (err instanceof OAuthDomainNotAllowedError) {
           return signInWith('google_domain');
         }

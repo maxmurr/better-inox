@@ -1,10 +1,11 @@
 'use server';
 
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 import {
   AuthenticationError,
+  RateLimitError,
   UnauthenticatedError,
 } from '@/src/entities/errors/auth';
 import { InputParseError } from '@/src/entities/errors/common';
@@ -12,6 +13,16 @@ import { Cookie } from '@/src/entities/models/cookie';
 
 import { POST_SIGN_IN_REDIRECT, SESSION_COOKIE } from '@/config';
 import { getInjection } from '@/di/container';
+
+import { clientIpFrom } from '@/app/client-ip';
+
+function tooManyAttempts(err: RateLimitError) {
+  const minutes = Math.max(1, Math.ceil(err.retryAfterSeconds / 60));
+
+  return {
+    error: `Too many attempts. Try again in ${minutes} minute${minutes === 1 ? '' : 's'}.`,
+  };
+}
 
 export async function signUp(formData: FormData) {
   const instrumentationService = getInjection('IInstrumentationService');
@@ -23,16 +34,24 @@ export async function signUp(formData: FormData) {
       const password = formData.get('password')?.toString();
       const confirmPassword = formData.get('confirm_password')?.toString();
 
+      const clientIp = clientIpFrom(await headers());
+
       let sessionCookie: Cookie;
       try {
         const signUpController = getInjection('ISignUpController');
-        const { cookie } = await signUpController({
-          username,
-          password,
-          confirm_password: confirmPassword,
-        });
+        const { cookie } = await signUpController(
+          {
+            username,
+            password,
+            confirm_password: confirmPassword,
+          },
+          clientIp
+        );
         sessionCookie = cookie;
       } catch (err) {
+        if (err instanceof RateLimitError) {
+          return tooManyAttempts(err);
+        }
         if (err instanceof InputParseError) {
           return {
             error:
@@ -74,11 +93,19 @@ export async function signIn(formData: FormData) {
       const username = formData.get('username')?.toString();
       const password = formData.get('password')?.toString();
 
+      const clientIp = clientIpFrom(await headers());
+
       let sessionCookie: Cookie;
       try {
         const signInController = getInjection('ISignInController');
-        sessionCookie = await signInController({ username, password });
+        sessionCookie = await signInController(
+          { username, password },
+          clientIp
+        );
       } catch (err) {
+        if (err instanceof RateLimitError) {
+          return tooManyAttempts(err);
+        }
         if (
           err instanceof InputParseError ||
           err instanceof AuthenticationError

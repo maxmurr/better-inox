@@ -1,6 +1,9 @@
 import { expect, it } from 'vitest';
 
-import { AuthenticationError } from '@/src/entities/errors/auth';
+import {
+  AuthenticationError,
+  RateLimitError,
+} from '@/src/entities/errors/auth';
 import { InputParseError } from '@/src/entities/errors/common';
 
 import { SESSION_COOKIE } from '@/config';
@@ -56,4 +59,58 @@ it('throws for existing username', () => {
       confirm_password: 'doesntmatter',
     })
   ).rejects.toBeInstanceOf(AuthenticationError);
+});
+
+it('blocks repeated sign ups from the same address', async () => {
+  const clientIp = '203.0.113.10';
+
+  for (let attempt = 0; attempt < 5; attempt++) {
+    await expect(
+      signUpController(
+        {
+          username: `spammer-${attempt}`,
+          password: 'password',
+          confirm_password: 'password',
+        },
+        clientIp
+      )
+    ).resolves.toBeDefined();
+  }
+
+  await expect(
+    signUpController(
+      {
+        username: 'spammer-5',
+        password: 'password',
+        confirm_password: 'password',
+      },
+      clientIp
+    )
+  ).rejects.toBeInstanceOf(RateLimitError);
+});
+
+it('counts malformed sign ups against the address', async () => {
+  const clientIp = '203.0.113.20';
+
+  for (let attempt = 0; attempt < 5; attempt++) {
+    await expect(signUpController({}, clientIp)).rejects.toBeInstanceOf(
+      InputParseError
+    );
+  }
+
+  await expect(signUpController({}, clientIp)).rejects.toBeInstanceOf(
+    RateLimitError
+  );
+});
+
+it('does not limit sign ups when the address is unknown', async () => {
+  for (let attempt = 0; attempt < 6; attempt++) {
+    await expect(
+      signUpController({
+        username: `anon-${attempt}`,
+        password: 'password',
+        confirm_password: 'password',
+      })
+    ).resolves.toBeDefined();
+  }
 });

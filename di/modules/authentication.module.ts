@@ -62,6 +62,7 @@ export function createAuthenticationModule() {
     .bind(DI_SYMBOLS.ISignInController)
     .toHigherOrderFunction(signInController, [
       DI_SYMBOLS.IInstrumentationService,
+      DI_SYMBOLS.IRateLimiterService,
       DI_SYMBOLS.ISignInUseCase,
     ]);
 
@@ -77,6 +78,7 @@ export function createAuthenticationModule() {
     .bind(DI_SYMBOLS.ISignUpController)
     .toHigherOrderFunction(signUpController, [
       DI_SYMBOLS.IInstrumentationService,
+      DI_SYMBOLS.IRateLimiterService,
       DI_SYMBOLS.ISignUpUseCase,
     ]);
 

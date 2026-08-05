@@ -6,6 +6,7 @@ import { ICrashReporterService } from '@/src/application/services/crash-reporter
 import { IDatabaseHealthService } from '@/src/application/services/database-health.service.interface';
 import { IInstrumentationService } from '@/src/application/services/instrumentation.service.interface';
 import { IOAuthService } from '@/src/application/services/oauth.service.interface';
+import { IRateLimiterService } from '@/src/application/services/rate-limiter.service.interface';
 import { ITransactionManagerService } from '@/src/application/services/transaction-manager.service.interface';
 import { ISignInWithGoogleUseCase } from '@/src/application/use-cases/auth/sign-in-with-google.use-case';
 import { ISignInUseCase } from '@/src/application/use-cases/auth/sign-in.use-case';
@@ -35,6 +36,7 @@ export const DI_SYMBOLS = {
   IDatabaseHealthService: Symbol.for('IDatabaseHealthService'),
   IInstrumentationService: Symbol.for('IInstrumentationService'),
   ICrashReporterService: Symbol.for('ICrashReporterService'),
+  IRateLimiterService: Symbol.for('IRateLimiterService'),
 
   // Repositories
   ITodosRepository: Symbol.for('ITodosRepository'),
@@ -73,6 +75,7 @@ export interface DI_RETURN_TYPES {
   IDatabaseHealthService: IDatabaseHealthService;
   IInstrumentationService: IInstrumentationService;
   ICrashReporterService: ICrashReporterService;
+  IRateLimiterService: IRateLimiterService;
 
   // Repositories
   ITodosRepository: ITodosRepository;

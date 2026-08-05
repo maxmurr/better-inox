@@ -53,6 +53,7 @@ export function createOAuthModule() {
     .bind(DI_SYMBOLS.IStartGoogleSignInController)
     .toHigherOrderFunction(startGoogleSignInController, [
       DI_SYMBOLS.IInstrumentationService,
+      DI_SYMBOLS.IRateLimiterService,
       DI_SYMBOLS.IStartGoogleSignInUseCase,
     ]);
 
@@ -60,6 +61,7 @@ export function createOAuthModule() {
     .bind(DI_SYMBOLS.IGoogleCallbackController)
     .toHigherOrderFunction(googleCallbackController, [
       DI_SYMBOLS.IInstrumentationService,
+      DI_SYMBOLS.IRateLimiterService,
       DI_SYMBOLS.ISignInWithGoogleUseCase,
     ]);
 

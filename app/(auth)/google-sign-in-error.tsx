@@ -24,5 +24,13 @@ export function GoogleSignInError() {
     );
   }
 
+  if (error === 'rate_limit') {
+    return (
+      <FormAlert>
+        Too many attempts. Please try again in a few minutes.
+      </FormAlert>
+    );
+  }
+
   return null;
 }

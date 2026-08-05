@@ -6,6 +6,7 @@ import { createAuthenticationModule } from '@/di/modules/authentication.module';
 import { createTransactionManagerModule } from '@/di/modules/database.module';
 import { createMonitoringModule } from '@/di/modules/monitoring.module';
 import { createOAuthModule } from '@/di/modules/oauth.module';
+import { createRateLimitModule } from '@/di/modules/rate-limit.module';
 import { createTodosModule } from '@/di/modules/todos.module';
 import { createUsersModule } from '@/di/modules/users.module';
 import { DI_RETURN_TYPES, DI_SYMBOLS } from '@/di/types';
@@ -13,6 +14,7 @@ import { DI_RETURN_TYPES, DI_SYMBOLS } from '@/di/types';
 const ApplicationContainer = createContainer();
 
 ApplicationContainer.load(Symbol('MonitoringModule'), createMonitoringModule());
+ApplicationContainer.load(Symbol('RateLimitModule'), createRateLimitModule());
 ApplicationContainer.load(
   Symbol('TransactionManagerModule'),
   createTransactionManagerModule()

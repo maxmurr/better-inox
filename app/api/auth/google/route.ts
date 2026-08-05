@@ -1,8 +1,12 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
+
+import { RateLimitError } from '@/src/entities/errors/auth';
 
 import { getInjection } from '@/di/container';
 
-export async function GET() {
+import { clientIpFrom } from '@/app/client-ip';
+
+export async function GET(request: NextRequest) {
   const instrumentationService = getInjection('IInstrumentationService');
   return await instrumentationService.startSpan(
     { name: 'GET /api/auth/google', op: 'http.server' },
@@ -12,7 +16,7 @@ export async function GET() {
           'IStartGoogleSignInController'
         );
         const { url, stateCookie, codeVerifierCookie } =
-          await startGoogleSignInController();
+          await startGoogleSignInController(clientIpFrom(request.headers));
 
         const response = NextResponse.redirect(url);
         for (const cookie of [stateCookie, codeVerifierCookie]) {
@@ -21,6 +25,16 @@ export async function GET() {
 
         return response;
       } catch (err) {
+        if (err instanceof RateLimitError) {
+          return new NextResponse(null, {
+            status: 307,
+            headers: {
+              Location: '/sign-in?error=rate_limit',
+              'Retry-After': String(err.retryAfterSeconds),
+            },
+          });
+        }
+
         const crashReporterService = getInjection('ICrashReporterService');
         crashReporterService.report(err);
 
