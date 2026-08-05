@@ -5,12 +5,13 @@
 
 import * as Sentry from '@sentry/nextjs';
 
+import { env } from './env';
+
 Sentry.init({
-  dsn: process.env.SENTRY_DSN,
+  dsn: env.SENTRY_DSN,
   enabled: process.env.NODE_ENV !== 'test',
 
-  // Adjust this value in production, or use tracesSampler for greater control
-  tracesSampleRate: 1,
+  tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1,
 
   // Setting this option to true will print useful information to the console while you're setting up Sentry.
   debug: false,

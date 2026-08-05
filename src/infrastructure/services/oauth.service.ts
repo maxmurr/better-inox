@@ -16,6 +16,8 @@ import { IOAuthService } from '@/src/application/services/oauth.service.interfac
 
 import { GOOGLE_SCOPES } from '@/config';
 
+import { env } from '@/env';
+
 const idTokenClaimsSchema = z.object({
   sub: z.string().min(1),
   email: z.email(),
@@ -30,17 +32,11 @@ export class OAuthService implements IOAuthService {
   constructor(
     private readonly _instrumentationService: IInstrumentationService
   ) {
-    const clientId = process.env.GOOGLE_CLIENT_ID;
-    const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
-    const redirectUri = process.env.GOOGLE_REDIRECT_URI;
-
-    if (!clientId || !clientSecret || !redirectUri) {
-      throw new OAuthProviderError(
-        'Google sign-in is not configured. Set GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET and GOOGLE_REDIRECT_URI.'
-      );
-    }
-
-    this._google = new Google(clientId, clientSecret, redirectUri);
+    this._google = new Google(
+      env.GOOGLE_CLIENT_ID,
+      env.GOOGLE_CLIENT_SECRET,
+      env.GOOGLE_REDIRECT_URI
+    );
   }
 
   createGoogleAuthorizationRequest(): GoogleAuthorizationRequest {

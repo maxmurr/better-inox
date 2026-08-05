@@ -4,18 +4,17 @@ import { ExtractTablesWithRelations } from 'drizzle-orm';
 import { drizzle, NodePgTransaction } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
 
+import { env } from '@/env';
+
 import { oauthAccounts, sessions, todos, users } from './schema';
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  max: Number(process.env.DATABASE_POOL_MAX) || 10,
+  connectionString: env.DATABASE_URL,
+  max: env.DATABASE_POOL_MAX,
   idleTimeoutMillis: 30_000,
   connectionTimeoutMillis: 5_000,
 });
 
-// Postgres drops idle clients on restart or failover. Without a listener that
-// arrives as an uncaught 'error' event and takes the whole process down; the
-// pool discards the client on its own, so reporting is all that is needed.
 pool.on('error', (err) => {
   console.error('postgres pool error', err);
   Sentry.captureException(err);

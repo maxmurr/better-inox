@@ -1,17 +1,13 @@
 import Redis from 'ioredis';
 
+import { env } from '@/env';
+
 declare global {
   var __redisClient: Redis | undefined;
 }
 
 function createClient(): Redis {
-  const url = process.env.REDIS_URL;
-
-  if (!url) {
-    throw new Error('REDIS_URL is not set');
-  }
-
-  const client = new Redis(url, {
+  const client = new Redis(env.REDIS_URL, {
     family: 0,
     lazyConnect: true,
     connectTimeout: 1_000,
