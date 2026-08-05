@@ -2,6 +2,7 @@ import './globals.css';
 
 import type { Metadata, Viewport } from 'next';
 import { Inter as FontSans } from 'next/font/google';
+import { connection } from 'next/server';
 
 import { Toaster } from './_components/ui/sonner';
 import { TooltipProvider } from './_components/ui/tooltip';
@@ -21,6 +22,8 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: LayoutProps<'/'>) {
+  await connection();
+
   return (
     <html lang="en" className={fontSans.variable}>
       <body className="flex min-h-dvh items-center justify-center font-sans antialiased">

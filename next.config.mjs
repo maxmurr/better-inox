@@ -3,6 +3,43 @@ import { withSentryConfig } from '@sentry/nextjs';
 
 const withMDX = createMDX();
 
+function warnOnMissingBuildEnv() {
+  if (process.env.__BUILD_ENV_CHECKED) {
+    return;
+  }
+  process.env.__BUILD_ENV_CHECKED = '1';
+
+  if (!process.env.RAILWAY_GIT_COMMIT_SHA) {
+    console.warn(
+      '[build] RAILWAY_GIT_COMMIT_SHA is unset — deploymentId is undefined and version skew protection is disabled'
+    );
+  }
+  if (!process.env.NEXT_SERVER_ACTIONS_ENCRYPTION_KEY) {
+    console.warn(
+      '[build] NEXT_SERVER_ACTIONS_ENCRYPTION_KEY is unset — a new key is generated for this build'
+    );
+  }
+  if (!process.env.NEXT_PUBLIC_SENTRY_DSN) {
+    console.warn(
+      '[build] NEXT_PUBLIC_SENTRY_DSN is unset — browser error reporting is disabled in this build'
+    );
+  }
+}
+
+const securityHeaders = [
+  {
+    key: 'Strict-Transport-Security',
+    value: 'max-age=63072000; includeSubDomains',
+  },
+  { key: 'X-Content-Type-Options', value: 'nosniff' },
+  { key: 'X-Frame-Options', value: 'DENY' },
+  { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+  {
+    key: 'Permissions-Policy',
+    value: 'camera=(), microphone=(), geolocation=()',
+  },
+];
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
@@ -10,7 +47,11 @@ const nextConfig = {
     '/*': ['./drizzle/migrations/**/*'],
   },
   deploymentId: process.env.RAILWAY_GIT_COMMIT_SHA,
+  poweredByHeader: false,
   typedRoutes: true,
+  async headers() {
+    return [{ source: '/:path*', headers: securityHeaders }];
+  },
   reactCompiler: true,
   experimental: {
     turbopackRustReactCompiler: true,
@@ -35,7 +76,7 @@ const nextConfig = {
   },
 };
 
-export default withSentryConfig(withMDX(nextConfig), {
+const sentryConfig = withSentryConfig(withMDX(nextConfig), {
   // For all available options, see:
   // https://github.com/getsentry/sentry-webpack-plugin#options
 
@@ -83,3 +124,11 @@ export default withSentryConfig(withMDX(nextConfig), {
     automaticVercelMonitors: true,
   },
 });
+
+export default function config(phase) {
+  if (phase === 'phase-production-build' && process.argv.includes('build')) {
+    warnOnMissingBuildEnv();
+  }
+
+  return sentryConfig;
+}
