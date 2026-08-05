@@ -1,7 +1,11 @@
 import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
+
+import { POST_SIGN_IN_REDIRECT } from '@/config';
 
 import { AuthCard, AuthLink } from '../auth-card';
 import { GoogleSignIn } from '../google-sign-in';
+import { hasValidSession } from '../session';
 import { SignUpForm } from './sign-up-form';
 
 export const metadata: Metadata = {
@@ -9,7 +13,11 @@ export const metadata: Metadata = {
   description: 'Create an account.',
 };
 
-export default function SignUpPage() {
+export default async function SignUpPage() {
+  if (await hasValidSession()) {
+    redirect(POST_SIGN_IN_REDIRECT);
+  }
+
   return (
     <AuthCard
       title="Sign Up"

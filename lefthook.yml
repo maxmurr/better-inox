@@ -36,3 +36,6 @@ pre-push:
 
     - name: test
       run: pnpm test:run
+
+    - name: integration
+      run: pnpm test:integration:run

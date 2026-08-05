@@ -1,4 +1,4 @@
-export type QuizOption = {
+type QuizOption = {
   id: string;
   text: string;
 };
@@ -57,7 +57,7 @@ function sameOptions(a: readonly string[], b: readonly string[]) {
   return a.length === b.length && a.every((id) => b.includes(id));
 }
 
-export function gradeQuestion(
+function gradeQuestion(
   question: QuizQuestion,
   answer: string | readonly string[] | undefined
 ): QuestionOutcome {

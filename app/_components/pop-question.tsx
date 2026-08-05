@@ -11,7 +11,7 @@ import { cn } from '@/app/_components/utils';
 
 const LETTERS = 'ABCDEFGH';
 
-export type PopQuestionOption = {
+type PopQuestionOption = {
   id: string;
   text: string;
 };

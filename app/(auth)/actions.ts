@@ -14,6 +14,11 @@ import { Cookie } from '@/src/entities/models/cookie';
 import { POST_SIGN_IN_REDIRECT, SESSION_COOKIE } from '@/config';
 import { getInjection } from '@/di/container';
 
+import {
+  signInAdapter,
+  signOutAdapter,
+  signUpAdapter,
+} from '@/app/_lib/adapters/auth.adapters';
 import { clientIpFrom } from '@/app/client-ip';
 
 function tooManyAttempts(err: RateLimitError) {
@@ -38,8 +43,7 @@ export async function signUp(formData: FormData) {
 
       let sessionCookie: Cookie;
       try {
-        const signUpController = getInjection('ISignUpController');
-        const { cookie } = await signUpController(
+        const { cookie } = await signUpAdapter(
           {
             username,
             password,
@@ -96,11 +100,7 @@ export async function signIn(formData: FormData) {
 
       let sessionCookie: Cookie;
       try {
-        const signInController = getInjection('ISignInController');
-        sessionCookie = await signInController(
-          { username, password },
-          clientIp
-        );
+        sessionCookie = await signInAdapter({ username, password }, clientIp);
       } catch (err) {
         if (err instanceof RateLimitError) {
           return tooManyAttempts(err);
@@ -143,8 +143,7 @@ export async function signOut() {
 
       let blankCookie: Cookie;
       try {
-        const signOutController = getInjection('ISignOutController');
-        blankCookie = await signOutController(sessionId);
+        blankCookie = await signOutAdapter(sessionId);
       } catch (err) {
         if (
           err instanceof UnauthenticatedError ||

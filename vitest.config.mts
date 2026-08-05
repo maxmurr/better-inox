@@ -5,9 +5,10 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
+    exclude: ['**/node_modules/**', '**/*.pw.test.ts'],
     coverage: {
       provider: 'istanbul',
-      reportsDirectory: './tests/coverage',
+      reportsDirectory: './__tests__/coverage',
     },
   },
   plugins: [env()],

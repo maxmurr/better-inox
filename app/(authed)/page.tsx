@@ -9,6 +9,8 @@ import {
 import { SESSION_COOKIE } from '@/config';
 import { getInjection } from '@/di/container';
 
+import { getTodosForUserAdapter } from '@/app/_lib/adapters/todos.adapters';
+
 import {
   Card,
   CardAction,
@@ -31,10 +33,7 @@ async function getTodos(sessionId: string | undefined) {
     },
     async () => {
       try {
-        const getTodosForUserController = getInjection(
-          'IGetTodosForUserController'
-        );
-        return await getTodosForUserController(sessionId);
+        return await getTodosForUserAdapter(sessionId);
       } catch (err) {
         if (
           err instanceof UnauthenticatedError ||

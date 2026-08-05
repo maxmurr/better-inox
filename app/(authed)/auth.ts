@@ -10,6 +10,8 @@ import {
 import { SESSION_COOKIE } from '@/config';
 import { getInjection } from '@/di/container';
 
+import { getCurrentUserAdapter } from '@/app/_lib/adapters/auth.adapters';
+
 export const getCurrentUser = cache(async () => {
   const instrumentationService = getInjection('IInstrumentationService');
   return await instrumentationService.startSpan(
@@ -20,10 +22,7 @@ export const getCurrentUser = cache(async () => {
     async () => {
       const sessionId = (await cookies()).get(SESSION_COOKIE)?.value;
       try {
-        const getCurrentUserController = getInjection(
-          'IGetCurrentUserController'
-        );
-        return await getCurrentUserController(sessionId);
+        return await getCurrentUserAdapter(sessionId);
       } catch (err) {
         if (
           err instanceof UnauthenticatedError ||

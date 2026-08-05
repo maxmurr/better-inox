@@ -8,10 +8,14 @@
 
 # testing
 /coverage
-/tests/coverage
+/__tests__/coverage
+/playwright-report/
+/test-results/
+/blob-report/
 
 # next.js
 /.next/
+/.next-test/
 /out/
 
 # production
