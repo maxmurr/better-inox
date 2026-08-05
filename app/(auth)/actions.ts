@@ -68,8 +68,7 @@ export async function signUp(formData: FormData) {
 
         return {
           error:
-            'An error happened. The developers have been notified. Please try again later. Message: ' +
-            (err as Error).message,
+            'An error happened. The developers have been notified. Please try again later.',
         };
       }
 
