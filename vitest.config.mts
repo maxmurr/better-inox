@@ -6,6 +6,7 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     exclude: ['**/node_modules/**', '**/*.pw.test.ts'],
+    env: { SKIP_ENV_VALIDATION: '1' },
     coverage: {
       provider: 'istanbul',
       reportsDirectory: './__tests__/coverage',
