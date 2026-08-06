@@ -8,6 +8,27 @@
       "when": 1785832125741,
       "tag": "0000_perfect_the_initiative",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1785923288760,
+      "tag": "0001_quick_maverick",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1785924349030,
+      "tag": "0002_goofy_dust",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1786038439386,
+      "tag": "0003_fat_loners",
+      "breakpoints": true
     }
   ]
 }

@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { ArrowRightIcon } from 'lucide-react';
 
 import { buttonVariants } from '@/app/_components/ui/button';
+import { UserMenu } from '@/app/_components/user-menu';
 import { cn } from '@/app/_components/utils';
-import { CourseHeaderActions } from '@/app/(authed)/c/four-pillars/course-header-actions';
 import { lessonHref } from '@/app/(authed)/c/four-pillars/course-href';
 import { CourseOutline } from '@/app/(authed)/c/four-pillars/course-outline';
 
@@ -25,7 +25,7 @@ export default async function Page() {
         <h1 className="min-w-0 font-heading text-base leading-snug font-semibold tracking-tight text-balance text-foreground sm:text-lg">
           The 4 Pillars of Automated Tests
         </h1>
-        <CourseHeaderActions />
+        <UserMenu username={user.username} avatarUrl={user.avatarUrl} />
       </header>
 
       <main

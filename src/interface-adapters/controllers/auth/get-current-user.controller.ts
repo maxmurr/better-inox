@@ -10,6 +10,7 @@ function presenter(
   return instrumentationService.startSpan(
     { name: 'getCurrentUser Presenter', op: 'serialize' },
     () => ({
+      id: user.id,
       username: user.username,
       avatarUrl: user.avatar_url,
     })

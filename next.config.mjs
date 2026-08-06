@@ -56,22 +56,14 @@ const nextConfig = {
   reactCompiler: true,
   experimental: {
     turbopackRustReactCompiler: true,
+    authInterrupts: true,
   },
   images: {
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'lh3.googleusercontent.com',
-        port: '',
-        pathname: '/a/**',
-        search: '',
-      },
-      {
-        protocol: 'https',
-        hostname: 'lh3.googleusercontent.com',
-        port: '',
-        pathname: '/a-/**',
-        search: '',
+        pathname: '/**',
       },
     ],
   },

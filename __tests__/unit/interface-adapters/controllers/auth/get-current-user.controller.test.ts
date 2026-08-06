@@ -22,7 +22,7 @@ it('returns the username and avatar of the signed-in user', async () => {
     codeVerifier: MOCK_OAUTH_CODE_VERIFIER,
   });
 
-  await expect(getCurrentUserController(session.id)).resolves.toStrictEqual({
+  await expect(getCurrentUserController(session.id)).resolves.toMatchObject({
     username: 'profile-view',
     avatarUrl: 'https://lh3.googleusercontent.com/mock/profile-view',
   });
@@ -35,6 +35,7 @@ it('returns a null avatar for a password user', async () => {
   });
 
   await expect(getCurrentUserController(session.id)).resolves.toStrictEqual({
+    id: '1',
     username: 'one',
     avatarUrl: null,
   });

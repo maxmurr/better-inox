@@ -5,6 +5,8 @@ export const userSchema = z.object({
   username: z.string().min(3).max(31),
   password_hash: z.string().min(6).max(255).nullable(),
   avatar_url: z.url().nullable(),
+  created_at: z.date(),
+  updated_at: z.date(),
 });
 
 export type User = z.infer<typeof userSchema>;

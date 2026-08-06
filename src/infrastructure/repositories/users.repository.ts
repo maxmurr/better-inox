@@ -90,13 +90,15 @@ export class UsersRepository implements IUsersRepository {
             () => hash(input.password, PASSWORD_SALT_ROUNDS)
           );
 
-          const newUser: User = {
-            id: input.id,
-            username: input.username,
-            password_hash,
-            avatar_url: null,
-          };
-          const query = db.insert(users).values(newUser).returning();
+          const query = db
+            .insert(users)
+            .values({
+              id: input.id,
+              username: input.username,
+              password_hash,
+              avatar_url: null,
+            })
+            .returning();
 
           const [created] = await this.instrumentationService.startSpan(
             {
@@ -134,13 +136,15 @@ export class UsersRepository implements IUsersRepository {
       { name: 'UsersRepository > createOAuthUser' },
       async () => {
         try {
-          const newUser: User = {
-            id: input.id,
-            username: input.username,
-            password_hash: null,
-            avatar_url: input.avatar_url ?? null,
-          };
-          const query = invoker.insert(users).values(newUser).returning();
+          const query = invoker
+            .insert(users)
+            .values({
+              id: input.id,
+              username: input.username,
+              password_hash: null,
+              avatar_url: input.avatar_url ?? null,
+            })
+            .returning();
 
           const [created] = await this.instrumentationService.startSpan(
             {

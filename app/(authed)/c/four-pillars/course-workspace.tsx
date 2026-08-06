@@ -1,8 +1,10 @@
 'use client';
 
 import type { ReactNode } from 'react';
+import { usePathname } from 'next/navigation';
 
 import { CourseProvider } from '@/app/_components/course-provider';
+import { lessonHref } from '@/app/(authed)/c/four-pillars/course-href';
 import type { CourseSection } from '@/app/(authed)/c/four-pillars/course-outline';
 import { CoursePanel } from '@/app/(authed)/c/four-pillars/course-panel';
 import {
@@ -22,25 +24,43 @@ export function CourseWorkspace({
   panelState: CoursePanelState;
   children: ReactNode;
 }) {
+  const pathname = usePathname();
+  const showsCoursePanel = sections.some((section) =>
+    section.lessons.some(
+      (lesson) => lessonHref(courseSlug, section.slug, lesson.slug) === pathname
+    )
+  );
+
   return (
     <CoursePanelProvider initialState={panelState}>
       <CourseProvider>
         <div className="fixed inset-0 flex overflow-hidden pr-[env(safe-area-inset-right)] pl-[env(safe-area-inset-left)] [--course-panel-width:22rem]">
-          <CourseMain>{children}</CourseMain>
-          <CoursePanel courseSlug={courseSlug} sections={sections} />
+          <CourseMain showsCoursePanel={showsCoursePanel}>
+            {children}
+          </CourseMain>
+          {showsCoursePanel ? (
+            <CoursePanel courseSlug={courseSlug} sections={sections} />
+          ) : null}
         </div>
       </CourseProvider>
     </CoursePanelProvider>
   );
 }
 
-function CourseMain({ children }: { children: ReactNode }) {
+function CourseMain({
+  showsCoursePanel,
+  children,
+}: {
+  showsCoursePanel: boolean;
+  children: ReactNode;
+}) {
   const { isOpen, isModal } = useCoursePanel();
+  const isCoursePanelOpen = showsCoursePanel && isOpen;
 
   return (
     <div
-      data-panel-open={isOpen}
-      inert={isModal}
+      data-panel-open={isCoursePanelOpen}
+      inert={showsCoursePanel && isModal}
       className="flex min-w-0 flex-1 flex-col transition-[padding-right] duration-250 ease-out-quart data-[panel-open=false]:duration-200 motion-reduce:transition-none lg:data-[panel-open=true]:pr-(--course-panel-width)"
     >
       {children}

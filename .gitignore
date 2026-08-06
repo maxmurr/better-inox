@@ -53,3 +53,5 @@ db.sqlite*
 .agents
 .claude
 skills-lock.json
+PLAN.md
+plans/

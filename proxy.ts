@@ -30,11 +30,11 @@ function buildCsp(nonce: string, isDev: boolean) {
 }
 
 export async function proxy(request: NextRequest) {
-  const isAuthPath =
-    request.nextUrl.pathname === '/sign-in' ||
-    request.nextUrl.pathname === '/sign-up';
+  const isProtectedPath =
+    request.nextUrl.pathname === '/' ||
+    request.nextUrl.pathname.startsWith('/c/');
 
-  if (!isAuthPath && !request.cookies.get(SESSION_COOKIE)?.value) {
+  if (isProtectedPath && !request.cookies.get(SESSION_COOKIE)?.value) {
     return NextResponse.redirect(new URL('/sign-in', request.url));
   }
 

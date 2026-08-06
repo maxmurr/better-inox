@@ -1,10 +1,7 @@
 'use client';
 
-import Image from 'next/image';
-
 import { signOut } from '@/app/(auth)/actions';
 
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,8 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
-
-const AVATAR_RENDER_SIZE = 64;
+import { UserAvatar } from './user-avatar';
 
 export function UserMenu({
   username,
@@ -30,25 +26,9 @@ export function UserMenu({
         aria-label={`Account menu for ${username}`}
         className="relative shrink-0 cursor-pointer rounded-full transition-shadow outline-none before:absolute before:-inset-1.5 before:rounded-full focus-visible:ring-3 focus-visible:ring-ring/50 data-popup-open:ring-3 data-popup-open:ring-ring/30"
       >
-        <Avatar>
-          {avatarUrl && (
-            <AvatarImage
-              src={avatarUrl}
-              render={
-                <Image
-                  src={avatarUrl}
-                  alt=""
-                  width={AVATAR_RENDER_SIZE}
-                  height={AVATAR_RENDER_SIZE}
-                  unoptimized
-                />
-              }
-            />
-          )}
-          <AvatarFallback>{initials(username)}</AvatarFallback>
-        </Avatar>
+        <UserAvatar username={username} avatarUrl={avatarUrl} />
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent align="end" sideOffset={4}>
         <DropdownMenuGroup>
           <DropdownMenuLabel>{username}</DropdownMenuLabel>
         </DropdownMenuGroup>
@@ -59,8 +39,4 @@ export function UserMenu({
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
-
-function initials(username: string): string {
-  return username.slice(0, 2).toUpperCase();
 }

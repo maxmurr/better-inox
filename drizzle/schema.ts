@@ -12,6 +12,13 @@ export const users = pgTable('user', {
   username: text('username').notNull().unique(),
   password_hash: text('password_hash'),
   avatar_url: text('avatar_url'),
+  created_at: timestamp('created_at', { withTimezone: true, mode: 'date' })
+    .notNull()
+    .defaultNow(),
+  updated_at: timestamp('updated_at', { withTimezone: true, mode: 'date' })
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
 });
 
 export const oauthAccounts = pgTable(
@@ -31,8 +38,6 @@ export const sessions = pgTable('session', {
   userId: text('user_id')
     .notNull()
     .references(() => users.id),
-  // DrizzlePostgreSQLAdapter requires a Date-typed column here, unlike the
-  // SQLite adapter which stored the expiry as a unix integer.
   expiresAt: timestamp('expires_at', {
     withTimezone: true,
     mode: 'date',
@@ -40,8 +45,6 @@ export const sessions = pgTable('session', {
 });
 
 export const todos = pgTable('todos', {
-  // SQLite auto-assigned this via `integer primary key` (rowid alias). Postgres
-  // needs an explicit identity so inserts can keep omitting the id.
   id: integer('id').primaryKey().generatedByDefaultAsIdentity(),
   todo: text('todo').notNull(),
   completed: boolean('completed').notNull().default(false),

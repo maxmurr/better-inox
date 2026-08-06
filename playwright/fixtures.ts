@@ -8,7 +8,17 @@ import type {
 } from '@/app/_lib/adapter-service';
 import { getCurrentUserAdapter } from '@/app/_lib/adapters/auth.adapters';
 
-export const TEST_USER = { username: 'testuser', avatarUrl: null };
+export type TestUser = {
+  id: string;
+  username: string;
+  avatarUrl: string | null;
+};
+
+export const TEST_USER: TestUser = {
+  id: 'test-member-id',
+  username: 'testuser',
+  avatarUrl: null,
+};
 
 const STUBBED_SESSION = 'stubbed-session';
 
@@ -27,7 +37,7 @@ type StubAdapterFn = <TArgs extends unknown[], TResult>(
   data: TResult | StubErrorEnvelope
 ) => Promise<void>;
 
-type SignedInFn = (user?: typeof TEST_USER) => Promise<void>;
+type SignedInFn = (user?: TestUser) => Promise<void>;
 
 export const test = base.extend<{
   stubAdapter: StubAdapterFn;
