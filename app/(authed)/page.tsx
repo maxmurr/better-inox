@@ -7,8 +7,11 @@ import {
 } from '@/src/entities/errors/auth';
 
 import { SESSION_COOKIE } from '@/config';
-import { getInjection } from '@/di/container';
 
+import {
+  reportAppErrorAdapter,
+  startAppSpanAdapter,
+} from '@/app/_lib/adapters/monitoring.adapters';
 import { getTodosForUserAdapter } from '@/app/_lib/adapters/todos.adapters';
 
 import {
@@ -25,8 +28,7 @@ import { getCurrentUser } from './auth';
 import { Todos } from './todos';
 
 async function getTodos(sessionId: string | undefined) {
-  const instrumentationService = getInjection('IInstrumentationService');
-  return await instrumentationService.startSpan(
+  return await startAppSpanAdapter(
     {
       name: 'getTodos',
       op: 'function.nextjs',
@@ -41,8 +43,7 @@ async function getTodos(sessionId: string | undefined) {
         ) {
           redirect('/sign-in');
         }
-        const crashReporterService = getInjection('ICrashReporterService');
-        crashReporterService.report(err);
+        await reportAppErrorAdapter(err);
         throw err;
       }
     }

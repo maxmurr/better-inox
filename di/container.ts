@@ -3,6 +3,7 @@ import { createContainer } from '@evyweb/ioctopus';
 import { IInstrumentationService } from '@/src/application/services/instrumentation.service.interface';
 
 import { createAuthenticationModule } from '@/di/modules/authentication.module';
+import { createCourseProgressModule } from '@/di/modules/course-progress.module';
 import { createTransactionManagerModule } from '@/di/modules/database.module';
 import { createMonitoringModule } from '@/di/modules/monitoring.module';
 import { createOAuthModule } from '@/di/modules/oauth.module';
@@ -26,6 +27,10 @@ ApplicationContainer.load(
 ApplicationContainer.load(Symbol('UsersModule'), createUsersModule());
 ApplicationContainer.load(Symbol('OAuthModule'), createOAuthModule());
 ApplicationContainer.load(Symbol('TodosModule'), createTodosModule());
+ApplicationContainer.load(
+  Symbol('CourseProgressModule'),
+  createCourseProgressModule()
+);
 
 export function getInjection<K extends keyof typeof DI_SYMBOLS>(
   symbol: K

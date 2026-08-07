@@ -1,9 +1,10 @@
 import { readdirSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, relative, sep } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
 import { resolvePopQuestionResponse } from '@/app/_components/pop-question';
+import { findLessonPopQuestionIds } from '@/app/(authed)/c/four-pillars/lesson-content';
 
 describe('resolvePopQuestionResponse', () => {
   it('returns the shared explanation when the question has no per-option feedback', () => {
@@ -92,8 +93,9 @@ describe('lesson PopQuestion content', () => {
     }))
   );
 
-  it('finds questions to check', () => {
+  it('finds globally unique questions to check', () => {
     expect(questions.length).toBeGreaterThan(0);
+    expect(new Set(questions.map(({ id }) => id)).size).toBe(questions.length);
   });
 
   it.each(questions)(
@@ -121,6 +123,32 @@ describe('lesson PopQuestion content', () => {
       for (const key of feedbackKeys) {
         expect(optionIds).toContain(key);
       }
+    }
+  );
+
+  const fourPillarsContentDir = join(CONTENT_DIR, 'four-pillars');
+  const lessons = mdxFiles(fourPillarsContentDir).map((file) => {
+    const [sectionSlug, lessonFile] = relative(
+      fourPillarsContentDir,
+      file
+    ).split(sep);
+
+    return {
+      file,
+      sectionSlug,
+      lessonSlug: lessonFile.replace(/\.mdx$/, ''),
+      popQuestionIds: popQuestions(readFileSync(file, 'utf8')).map(
+        ({ id }) => id
+      ),
+    };
+  });
+
+  it.each(lessons)(
+    'keeps required pop question IDs synchronized for $file',
+    ({ sectionSlug, lessonSlug, popQuestionIds }) => {
+      expect(findLessonPopQuestionIds(sectionSlug, lessonSlug)).toEqual(
+        popQuestionIds
+      );
     }
   );
 });

@@ -13,13 +13,16 @@ import {
   GOOGLE_STATE_COOKIE,
   POST_SIGN_IN_REDIRECT,
 } from '@/config';
-import { getInjection } from '@/di/container';
 
+import { googleCallbackAdapter } from '@/app/_lib/adapters/auth.adapters';
+import {
+  reportAppErrorAdapter,
+  startAppSpanAdapter,
+} from '@/app/_lib/adapters/monitoring.adapters';
 import { clientIpFrom } from '@/app/client-ip';
 
 export async function GET(request: NextRequest) {
-  const instrumentationService = getInjection('IInstrumentationService');
-  return await instrumentationService.startSpan(
+  return await startAppSpanAdapter(
     { name: 'GET /api/auth/google/callback', op: 'http.server' },
     async () => {
       const signInWith = (error?: string) => {
@@ -34,10 +37,7 @@ export async function GET(request: NextRequest) {
       }
 
       try {
-        const googleCallbackController = getInjection(
-          'IGoogleCallbackController'
-        );
-        const sessionCookie = await googleCallbackController(
+        const sessionCookie = await googleCallbackAdapter(
           {
             code: request.nextUrl.searchParams.get('code') ?? undefined,
             state: request.nextUrl.searchParams.get('state') ?? undefined,
@@ -70,8 +70,7 @@ export async function GET(request: NextRequest) {
           err instanceof OAuthStateMismatchError ||
           err instanceof OAuthProviderError
         )) {
-          const crashReporterService = getInjection('ICrashReporterService');
-          crashReporterService.report(err);
+          await reportAppErrorAdapter(err);
         }
 
         return signInWith('google');

@@ -17,7 +17,10 @@ import {
   FOUR_PILLARS_COURSE_SLUG,
   lessonNavigation,
 } from '../../curriculum';
-import { findLessonContent } from '../../lesson-content';
+import {
+  findLessonContent,
+  findLessonPopQuestionIds,
+} from '../../lesson-content';
 import { findQuiz } from '../../quiz-content';
 
 export async function generateMetadata({
@@ -43,6 +46,7 @@ export default async function Page({
   const loadContent = findLessonContent(section, lesson);
   const Content = loadContent ? (await loadContent()).default : undefined;
   const quiz = findQuiz(section, lesson);
+  const requiredPopQuestionIds = findLessonPopQuestionIds(section, lesson);
 
   return (
     <>
@@ -102,7 +106,11 @@ export default async function Page({
         </div>
       </main>
 
-      <LessonFooter completed={currentLesson.completed} />
+      <LessonFooter
+        lessonId={currentLesson.id}
+        isQuizLesson={Boolean(quiz)}
+        requiredPopQuestionIds={requiredPopQuestionIds}
+      />
     </>
   );
 }

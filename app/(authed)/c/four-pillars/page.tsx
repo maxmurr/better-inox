@@ -1,23 +1,12 @@
-import Link from 'next/link';
-
-import { ArrowRightIcon } from 'lucide-react';
-
-import { buttonVariants } from '@/app/_components/ui/button';
 import { UserMenu } from '@/app/_components/user-menu';
-import { cn } from '@/app/_components/utils';
-import { lessonHref } from '@/app/(authed)/c/four-pillars/course-href';
+import { CourseContinueLink } from '@/app/(authed)/c/four-pillars/course-continue-link';
 import { CourseOutline } from '@/app/(authed)/c/four-pillars/course-outline';
 
 import { getCurrentUser } from '../../auth';
-import {
-  firstUnfinishedLesson,
-  FOUR_PILLARS_COURSE_SLUG,
-  FOUR_PILLARS_SECTIONS,
-} from './curriculum';
+import { FOUR_PILLARS_COURSE_SLUG, FOUR_PILLARS_SECTIONS } from './curriculum';
 
 export default async function Page() {
   const user = await getCurrentUser();
-  const next = firstUnfinishedLesson();
 
   return (
     <>
@@ -43,22 +32,7 @@ export default async function Page() {
             >
               Welcome, {user.username}.
             </h2>
-            {next ? (
-              <Link
-                href={lessonHref(
-                  FOUR_PILLARS_COURSE_SLUG,
-                  next.section.slug,
-                  next.lesson.slug
-                )}
-                aria-label={`Continue with lesson: ${next.lesson.title}`}
-                className={cn(
-                  buttonVariants({ size: 'lg', variant: 'outline' })
-                )}
-              >
-                Continue
-                <ArrowRightIcon data-icon="inline-end" aria-hidden />
-              </Link>
-            ) : null}
+            <CourseContinueLink />
           </section>
 
           <section

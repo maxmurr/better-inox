@@ -1,9 +1,7 @@
-import type { Quiz } from '@/app/_components/quiz';
+import type { Quiz } from '@/src/entities/models/quiz';
 
 const PASS_THRESHOLD = 0.5;
 
-// Keyed by `section/lesson`, like LESSON_CONTENT. The lesson id and title come
-// from the curriculum, so they cannot drift from the outline.
 const QUIZ_CONTENT: Record<string, Quiz> = {
   'introduction/checkpoint': {
     passThreshold: PASS_THRESHOLD,

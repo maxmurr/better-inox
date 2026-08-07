@@ -21,6 +21,20 @@ const eslintConfig = [
   },
   ...nextCoreWebVitals,
   {
+    files: ['app/**/*.ts', 'app/**/*.tsx'],
+    ignores: ['app/_lib/adapters/**/*.ts'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: "CallExpression[callee.name='getInjection']",
+          message:
+            'Resolve DI dependencies inside app/_lib/adapters, then import an adapter into app code.',
+        },
+      ],
+    },
+  },
+  {
     files: ['**/*.ts', '**/*.tsx'],
     plugins: { drizzle },
     rules: {

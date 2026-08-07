@@ -12,13 +12,16 @@ import { InputParseError } from '@/src/entities/errors/common';
 import { Cookie } from '@/src/entities/models/cookie';
 
 import { POST_SIGN_IN_REDIRECT, SESSION_COOKIE } from '@/config';
-import { getInjection } from '@/di/container';
 
 import {
   signInAdapter,
   signOutAdapter,
   signUpAdapter,
 } from '@/app/_lib/adapters/auth.adapters';
+import {
+  instrumentServerActionAdapter,
+  reportAppErrorAdapter,
+} from '@/app/_lib/adapters/monitoring.adapters';
 import { clientIpFrom } from '@/app/client-ip';
 
 function tooManyAttempts(err: RateLimitError) {
@@ -30,8 +33,7 @@ function tooManyAttempts(err: RateLimitError) {
 }
 
 export async function signUp(formData: FormData) {
-  const instrumentationService = getInjection('IInstrumentationService');
-  return await instrumentationService.instrumentServerAction(
+  return await instrumentServerActionAdapter(
     'signUp',
     { recordResponse: true },
     async () => {
@@ -67,8 +69,7 @@ export async function signUp(formData: FormData) {
             error: err.message,
           };
         }
-        const crashReporterService = getInjection('ICrashReporterService');
-        crashReporterService.report(err);
+        await reportAppErrorAdapter(err);
 
         return {
           error:
@@ -88,8 +89,7 @@ export async function signUp(formData: FormData) {
 }
 
 export async function signIn(formData: FormData) {
-  const instrumentationService = getInjection('IInstrumentationService');
-  return await instrumentationService.instrumentServerAction(
+  return await instrumentServerActionAdapter(
     'signIn',
     { recordResponse: true },
     async () => {
@@ -113,8 +113,7 @@ export async function signIn(formData: FormData) {
             error: 'Incorrect username or password',
           };
         }
-        const crashReporterService = getInjection('ICrashReporterService');
-        crashReporterService.report(err);
+        await reportAppErrorAdapter(err);
         return {
           error:
             'An error happened. The developers have been notified. Please try again later.',
@@ -133,8 +132,7 @@ export async function signIn(formData: FormData) {
 }
 
 export async function signOut() {
-  const instrumentationService = getInjection('IInstrumentationService');
-  return await instrumentationService.instrumentServerAction(
+  return await instrumentServerActionAdapter(
     'signOut',
     { recordResponse: true },
     async () => {
@@ -151,8 +149,7 @@ export async function signOut() {
         ) {
           redirect('/sign-in');
         }
-        const crashReporterService = getInjection('ICrashReporterService');
-        crashReporterService.report(err);
+        await reportAppErrorAdapter(err);
         throw err;
       }
 

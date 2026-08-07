@@ -7,19 +7,26 @@ import { UnauthenticatedError } from '@/src/entities/errors/auth';
 import { InputParseError, NotFoundError } from '@/src/entities/errors/common';
 
 import { SESSION_COOKIE } from '@/config';
-import { getInjection } from '@/di/container';
+
+import {
+  instrumentServerActionAdapter,
+  reportAppErrorAdapter,
+} from '@/app/_lib/adapters/monitoring.adapters';
+import {
+  bulkUpdateTodosAdapter,
+  createTodoAdapter,
+  toggleTodoAdapter,
+} from '@/app/_lib/adapters/todos.adapters';
 
 export async function createTodo(formData: FormData) {
-  const instrumentationService = getInjection('IInstrumentationService');
-  return await instrumentationService.instrumentServerAction(
+  return await instrumentServerActionAdapter(
     'createTodo',
     { recordResponse: true },
     async () => {
       try {
         const data = Object.fromEntries(formData.entries());
         const sessionId = (await cookies()).get(SESSION_COOKIE)?.value;
-        const createTodoController = getInjection('ICreateTodoController');
-        await createTodoController(data, sessionId);
+        await createTodoAdapter(data, sessionId);
       } catch (err) {
         if (err instanceof InputParseError) {
           return { error: err.message };
@@ -27,8 +34,7 @@ export async function createTodo(formData: FormData) {
         if (err instanceof UnauthenticatedError) {
           return { error: 'Must be logged in to create a todo' };
         }
-        const crashReporterService = getInjection('ICrashReporterService');
-        crashReporterService.report(err);
+        await reportAppErrorAdapter(err);
         return {
           error:
             'An error happened while creating a todo. The developers have been notified. Please try again later.',
@@ -42,15 +48,13 @@ export async function createTodo(formData: FormData) {
 }
 
 export async function toggleTodo(todoId: number) {
-  const instrumentationService = getInjection('IInstrumentationService');
-  return await instrumentationService.instrumentServerAction(
+  return await instrumentServerActionAdapter(
     'toggleTodo',
     { recordResponse: true },
     async () => {
       try {
         const sessionId = (await cookies()).get(SESSION_COOKIE)?.value;
-        const toggleTodoController = getInjection('IToggleTodoController');
-        await toggleTodoController({ todoId }, sessionId);
+        await toggleTodoAdapter({ todoId }, sessionId);
       } catch (err) {
         if (err instanceof InputParseError) {
           return { error: err.message };
@@ -61,8 +65,7 @@ export async function toggleTodo(todoId: number) {
         if (err instanceof NotFoundError) {
           return { error: 'Todo does not exist' };
         }
-        const crashReporterService = getInjection('ICrashReporterService');
-        crashReporterService.report(err);
+        await reportAppErrorAdapter(err);
         return {
           error:
             'An error happened while toggling the todo. The developers have been notified. Please try again later.',
@@ -76,15 +79,13 @@ export async function toggleTodo(todoId: number) {
 }
 
 export async function bulkUpdate(dirty: number[], deleted: number[]) {
-  const instrumentationService = getInjection('IInstrumentationService');
-  return await instrumentationService.instrumentServerAction(
+  return await instrumentServerActionAdapter(
     'bulkUpdate',
     { recordResponse: true },
     async () => {
       try {
         const sessionId = (await cookies()).get(SESSION_COOKIE)?.value;
-        const bulkUpdateController = getInjection('IBulkUpdateController');
-        await bulkUpdateController({ dirty, deleted }, sessionId);
+        await bulkUpdateTodosAdapter({ dirty, deleted }, sessionId);
       } catch (err) {
         revalidatePath('/');
         if (err instanceof InputParseError) {
@@ -96,8 +97,7 @@ export async function bulkUpdate(dirty: number[], deleted: number[]) {
         if (err instanceof NotFoundError) {
           return { error: 'Todo does not exist' };
         }
-        const crashReporterService = getInjection('ICrashReporterService');
-        crashReporterService.report(err);
+        await reportAppErrorAdapter(err);
         return {
           error:
             'An error happened while bulk updating the todos. The developers have been notified. Please try again later.',

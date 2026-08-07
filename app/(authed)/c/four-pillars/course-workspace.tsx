@@ -3,6 +3,8 @@
 import type { ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
 
+import type { LearnerCourseProgress } from '@/src/entities/models/course-progress';
+
 import { CourseProvider } from '@/app/_components/course-provider';
 import { lessonHref } from '@/app/(authed)/c/four-pillars/course-href';
 import type { CourseSection } from '@/app/(authed)/c/four-pillars/course-outline';
@@ -17,11 +19,13 @@ export function CourseWorkspace({
   courseSlug,
   sections,
   panelState,
+  initialProgress,
   children,
 }: {
   courseSlug: string;
   sections: readonly CourseSection[];
   panelState: CoursePanelState;
+  initialProgress: LearnerCourseProgress;
   children: ReactNode;
 }) {
   const pathname = usePathname();
@@ -33,7 +37,7 @@ export function CourseWorkspace({
 
   return (
     <CoursePanelProvider initialState={panelState}>
-      <CourseProvider>
+      <CourseProvider initialProgress={initialProgress}>
         <div className="fixed inset-0 flex overflow-hidden pr-[env(safe-area-inset-right)] pl-[env(safe-area-inset-left)] [--course-panel-width:22rem]">
           <CourseMain showsCoursePanel={showsCoursePanel}>
             {children}

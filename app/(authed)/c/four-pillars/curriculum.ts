@@ -1,39 +1,39 @@
-import type { CourseSection } from '@/app/(authed)/c/four-pillars/course-outline';
+export type CourseLesson = {
+  id: string;
+  slug: string;
+  title: string;
+};
+
+export type CourseSection = {
+  slug: string;
+  title: string;
+  lessons: readonly CourseLesson[];
+};
+
+type LessonOutline = {
+  slug: string;
+  title: string;
+};
 
 type SectionOutline = {
   slug: string;
   title: string;
-  lessonTitles: readonly string[];
-  completed: boolean;
+  lessons: readonly LessonOutline[];
 };
 
-function lessonSlug(title: string) {
-  return title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
-}
-
-// Lesson ids number every lesson in course order, so `l-8` is always the eighth
-// lesson of the course no matter which section it sits in.
+// These path-based IDs are persisted. Slugs may be displayed in URLs, but must
+// not be renamed or reused without an accompanying progress-data migration.
 function withLessonIds(
   outlines: readonly SectionOutline[]
 ): readonly CourseSection[] {
-  let position = 0;
-
-  return outlines.map((outline) => ({
-    slug: outline.slug,
-    title: outline.title,
-    lessons: outline.lessonTitles.map((title) => {
-      position += 1;
-
-      return {
-        id: `l-${position}`,
-        slug: lessonSlug(title),
-        title,
-        completed: outline.completed,
-      };
-    }),
+  return outlines.map((section) => ({
+    slug: section.slug,
+    title: section.title,
+    lessons: section.lessons.map((lesson) => ({
+      id: `${section.slug}/${lesson.slug}`,
+      slug: lesson.slug,
+      title: lesson.title,
+    })),
   }));
 }
 
@@ -43,75 +43,157 @@ const FOUR_PILLARS_OUTLINE: readonly SectionOutline[] = [
   {
     slug: 'introduction',
     title: 'Introduction',
-    lessonTitles: [
-      "What you'll learn",
-      'How to get the most out of this course',
-      'Checkpoint',
+    lessons: [
+      { slug: 'what-you-ll-learn', title: "What you'll learn" },
+      {
+        slug: 'how-to-get-the-most-out-of-this-course',
+        title: 'How to get the most out of this course',
+      },
+      { slug: 'checkpoint', title: 'Checkpoint' },
     ],
-    completed: true,
   },
   {
     slug: 'maintainability',
     title: 'The First Pillar - Maintainability',
-    lessonTitles: [
-      'Good and Bad Automated Tests',
-      'Readability',
-      'Which test is easier to maintain?',
-      'Maintainability',
-      'Quiz - Maintainability',
-      'Maintainability in the Test Pyramid',
-      'How each type of test scores in Maintainability',
+    lessons: [
+      {
+        slug: 'good-and-bad-automated-tests',
+        title: 'Good and Bad Automated Tests',
+      },
+      { slug: 'readability', title: 'Readability' },
+      {
+        slug: 'which-test-is-easier-to-maintain',
+        title: 'Which test is easier to maintain?',
+      },
+      { slug: 'maintainability', title: 'Maintainability' },
+      { slug: 'quiz-maintainability', title: 'Quiz - Maintainability' },
+      {
+        slug: 'maintainability-in-the-test-pyramid',
+        title: 'Maintainability in the Test Pyramid',
+      },
+      {
+        slug: 'how-each-type-of-test-scores-in-maintainability',
+        title: 'How each type of test scores in Maintainability',
+      },
     ],
-    completed: true,
   },
   {
     slug: 'feedback-speed',
     title: 'The Second Pillar - Feedback Speed',
-    lessonTitles: [
-      'The importance of feedback',
-      'The importance of speed',
-      'Quiz - Feedback and Speed',
-      'Tests as Feedback',
-      'How each type of test scores in Fast Feedback',
-      'Quiz - Fast Feedback',
+    lessons: [
+      {
+        slug: 'the-importance-of-feedback',
+        title: 'The importance of feedback',
+      },
+      {
+        slug: 'the-importance-of-speed',
+        title: 'The importance of speed',
+      },
+      {
+        slug: 'quiz-feedback-and-speed',
+        title: 'Quiz - Feedback and Speed',
+      },
+      { slug: 'tests-as-feedback', title: 'Tests as Feedback' },
+      {
+        slug: 'how-each-type-of-test-scores-in-fast-feedback',
+        title: 'How each type of test scores in Fast Feedback',
+      },
+      { slug: 'quiz-fast-feedback', title: 'Quiz - Fast Feedback' },
     ],
-    completed: false,
   },
   {
     slug: 'protection-against-regression',
     title: 'The Third Pillar - Protection Against Regression',
-    lessonTitles: [
-      'Regressions',
-      'Quiz - Protection Against Regressions',
-      'The 3 attributes that matter',
-      'Quiz - The 3 attributes that matter',
-      'Protection in Unit Tests',
-      'Protection in Integration Tests',
-      'Protection in E2E Tests',
-      'Quiz - Integration and E2E Protection',
-      'How each type of test scores in Protection',
+    lessons: [
+      { slug: 'regressions', title: 'Regressions' },
+      {
+        slug: 'quiz-protection-against-regressions',
+        title: 'Quiz - Protection Against Regressions',
+      },
+      {
+        slug: 'the-3-attributes-that-matter',
+        title: 'The 3 attributes that matter',
+      },
+      {
+        slug: 'quiz-the-3-attributes-that-matter',
+        title: 'Quiz - The 3 attributes that matter',
+      },
+      {
+        slug: 'protection-in-unit-tests',
+        title: 'Protection in Unit Tests',
+      },
+      {
+        slug: 'protection-in-integration-tests',
+        title: 'Protection in Integration Tests',
+      },
+      {
+        slug: 'protection-in-e2e-tests',
+        title: 'Protection in E2E Tests',
+      },
+      {
+        slug: 'quiz-integration-and-e2e-protection',
+        title: 'Quiz - Integration and E2E Protection',
+      },
+      {
+        slug: 'how-each-type-of-test-scores-in-protection',
+        title: 'How each type of test scores in Protection',
+      },
     ],
-    completed: false,
   },
   {
     slug: 'resistance-to-refactoring',
     title: 'The fourth Pillar - Resistance to Refactoring',
-    lessonTitles: [
-      'But first, what is Refactoring',
-      'Quiz - Define Refactoring',
-      'Examples of Refactoring',
-      'Resistance to Refactoring',
-      'Quiz - Resistance to Refactoring',
-      'Resistance to Refactoring in Unit Tests',
-      'Resistance to Refactoring in Unit Tests - Part 2',
-      'Resistance to Refactoring in Integration Tests',
-      'Quiz - Resistance to Refactoring in Integration Tests',
-      'Resistance to Refactoring in E2E Tests',
-      'How each type of test scores in Resistancce to Refactoring',
-      'Quiz - Resistance to Refactoring (Final)',
-      'Give your Feedback!',
+    lessons: [
+      {
+        slug: 'but-first-what-is-refactoring',
+        title: 'But first, what is Refactoring',
+      },
+      {
+        slug: 'quiz-define-refactoring',
+        title: 'Quiz - Define Refactoring',
+      },
+      {
+        slug: 'examples-of-refactoring',
+        title: 'Examples of Refactoring',
+      },
+      {
+        slug: 'resistance-to-refactoring',
+        title: 'Resistance to Refactoring',
+      },
+      {
+        slug: 'quiz-resistance-to-refactoring',
+        title: 'Quiz - Resistance to Refactoring',
+      },
+      {
+        slug: 'resistance-to-refactoring-in-unit-tests',
+        title: 'Resistance to Refactoring in Unit Tests',
+      },
+      {
+        slug: 'resistance-to-refactoring-in-unit-tests-part-2',
+        title: 'Resistance to Refactoring in Unit Tests - Part 2',
+      },
+      {
+        slug: 'resistance-to-refactoring-in-integration-tests',
+        title: 'Resistance to Refactoring in Integration Tests',
+      },
+      {
+        slug: 'quiz-resistance-to-refactoring-in-integration-tests',
+        title: 'Quiz - Resistance to Refactoring in Integration Tests',
+      },
+      {
+        slug: 'resistance-to-refactoring-in-e2e-tests',
+        title: 'Resistance to Refactoring in E2E Tests',
+      },
+      {
+        slug: 'how-each-type-of-test-scores-in-resistancce-to-refactoring',
+        title: 'How each type of test scores in Resistancce to Refactoring',
+      },
+      {
+        slug: 'quiz-resistance-to-refactoring-final',
+        title: 'Quiz - Resistance to Refactoring (Final)',
+      },
+      { slug: 'give-your-feedback', title: 'Give your Feedback!' },
     ],
-    completed: false,
   },
 ];
 
@@ -131,6 +213,10 @@ function courseLessons() {
   return FOUR_PILLARS_SECTIONS.flatMap((section) =>
     section.lessons.map((lesson) => ({ section, lesson }))
   );
+}
+
+export function findLessonById(lessonId: string) {
+  return courseLessons().find((entry) => entry.lesson.id === lessonId);
 }
 
 export function lessonNavigation(sectionSlug: string, lessonSlug: string) {
@@ -153,9 +239,11 @@ export function lessonNavigation(sectionSlug: string, lessonSlug: string) {
   };
 }
 
-export function firstUnfinishedLesson() {
+export function firstUnfinishedLesson(completedLessonIds: ReadonlySet<string>) {
   for (const section of FOUR_PILLARS_SECTIONS) {
-    const lesson = section.lessons.find((candidate) => !candidate.completed);
+    const lesson = section.lessons.find(
+      (candidate) => !completedLessonIds.has(candidate.id)
+    );
     if (lesson) {
       return { section, lesson };
     }

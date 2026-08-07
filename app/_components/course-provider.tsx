@@ -2,17 +2,20 @@
 
 import { createContext, useContext, useState, type ReactNode } from 'react';
 
+import type { LearnerCourseProgress } from '@/src/entities/models/course-progress';
 import {
-  gradeQuiz,
   isAnswered,
   type QuestionOutcome,
   type QuizAttemptResult,
   type QuizLesson,
-} from '@/app/_components/quiz';
+} from '@/src/entities/models/quiz';
 
 const NO_SELECTIONS: readonly string[] = [];
 
 type CourseContextValue = {
+  completedLessonIds: ReadonlySet<string>;
+  isLessonCompleted: (lessonId: string) => boolean;
+  applyLessonCompletion: (lessonId: string, completed: boolean) => void;
   getAnswer: (lessonId: string, questionId: string) => string | undefined;
   setAnswer: (lessonId: string, questionId: string, optionId: string) => void;
   getSelections: (lessonId: string, questionId: string) => readonly string[];
@@ -22,13 +25,16 @@ type CourseContextValue = {
     optionId: string
   ) => void;
   isQuizSubmitted: (lessonId: string) => boolean;
+  hasSavedQuizResult: (lessonId: string) => boolean;
+  isPopQuestionSubmitted: (questionId: string) => boolean;
+  markPopQuestionSubmitted: (questionId: string) => void;
   isQuizComplete: (lesson: QuizLesson) => boolean;
   outcomeFor: (
     lessonId: string,
     questionId: string
   ) => QuestionOutcome | undefined;
   quizResult: (lessonId: string) => QuizAttemptResult | undefined;
-  submitQuiz: (lesson: QuizLesson) => void;
+  applyQuizResult: (lessonId: string, result: QuizAttemptResult) => void;
   retakeQuiz: (lessonId: string) => void;
 };
 
@@ -48,11 +54,50 @@ export function useCourse() {
   return context;
 }
 
-export function CourseProvider({ children }: { children: ReactNode }) {
+export function CourseProvider({
+  initialProgress,
+  children,
+}: {
+  initialProgress: LearnerCourseProgress;
+  children: ReactNode;
+}) {
+  const [completedLessonIds, setCompletedLessonIds] = useState<
+    ReadonlySet<string>
+  >(() => new Set(initialProgress.completedLessonIds));
   const [selections, setSelections] = useState<
     Record<string, readonly string[]>
   >({});
-  const [results, setResults] = useState<Record<string, QuizAttemptResult>>({});
+  const [savedQuizLessonIds, setSavedQuizLessonIds] = useState<
+    ReadonlySet<string>
+  >(() => new Set(initialProgress.quizResults.map(({ lessonId }) => lessonId)));
+  const [submittedPopQuestionIds, setSubmittedPopQuestionIds] = useState<
+    ReadonlySet<string>
+  >(new Set());
+  const [results, setResults] = useState<Record<string, QuizAttemptResult>>(
+    () =>
+      Object.fromEntries(
+        initialProgress.quizResults.map(({ lessonId, result }) => [
+          lessonId,
+          result,
+        ])
+      )
+  );
+
+  function isLessonCompleted(lessonId: string) {
+    return completedLessonIds.has(lessonId);
+  }
+
+  function applyLessonCompletion(lessonId: string, completed: boolean) {
+    setCompletedLessonIds((current) => {
+      const next = new Set(current);
+      if (completed) {
+        next.add(lessonId);
+      } else {
+        next.delete(lessonId);
+      }
+      return next;
+    });
+  }
 
   function getSelections(lessonId: string, questionId: string) {
     return selections[selectionKey(lessonId, questionId)] ?? NO_SELECTIONS;
@@ -95,6 +140,18 @@ export function CourseProvider({ children }: { children: ReactNode }) {
     return results[lessonId] !== undefined;
   }
 
+  function hasSavedQuizResult(lessonId: string) {
+    return savedQuizLessonIds.has(lessonId);
+  }
+
+  function isPopQuestionSubmitted(questionId: string) {
+    return submittedPopQuestionIds.has(questionId);
+  }
+
+  function markPopQuestionSubmitted(questionId: string) {
+    setSubmittedPopQuestionIds((current) => new Set(current).add(questionId));
+  }
+
   function isQuizComplete(lesson: QuizLesson) {
     return lesson.quiz.questions.every((question) =>
       isAnswered(question, getSelections(lesson.id, question.id))
@@ -107,12 +164,9 @@ export function CourseProvider({ children }: { children: ReactNode }) {
     );
   }
 
-  function submitQuiz(lesson: QuizLesson) {
-    const result = gradeQuiz(lesson.quiz, (question) =>
-      getSelections(lesson.id, question.id)
-    );
-
-    setResults((current) => ({ ...current, [lesson.id]: result }));
+  function applyQuizResult(lessonId: string, result: QuizAttemptResult) {
+    setSavedQuizLessonIds((current) => new Set(current).add(lessonId));
+    setResults((current) => ({ ...current, [lessonId]: result }));
   }
 
   function retakeQuiz(lessonId: string) {
@@ -133,15 +187,21 @@ export function CourseProvider({ children }: { children: ReactNode }) {
   return (
     <CourseContext.Provider
       value={{
+        completedLessonIds,
+        isLessonCompleted,
+        applyLessonCompletion,
         getAnswer,
         setAnswer,
         getSelections,
         toggleSelection,
         isQuizSubmitted,
+        hasSavedQuizResult,
+        isPopQuestionSubmitted,
+        markPopQuestionSubmitted,
         isQuizComplete,
         outcomeFor,
         quizResult,
-        submitQuiz,
+        applyQuizResult,
         retakeQuiz,
       }}
     >

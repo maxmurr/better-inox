@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 
+import { useCourse } from '@/app/_components/course-provider';
 import {
   Accordion,
   AccordionContent,
@@ -96,6 +97,7 @@ function LessonsPanel({
   sections: readonly CourseSection[];
 }) {
   const { isOpen } = useCoursePanel();
+  const { isLessonCompleted } = useCourse();
   const pathname = usePathname();
   const activeLinkRef = useRef<HTMLAnchorElement>(null);
   const activeSlug = activeSectionSlug(courseSlug, sections, pathname);
@@ -151,6 +153,7 @@ function LessonsPanel({
                     lesson.slug
                   );
                   const isActive = href === pathname;
+                  const completed = isLessonCompleted(lesson.id);
 
                   return (
                     <li key={lesson.slug}>
@@ -163,7 +166,7 @@ function LessonsPanel({
                           isActive && 'bg-muted'
                         )}
                       >
-                        {lesson.completed ? (
+                        {completed ? (
                           <CircleCheckIcon
                             aria-hidden
                             className="size-4 shrink-0 text-success"
@@ -185,7 +188,7 @@ function LessonsPanel({
                           {lesson.title}
                         </span>
                         <span className="sr-only">
-                          {lesson.completed ? 'Completed' : 'Not started'}
+                          {completed ? 'Completed' : 'Not completed'}
                         </span>
                       </Link>
                     </li>

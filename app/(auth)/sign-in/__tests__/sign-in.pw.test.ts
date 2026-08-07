@@ -3,8 +3,10 @@ import {
   getCurrentUserAdapter,
   signInAdapter,
 } from '@/app/_lib/adapters/auth.adapters';
+import { getCourseProgressAdapter } from '@/app/_lib/adapters/course-progress.adapters';
 import {
   alerts,
+  EMPTY_COURSE_PROGRESS,
   expect,
   stubbedSessionCookie,
   test,
@@ -21,6 +23,7 @@ async function submit(page: Parameters<typeof alerts>[0], password: string) {
 test('signs in with a username and password', async ({ page, stubAdapter }) => {
   await stubAdapter(signInAdapter, stubbedSessionCookie);
   await stubAdapter(getCurrentUserAdapter, TEST_USER);
+  await stubAdapter(getCourseProgressAdapter, EMPTY_COURSE_PROGRESS);
 
   await submit(page, 'password');
 

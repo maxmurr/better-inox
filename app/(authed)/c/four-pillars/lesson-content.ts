@@ -63,6 +63,34 @@ const LESSON_CONTENT: Record<string, LessonContentLoader> = {
     import('@/content/four-pillars/resistance-to-refactoring/give-your-feedback.mdx'),
 };
 
+const LESSON_POP_QUESTION_IDS: Partial<Record<string, readonly string[]>> = {
+  'maintainability/good-and-bad-automated-tests': ['pq-good-bad-tests'],
+  'maintainability/which-test-is-easier-to-maintain': ['pq-maintainability'],
+  'maintainability/maintainability-in-the-test-pyramid': [
+    'pq-pyramid-tc1',
+    'pq-pyramid-tc2',
+    'pq-pyramid-tc3',
+  ],
+  'feedback-speed/tests-as-feedback': ['pq-tests-as-feedback-longest'],
+  'protection-against-regression/protection-in-unit-tests': [
+    'pq-protection-unit',
+  ],
+  'resistance-to-refactoring/examples-of-refactoring': [
+    'pq-examples-refactoring',
+  ],
+  'resistance-to-refactoring/resistance-to-refactoring-in-unit-tests': [
+    'pq-resistance-unit-which-function',
+  ],
+};
+
 export function findLessonContent(sectionSlug: string, lessonSlug: string) {
   return LESSON_CONTENT[`${sectionSlug}/${lessonSlug}`];
+}
+
+/** Returns every required pop question ID embedded in one lesson's MDX. */
+export function findLessonPopQuestionIds(
+  sectionSlug: string,
+  lessonSlug: string
+) {
+  return LESSON_POP_QUESTION_IDS[`${sectionSlug}/${lessonSlug}`] ?? [];
 }

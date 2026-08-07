@@ -41,3 +41,27 @@ export const getCurrentUserAdapter = createAdapter({
     return getInjection('IGetCurrentUserController')(sessionId);
   },
 });
+
+export const startGoogleSignInAdapter = createAdapter({
+  name: 'startGoogleSignIn',
+  callback: async (clientIp?: string) => {
+    const { getInjection } = await import('@/di/container');
+    return getInjection('IStartGoogleSignInController')(clientIp);
+  },
+});
+
+export const googleCallbackAdapter = createAdapter({
+  name: 'googleCallback',
+  callback: async (
+    input: {
+      code?: string;
+      state?: string;
+      storedState?: string;
+      codeVerifier?: string;
+    },
+    clientIp?: string
+  ) => {
+    const { getInjection } = await import('@/di/container');
+    return getInjection('IGoogleCallbackController')(input, clientIp);
+  },
+});

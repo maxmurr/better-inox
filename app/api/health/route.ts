@@ -1,4 +1,4 @@
-import { getInjection } from '@/di/container';
+import { pingDatabaseAdapter } from '@/app/_lib/adapters/health.adapters';
 
 export const dynamic = 'force-dynamic';
 
@@ -8,10 +8,8 @@ export async function GET() {
   let timer: ReturnType<typeof setTimeout> | undefined;
 
   try {
-    const databaseHealthService = getInjection('IDatabaseHealthService');
-
     await Promise.race([
-      databaseHealthService.ping(),
+      pingDatabaseAdapter(),
       new Promise((_, reject) => {
         timer = setTimeout(
           () => reject(new Error('database ping timed out')),

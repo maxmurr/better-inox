@@ -1,10 +1,11 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 
 import { Radio as RadioPrimitive } from '@base-ui/react/radio';
 import { ArrowRightIcon, CornerDownRightIcon } from 'lucide-react';
 
+import { useCourse } from '@/app/_components/course-provider';
 import { Button } from '@/app/_components/ui/button';
 import { RadioGroup } from '@/app/_components/ui/radio-group';
 import { cn } from '@/app/_components/utils';
@@ -97,10 +98,9 @@ export function PopQuestion({
   options: readonly PopQuestionOption[];
   correctOptionId: string;
 } & PopQuestionResponse) {
+  const { markPopQuestionSubmitted } = useCourse();
   const [selected, setSelected] = useState<string>();
   const [submitted, setSubmitted] = useState(false);
-  const [attemptedSubmit, setAttemptedSubmit] = useState(false);
-  const optionsRef = useRef<HTMLDivElement>(null);
   const correct = selected === correctOptionId;
   const answeredText = options.find((option) => option.id === selected)?.text;
   const response = resolvePopQuestionResponse({
@@ -108,16 +108,12 @@ export function PopQuestion({
     feedback,
     selected,
   });
-  const missingAnswer = attemptedSubmit && !selected;
-  const errorId = `${id}-error`;
-
   const handleSubmit = () => {
     if (!selected) {
-      setAttemptedSubmit(true);
-      optionsRef.current?.querySelector<HTMLElement>('[role="radio"]')?.focus();
       return;
     }
 
+    markPopQuestionSubmitted(id);
     setSubmitted(true);
   };
 
@@ -164,13 +160,10 @@ export function PopQuestion({
       ) : (
         <>
           <RadioGroup
-            ref={optionsRef}
             name={id}
             value={selected ?? ''}
             onValueChange={(value) => setSelected(String(value))}
             aria-label={prompt}
-            aria-invalid={missingAnswer || undefined}
-            aria-describedby={missingAnswer ? errorId : undefined}
           >
             {options.map((option, index) => (
               <Option
@@ -183,19 +176,14 @@ export function PopQuestion({
           </RadioGroup>
 
           <div className="flex flex-col gap-2 border-t border-border pt-5">
-            <Button className="self-start" onClick={handleSubmit}>
+            <Button
+              className="self-start"
+              disabled={!selected}
+              onClick={handleSubmit}
+            >
               Submit
               <ArrowRightIcon data-icon="inline-end" aria-hidden />
             </Button>
-            {missingAnswer ? (
-              <p
-                id={errorId}
-                role="alert"
-                className="text-xs font-medium text-destructive"
-              >
-                Choose an answer to submit.
-              </p>
-            ) : null}
           </div>
         </>
       )}

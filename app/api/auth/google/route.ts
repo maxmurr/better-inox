@@ -2,21 +2,20 @@ import { NextResponse, type NextRequest } from 'next/server';
 
 import { RateLimitError } from '@/src/entities/errors/auth';
 
-import { getInjection } from '@/di/container';
-
+import { startGoogleSignInAdapter } from '@/app/_lib/adapters/auth.adapters';
+import {
+  reportAppErrorAdapter,
+  startAppSpanAdapter,
+} from '@/app/_lib/adapters/monitoring.adapters';
 import { clientIpFrom } from '@/app/client-ip';
 
 export async function GET(request: NextRequest) {
-  const instrumentationService = getInjection('IInstrumentationService');
-  return await instrumentationService.startSpan(
+  return await startAppSpanAdapter(
     { name: 'GET /api/auth/google', op: 'http.server' },
     async () => {
       try {
-        const startGoogleSignInController = getInjection(
-          'IStartGoogleSignInController'
-        );
         const { url, stateCookie, codeVerifierCookie } =
-          await startGoogleSignInController(clientIpFrom(request.headers));
+          await startGoogleSignInAdapter(clientIpFrom(request.headers));
 
         const response = NextResponse.redirect(url);
         for (const cookie of [stateCookie, codeVerifierCookie]) {
@@ -35,8 +34,7 @@ export async function GET(request: NextRequest) {
           });
         }
 
-        const crashReporterService = getInjection('ICrashReporterService');
-        crashReporterService.report(err);
+        await reportAppErrorAdapter(err);
 
         // Relative Location: see the note in the callback route about
         // `request.url` resolving to the container address behind the proxy.

@@ -3,8 +3,10 @@ import {
   getCurrentUserAdapter,
   signUpAdapter,
 } from '@/app/_lib/adapters/auth.adapters';
+import { getCourseProgressAdapter } from '@/app/_lib/adapters/course-progress.adapters';
 import {
   alerts,
+  EMPTY_COURSE_PROGRESS,
   expect,
   stubbedSessionCookie,
   test,
@@ -34,6 +36,7 @@ test('creates an account and lands in the app', async ({
 }) => {
   await stubAdapter(signUpAdapter, NEW_SESSION);
   await stubAdapter(getCurrentUserAdapter, TEST_USER);
+  await stubAdapter(getCourseProgressAdapter, EMPTY_COURSE_PROGRESS);
 
   await submit(page);
 

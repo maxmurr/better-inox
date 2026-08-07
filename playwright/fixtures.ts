@@ -7,6 +7,7 @@ import type {
   StubErrorEnvelope,
 } from '@/app/_lib/adapter-service';
 import { getCurrentUserAdapter } from '@/app/_lib/adapters/auth.adapters';
+import { getCourseProgressAdapter } from '@/app/_lib/adapters/course-progress.adapters';
 
 export type TestUser = {
   id: string;
@@ -18,6 +19,11 @@ export const TEST_USER: TestUser = {
   id: 'test-member-id',
   username: 'testuser',
   avatarUrl: null,
+};
+
+export const EMPTY_COURSE_PROGRESS = {
+  completedLessonIds: [],
+  quizResults: [],
 };
 
 const STUBBED_SESSION = 'stubbed-session';
@@ -77,6 +83,7 @@ export const test = base.extend<{
         },
       ]);
       await stubAdapter(getCurrentUserAdapter, user);
+      await stubAdapter(getCourseProgressAdapter, EMPTY_COURSE_PROGRESS);
     });
   },
 });

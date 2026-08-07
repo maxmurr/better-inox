@@ -1,25 +1,85 @@
 'use client';
 
-import { useState } from 'react';
+import { useTransition } from 'react';
 
-import { ArrowRightIcon, CircleCheckIcon } from 'lucide-react';
+import { ArrowRightIcon, CircleCheckIcon, LoaderIcon } from 'lucide-react';
+import { toast } from 'sonner';
 
+import { useCourse } from '@/app/_components/course-provider';
 import { Button } from '@/app/_components/ui/button';
 
-export function LessonFooter({ completed }: { completed: boolean }) {
-  const [isCompleted, setIsCompleted] = useState(completed);
+import { saveLessonCompletion } from './actions';
+
+export function LessonFooter({
+  lessonId,
+  isQuizLesson,
+  requiredPopQuestionIds,
+}: {
+  lessonId: string;
+  isQuizLesson: boolean;
+  requiredPopQuestionIds: readonly string[];
+}) {
+  const {
+    isLessonCompleted,
+    applyLessonCompletion,
+    hasSavedQuizResult,
+    isPopQuestionSubmitted,
+  } = useCourse();
+  const [isPending, startTransition] = useTransition();
+  const completed = isLessonCompleted(lessonId);
+  const hasUnsubmittedQuiz = isQuizLesson && !hasSavedQuizResult(lessonId);
+  const hasUnsubmittedPopQuestion = requiredPopQuestionIds.some(
+    (questionId) => !isPopQuestionSubmitted(questionId)
+  );
+  const needsRequiredSubmission =
+    !completed && (hasUnsubmittedQuiz || hasUnsubmittedPopQuestion);
+
+  function updateCompletion() {
+    if (isPending || needsRequiredSubmission) {
+      return;
+    }
+
+    const desiredCompletion = !completed;
+    startTransition(async () => {
+      try {
+        const response = await saveLessonCompletion(
+          lessonId,
+          desiredCompletion
+        );
+
+        if ('error' in response) {
+          toast.error(response.error);
+          return;
+        }
+
+        applyLessonCompletion(response.data.lessonId, response.data.completed);
+      } catch {
+        toast.error('Could not save lesson progress. Please try again.');
+      }
+    });
+  }
 
   return (
     <footer className="flex shrink-0 items-center justify-center border-t border-border bg-background px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
       <Button
         type="button"
         size="lg"
-        variant={isCompleted ? 'secondary' : 'default'}
-        aria-pressed={isCompleted}
+        variant={completed ? 'secondary' : 'default'}
+        aria-pressed={completed}
+        aria-busy={isPending}
+        disabled={isPending || needsRequiredSubmission}
         className="gap-2 rounded-full px-4"
-        onClick={() => setIsCompleted((value) => !value)}
+        onClick={updateCompletion}
       >
-        {isCompleted ? (
+        {isPending ? (
+          <>
+            <LoaderIcon
+              aria-hidden
+              className="animate-spin motion-reduce:animate-none"
+            />
+            Saving…
+          </>
+        ) : completed ? (
           <>
             <CircleCheckIcon aria-hidden className="size-4 text-success" />
             Completed

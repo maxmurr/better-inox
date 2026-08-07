@@ -8,13 +8,15 @@ import {
 } from '@/src/entities/errors/auth';
 
 import { SESSION_COOKIE } from '@/config';
-import { getInjection } from '@/di/container';
 
 import { getCurrentUserAdapter } from '@/app/_lib/adapters/auth.adapters';
+import {
+  reportAppErrorAdapter,
+  startAppSpanAdapter,
+} from '@/app/_lib/adapters/monitoring.adapters';
 
 export const getCurrentUser = cache(async () => {
-  const instrumentationService = getInjection('IInstrumentationService');
-  return await instrumentationService.startSpan(
+  return await startAppSpanAdapter(
     {
       name: 'getCurrentUser',
       op: 'function.nextjs',
@@ -30,8 +32,7 @@ export const getCurrentUser = cache(async () => {
         ) {
           redirect('/sign-in');
         }
-        const crashReporterService = getInjection('ICrashReporterService');
-        crashReporterService.report(err);
+        await reportAppErrorAdapter(err);
         throw err;
       }
     }

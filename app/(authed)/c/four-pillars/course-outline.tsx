@@ -5,6 +5,7 @@ import Link from 'next/link';
 
 import { CircleCheckIcon, CircleIcon } from 'lucide-react';
 
+import { useCourse } from '@/app/_components/course-provider';
 import {
   Accordion,
   AccordionContent,
@@ -14,23 +15,16 @@ import {
 import { Button } from '@/app/_components/ui/button';
 
 import { lessonHref } from './course-href';
+import type { CourseSection } from './curriculum';
 
-export type CourseLesson = {
-  id: string;
-  slug: string;
-  title: string;
-  completed: boolean;
-};
+export type { CourseLesson, CourseSection } from './curriculum';
 
-export type CourseSection = {
-  slug: string;
-  title: string;
-  lessons: readonly CourseLesson[];
-};
-
-function firstUnfinishedSection(sections: readonly CourseSection[]) {
+function firstUnfinishedSection(
+  sections: readonly CourseSection[],
+  completedLessonIds: ReadonlySet<string>
+) {
   return sections.find((section) =>
-    section.lessons.some((lesson) => !lesson.completed)
+    section.lessons.some((lesson) => !completedLessonIds.has(lesson.id))
   );
 }
 
@@ -41,8 +35,9 @@ export function CourseOutline({
   courseSlug: string;
   sections: readonly CourseSection[];
 }) {
+  const { completedLessonIds, isLessonCompleted } = useCourse();
   const [openSections, setOpenSections] = useState<string[]>(() => {
-    const current = firstUnfinishedSection(sections);
+    const current = firstUnfinishedSection(sections, completedLessonIds);
     return current ? [current.slug] : [];
   });
 
@@ -98,32 +93,36 @@ export function CourseOutline({
             </AccordionTrigger>
             <AccordionContent className="bg-background px-4 pt-1 pb-3 [&_a]:no-underline">
               <ul className="flex flex-col">
-                {section.lessons.map((lesson) => (
-                  <li key={lesson.id}>
-                    <Link
-                      href={lessonHref(courseSlug, section.slug, lesson.slug)}
-                      className="-mx-2 flex min-h-9 touch-manipulation items-center gap-3 rounded-lg border border-transparent px-2 py-1 transition-colors outline-none hover:bg-muted/40 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
-                    >
-                      {lesson.completed ? (
-                        <CircleCheckIcon
-                          aria-hidden
-                          className="size-4 shrink-0 text-success"
-                        />
-                      ) : (
-                        <CircleIcon
-                          aria-hidden
-                          className="size-4 shrink-0 text-muted-foreground"
-                        />
-                      )}
-                      <span className="min-w-0 flex-1 text-pretty text-foreground">
-                        {lesson.title}
-                      </span>
-                      <span className="sr-only">
-                        {lesson.completed ? 'Completed' : 'Not started'}
-                      </span>
-                    </Link>
-                  </li>
-                ))}
+                {section.lessons.map((lesson) => {
+                  const completed = isLessonCompleted(lesson.id);
+
+                  return (
+                    <li key={lesson.id}>
+                      <Link
+                        href={lessonHref(courseSlug, section.slug, lesson.slug)}
+                        className="-mx-2 flex min-h-9 touch-manipulation items-center gap-3 rounded-lg border border-transparent px-2 py-1 transition-colors outline-none hover:bg-muted/40 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+                      >
+                        {completed ? (
+                          <CircleCheckIcon
+                            aria-hidden
+                            className="size-4 shrink-0 text-success"
+                          />
+                        ) : (
+                          <CircleIcon
+                            aria-hidden
+                            className="size-4 shrink-0 text-muted-foreground"
+                          />
+                        )}
+                        <span className="min-w-0 flex-1 text-pretty text-foreground">
+                          {lesson.title}
+                        </span>
+                        <span className="sr-only">
+                          {completed ? 'Completed' : 'Not completed'}
+                        </span>
+                      </Link>
+                    </li>
+                  );
+                })}
               </ul>
             </AccordionContent>
           </AccordionItem>

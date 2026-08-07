@@ -6,7 +6,14 @@ import { Pool } from 'pg';
 
 import { env } from '@/env';
 
-import { oauthAccounts, sessions, todos, users } from './schema';
+import {
+  courseLessonProgress,
+  courseQuizResults,
+  oauthAccounts,
+  sessions,
+  todos,
+  users,
+} from './schema';
 
 const pool = new Pool({
   connectionString: env.DATABASE_URL,
@@ -21,7 +28,14 @@ pool.on('error', (err) => {
 });
 
 export const db = drizzle(pool, {
-  schema: { users, sessions, todos, oauthAccounts },
+  schema: {
+    users,
+    sessions,
+    todos,
+    oauthAccounts,
+    courseLessonProgress,
+    courseQuizResults,
+  },
 });
 
 export const luciaAdapter = new DrizzlePostgreSQLAdapter(db, sessions, users);
@@ -31,6 +45,8 @@ type Schema = {
   sessions: typeof sessions;
   todos: typeof todos;
   oauthAccounts: typeof oauthAccounts;
+  courseLessonProgress: typeof courseLessonProgress;
+  courseQuizResults: typeof courseQuizResults;
 };
 export type Transaction = NodePgTransaction<
   Schema,

@@ -1,3 +1,4 @@
+import { ICourseProgressRepository } from '@/src/application/repositories/course-progress.repository.interface';
 import { IOAuthAccountsRepository } from '@/src/application/repositories/oauth-accounts.repository.interface';
 import { ITodosRepository } from '@/src/application/repositories/todos.repository.interface';
 import { IUsersRepository } from '@/src/application/repositories/users.repository.interface';
@@ -13,6 +14,9 @@ import { ISignInUseCase } from '@/src/application/use-cases/auth/sign-in.use-cas
 import { ISignOutUseCase } from '@/src/application/use-cases/auth/sign-out.use-case';
 import { ISignUpUseCase } from '@/src/application/use-cases/auth/sign-up.use-case';
 import { IStartGoogleSignInUseCase } from '@/src/application/use-cases/auth/start-google-sign-in.use-case';
+import { IGetCourseProgressUseCase } from '@/src/application/use-cases/course-progress/get-course-progress.use-case';
+import { ISetLessonCompletionUseCase } from '@/src/application/use-cases/course-progress/set-lesson-completion.use-case';
+import { ISubmitQuizUseCase } from '@/src/application/use-cases/course-progress/submit-quiz.use-case';
 import { ICreateTodoUseCase } from '@/src/application/use-cases/todos/create-todo.use-case';
 import { IDeleteTodoUseCase } from '@/src/application/use-cases/todos/delete-todo.use-case';
 import { IGetTodosForUserUseCase } from '@/src/application/use-cases/todos/get-todos-for-user.use-case';
@@ -23,6 +27,9 @@ import { ISignInController } from '@/src/interface-adapters/controllers/auth/sig
 import { ISignOutController } from '@/src/interface-adapters/controllers/auth/sign-out.controller';
 import { ISignUpController } from '@/src/interface-adapters/controllers/auth/sign-up.controller';
 import { IStartGoogleSignInController } from '@/src/interface-adapters/controllers/auth/start-google-sign-in.controller';
+import { IGetCourseProgressController } from '@/src/interface-adapters/controllers/course-progress/get-course-progress.controller';
+import { ISetLessonCompletionController } from '@/src/interface-adapters/controllers/course-progress/set-lesson-completion.controller';
+import { ISubmitQuizController } from '@/src/interface-adapters/controllers/course-progress/submit-quiz.controller';
 import { IBulkUpdateController } from '@/src/interface-adapters/controllers/todos/bulk-update.controller';
 import { ICreateTodoController } from '@/src/interface-adapters/controllers/todos/create-todo.controller';
 import { IGetTodosForUserController } from '@/src/interface-adapters/controllers/todos/get-todos-for-user.controller';
@@ -40,10 +47,14 @@ export const DI_SYMBOLS = {
 
   // Repositories
   ITodosRepository: Symbol.for('ITodosRepository'),
+  ICourseProgressRepository: Symbol.for('ICourseProgressRepository'),
   IUsersRepository: Symbol.for('IUsersRepository'),
   IOAuthAccountsRepository: Symbol.for('IOAuthAccountsRepository'),
 
   // Use Cases
+  IGetCourseProgressUseCase: Symbol.for('IGetCourseProgressUseCase'),
+  ISetLessonCompletionUseCase: Symbol.for('ISetLessonCompletionUseCase'),
+  ISubmitQuizUseCase: Symbol.for('ISubmitQuizUseCase'),
   ICreateTodoUseCase: Symbol.for('ICreateTodoUseCase'),
   IDeleteTodoUseCase: Symbol.for('IDeleteTodoUseCase'),
   IGetTodosForUserUseCase: Symbol.for('IGetTodosForUserUseCase'),
@@ -61,6 +72,9 @@ export const DI_SYMBOLS = {
   ISignUpController: Symbol.for('ISignUpController'),
   IStartGoogleSignInController: Symbol.for('IStartGoogleSignInController'),
   IGoogleCallbackController: Symbol.for('IGoogleCallbackController'),
+  IGetCourseProgressController: Symbol.for('IGetCourseProgressController'),
+  ISetLessonCompletionController: Symbol.for('ISetLessonCompletionController'),
+  ISubmitQuizController: Symbol.for('ISubmitQuizController'),
   IBulkUpdateController: Symbol.for('IBulkUpdateController'),
   ICreateTodoController: Symbol.for('ICreateTodoController'),
   IGetTodosForUserController: Symbol.for('IGetTodosForUserController'),
@@ -79,10 +93,14 @@ export interface DI_RETURN_TYPES {
 
   // Repositories
   ITodosRepository: ITodosRepository;
+  ICourseProgressRepository: ICourseProgressRepository;
   IUsersRepository: IUsersRepository;
   IOAuthAccountsRepository: IOAuthAccountsRepository;
 
   // Use Cases
+  IGetCourseProgressUseCase: IGetCourseProgressUseCase;
+  ISetLessonCompletionUseCase: ISetLessonCompletionUseCase;
+  ISubmitQuizUseCase: ISubmitQuizUseCase;
   ICreateTodoUseCase: ICreateTodoUseCase;
   IDeleteTodoUseCase: IDeleteTodoUseCase;
   IGetTodosForUserUseCase: IGetTodosForUserUseCase;
@@ -100,6 +118,9 @@ export interface DI_RETURN_TYPES {
   ISignUpController: ISignUpController;
   IStartGoogleSignInController: IStartGoogleSignInController;
   IGoogleCallbackController: IGoogleCallbackController;
+  IGetCourseProgressController: IGetCourseProgressController;
+  ISetLessonCompletionController: ISetLessonCompletionController;
+  ISubmitQuizController: ISubmitQuizController;
   IBulkUpdateController: IBulkUpdateController;
   ICreateTodoController: ICreateTodoController;
   IGetTodosForUserController: IGetTodosForUserController;

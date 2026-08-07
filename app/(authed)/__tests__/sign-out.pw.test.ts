@@ -1,7 +1,10 @@
 import type { Page } from '@playwright/test';
 
 import { stubError } from '@/app/_lib/adapter-service';
-import { signOutAdapter } from '@/app/_lib/adapters/auth.adapters';
+import {
+  getCurrentUserAdapter,
+  signOutAdapter,
+} from '@/app/_lib/adapters/auth.adapters';
 import { getTodosForUserAdapter } from '@/app/_lib/adapters/todos.adapters';
 import { expect, test, TEST_USER } from '@/playwright/fixtures';
 
@@ -48,12 +51,19 @@ test('still lands on sign-in when the session was already invalid', async ({
 }) => {
   await signedIn();
   await stubAdapter(getTodosForUserAdapter, []);
+  await page.goto('/');
+  await page
+    .getByRole('button', { name: `Account menu for ${TEST_USER.username}` })
+    .click();
   await stubAdapter(
     signOutAdapter,
     stubError('UnauthenticatedError', 'Session expired')
   );
-
-  await signOutFromMenu(page);
+  await stubAdapter(
+    getCurrentUserAdapter,
+    stubError('UnauthenticatedError', 'Session expired')
+  );
+  await page.getByRole('menuitem', { name: 'Sign Out' }).click();
 
   await expect(page).toHaveURL('/sign-in');
 });

@@ -1,23 +1,26 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 
-import { CheckIcon, XIcon } from 'lucide-react';
+import { CheckIcon, LoaderIcon, XIcon } from 'lucide-react';
+import { toast } from 'sonner';
 
-import { useCourse } from '@/app/_components/course-provider';
 import {
-  isAnswered,
   type QuestionOutcome,
   type QuizAttemptResult,
   type QuizLesson,
   type QuizQuestion,
-} from '@/app/_components/quiz';
+  type QuizSelections,
+} from '@/src/entities/models/quiz';
+
+import { useCourse } from '@/app/_components/course-provider';
 import { Button } from '@/app/_components/ui/button';
 import { Card, CardContent } from '@/app/_components/ui/card';
 import { Checkbox } from '@/app/_components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/app/_components/ui/radio-group';
 import { Separator } from '@/app/_components/ui/separator';
 import { cn } from '@/app/_components/utils';
+import { saveQuizSubmission } from '@/app/(authed)/c/four-pillars/actions';
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
@@ -68,7 +71,8 @@ function ResultBanner({
           {confirmingRetake ? (
             <div className="flex flex-col items-start gap-2">
               <p className="text-sm text-pretty text-muted-foreground">
-                Retaking clears every answer for this quiz.
+                Retaking clears the current answers. Your saved score changes
+                only after you submit again.
               </p>
               <div className="flex flex-wrap gap-2">
                 <Button
@@ -135,11 +139,11 @@ function Verdict({ outcome }: { outcome: QuestionOutcome }) {
 function Question({
   lesson,
   question,
-  attemptedSubmit,
+  isSubmitting,
 }: {
   lesson: QuizLesson;
   question: QuizQuestion;
-  attemptedSubmit: boolean;
+  isSubmitting: boolean;
 }) {
   const {
     getAnswer,
@@ -150,12 +154,10 @@ function Question({
     outcomeFor,
   } = useCourse();
   const submitted = isQuizSubmitted(lesson.id);
+  const disabled = submitted || isSubmitting;
   const outcome = outcomeFor(lesson.id, question.id);
   const selected = getAnswer(lesson.id, question.id);
   const selections = getSelections(lesson.id, question.id);
-  const answer = question.kind === 'multiple' ? selections : selected;
-  const invalid =
-    attemptedSubmit && !submitted && !isAnswered(question, answer);
 
   const picked = (optionId: string) =>
     outcome
@@ -167,14 +169,15 @@ function Question({
   return (
     <fieldset
       id={`q-${question.id}`}
+      disabled={disabled}
       className="flex scroll-mt-4 flex-col gap-3"
     >
       <legend className="mb-3 text-base font-semibold">
         {question.prompt}
-        {invalid ? (
-          <span className="text-destructive">
+        {!submitted ? (
+          <span className="text-muted-foreground">
             {' *'}
-            <span className="sr-only">(required)</span>
+            <span className="sr-only"> (required)</span>
           </span>
         ) : null}
       </legend>
@@ -192,12 +195,12 @@ function Question({
                 key={option.id}
                 className={cn(
                   'flex items-center gap-3 rounded-md px-2 py-2.5 transition-colors',
-                  !submitted && 'cursor-pointer hover:bg-muted/50'
+                  !disabled && 'cursor-pointer hover:bg-muted/50'
                 )}
               >
                 <Checkbox
                   checked={isPicked}
-                  disabled={submitted}
+                  disabled={disabled}
                   onCheckedChange={() =>
                     toggleSelection(lesson.id, question.id, option.id)
                   }
@@ -221,9 +224,8 @@ function Question({
           onValueChange={(value) =>
             setAnswer(lesson.id, question.id, String(value))
           }
-          disabled={submitted}
+          disabled={disabled}
           aria-label={question.prompt}
-          aria-invalid={invalid || undefined}
           className="gap-0"
         >
           {question.options.map((option) => {
@@ -234,7 +236,7 @@ function Question({
                 key={option.id}
                 className={cn(
                   'flex items-center gap-3 rounded-md px-2 py-2.5 transition-colors',
-                  !submitted && 'cursor-pointer hover:bg-muted/50'
+                  !disabled && 'cursor-pointer hover:bg-muted/50'
                 )}
               >
                 <RadioGroupItem value={option.id} />
@@ -252,52 +254,47 @@ function Question({
           })}
         </RadioGroup>
       )}
-
-      {invalid ? (
-        <p className="text-xs font-medium text-destructive">
-          {question.kind === 'multiple'
-            ? 'Select at least one option to continue.'
-            : 'Select an answer to continue.'}
-        </p>
-      ) : null}
     </fieldset>
   );
 }
 
 export function QuizView({ lesson }: { lesson: QuizLesson }) {
-  const { isQuizComplete, submitQuiz, quizResult, getAnswer, getSelections } =
+  const { isQuizComplete, applyQuizResult, quizResult, getSelections } =
     useCourse();
   const result = quizResult(lesson.id);
   const complete = isQuizComplete(lesson);
-  const [attemptedSubmit, setAttemptedSubmit] = useState(false);
+  const [submitError, setSubmitError] = useState<string>();
+  const [isPending, startTransition] = useTransition();
 
   const handleSubmit = () => {
-    if (!complete) {
-      setAttemptedSubmit(true);
-      const firstUnanswered = lesson.quiz.questions.find((question) =>
-        question.kind === 'multiple'
-          ? getSelections(lesson.id, question.id).length === 0
-          : !getAnswer(lesson.id, question.id)
-      );
-      const el = firstUnanswered
-        ? document.getElementById(`q-${firstUnanswered.id}`)
-        : null;
-      if (el) {
-        const reduce = window.matchMedia(
-          '(prefers-reduced-motion: reduce)'
-        ).matches;
-        el.scrollIntoView({
-          behavior: reduce ? 'auto' : 'smooth',
-          block: 'center',
-        });
-        el.querySelector<HTMLElement>(
-          '[role="radio"], [role="checkbox"], input'
-        )?.focus();
-      }
+    if (isPending || !complete) {
       return;
     }
-    setAttemptedSubmit(false);
-    submitQuiz(lesson);
+
+    setSubmitError(undefined);
+    const selections: QuizSelections = Object.fromEntries(
+      lesson.quiz.questions.map((question) => [
+        question.id,
+        [...getSelections(lesson.id, question.id)],
+      ])
+    );
+
+    startTransition(async () => {
+      try {
+        const response = await saveQuizSubmission(lesson.id, selections);
+        if ('error' in response) {
+          setSubmitError(response.error);
+          toast.error(response.error);
+          return;
+        }
+
+        applyQuizResult(response.data.lessonId, response.data.result);
+      } catch {
+        const message = 'Could not submit the quiz. Please try again.';
+        setSubmitError(message);
+        toast.error(message);
+      }
+    });
   };
 
   return (
@@ -318,7 +315,7 @@ export function QuizView({ lesson }: { lesson: QuizLesson }) {
               <Question
                 lesson={lesson}
                 question={question}
-                attemptedSubmit={attemptedSubmit}
+                isSubmitting={isPending}
               />
             </div>
           ))}
@@ -326,20 +323,31 @@ export function QuizView({ lesson }: { lesson: QuizLesson }) {
 
         {!result ? (
           <div className="flex flex-col gap-2">
-            <Button onClick={handleSubmit}>Submit Answers</Button>
-            {!complete ? (
-              attemptedSubmit ? (
-                <p
-                  role="alert"
-                  className="text-xs font-medium text-destructive"
-                >
-                  Answer every question before submitting.
-                </p>
+            <Button
+              onClick={handleSubmit}
+              disabled={isPending || !complete}
+              aria-busy={isPending}
+            >
+              {isPending ? (
+                <>
+                  <LoaderIcon
+                    aria-hidden
+                    className="animate-spin motion-reduce:animate-none"
+                  />
+                  Submitting…
+                </>
               ) : (
-                <p className="text-xs text-muted-foreground">
-                  Answer every question to submit.
-                </p>
-              )
+                'Submit Answers'
+              )}
+            </Button>
+            {submitError ? (
+              <p role="alert" className="text-xs font-medium text-destructive">
+                {submitError}
+              </p>
+            ) : !complete ? (
+              <p className="text-xs text-muted-foreground">
+                Answer every question to submit.
+              </p>
             ) : null}
           </div>
         ) : null}
