@@ -5,8 +5,9 @@ import {
   getCurrentUserAdapter,
   signOutAdapter,
 } from '@/app/_lib/adapters/auth.adapters';
-import { getTodosForUserAdapter } from '@/app/_lib/adapters/todos.adapters';
 import { expect, test, TEST_USER } from '@/playwright/fixtures';
+
+const COURSE_PATH = '/c/four-pillars';
 
 const BLANK_COOKIE = {
   name: 'auth_session',
@@ -20,7 +21,7 @@ const BLANK_COOKIE = {
 };
 
 async function signOutFromMenu(page: Page) {
-  await page.goto('/');
+  await page.goto(COURSE_PATH);
   await page
     .getByRole('button', { name: `Account menu for ${TEST_USER.username}` })
     .click();
@@ -33,13 +34,12 @@ test('signs out from the account menu and clears the session', async ({
   stubAdapter,
 }) => {
   await signedIn();
-  await stubAdapter(getTodosForUserAdapter, []);
   await stubAdapter(signOutAdapter, BLANK_COOKIE);
 
   await signOutFromMenu(page);
   await expect(page).toHaveURL('/sign-in');
 
-  await page.goto('/c/four-pillars');
+  await page.goto(COURSE_PATH);
 
   await expect(page).toHaveURL('/sign-in');
 });
@@ -50,8 +50,7 @@ test('still lands on sign-in when the session was already invalid', async ({
   stubAdapter,
 }) => {
   await signedIn();
-  await stubAdapter(getTodosForUserAdapter, []);
-  await page.goto('/');
+  await page.goto(COURSE_PATH);
   await page
     .getByRole('button', { name: `Account menu for ${TEST_USER.username}` })
     .click();
