@@ -14,3 +14,18 @@ diff only re-creates the uncommitted change; committing it with your work keeps
 the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in this repo's GitHub Issues. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Canonical triage roles map to this repo's GitHub labels. See
+`docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Domain documentation uses single-context layout. See `docs/agents/domain.md`.
