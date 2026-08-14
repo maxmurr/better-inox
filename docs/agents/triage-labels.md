@@ -10,4 +10,10 @@ Canonical triage roles map to GitHub labels as follows:
 | `ready-for-human` | `help wanted`  | Requires human implementation            |
 | `wontfix`         | `wontfix`      | Will not be actioned                     |
 
-When a skill mentions a canonical role, use corresponding GitHub label.
+## Factory assignment policy
+
+`factory` marks executable tickets and sub-issues. Specs and parent issues
+created by `to-spec` stay unlabeled; tickets created by `to-tickets` receive
+`factory`. An explicit user request overrides this policy.
+
+For other canonical roles, use the corresponding GitHub label.
