@@ -246,3 +246,9 @@ I mentioned at the top of the README, you got:
 - And a couple more (check out the original blog post)
 
 </details>
+
+## Reporting bugs
+
+If you run into a bug, please open an issue that includes the version of
+better-inox you are using and the steps to reproduce the problem. That context
+makes the bug much faster to track down and fix.
