@@ -36,6 +36,41 @@ export const courseQuizResultSchema = z
   });
 export type CourseQuizResult = z.infer<typeof courseQuizResultSchema>;
 
+const lessonLearnerIdentitySchema = z.object({
+  learnerId: contentIdSchema,
+  username: z.string().trim().min(1),
+  avatarUrl: z.url().nullable(),
+});
+
+export const lessonLearnerProgressSchema = lessonLearnerIdentitySchema.extend({
+  completed: z.boolean(),
+  updatedAt: z.date(),
+});
+export type LessonLearnerProgress = z.infer<typeof lessonLearnerProgressSchema>;
+
+export const lessonLearnerQuizResultSchema = lessonLearnerIdentitySchema
+  .extend({
+    correct: z.number().int().nonnegative(),
+    total: z.number().int().positive(),
+    passed: z.boolean(),
+    submittedAt: z.date(),
+  })
+  .refine(({ correct, total }) => correct <= total, {
+    message: 'Correct answers cannot exceed total questions',
+    path: ['correct'],
+  });
+export type LessonLearnerQuizResult = z.infer<
+  typeof lessonLearnerQuizResultSchema
+>;
+
+export const lessonLearningResultsSnapshotSchema = z.object({
+  lessonProgress: z.array(lessonLearnerProgressSchema),
+  quizResults: z.array(lessonLearnerQuizResultSchema),
+});
+export type LessonLearningResultsSnapshot = z.infer<
+  typeof lessonLearningResultsSnapshotSchema
+>;
+
 export const courseProgressSnapshotSchema = z.object({
   lessons: z.array(courseLessonProgressSchema),
   quizResults: z.array(courseQuizResultSchema),

@@ -13,6 +13,25 @@ export const getCourseProgressAdapter = createAdapter({
   },
 });
 
+export const getLessonLearningResultsAdapter = createAdapter({
+  name: 'getLessonLearningResults',
+  callback: async (
+    courseSlug: string,
+    lessonId: string,
+    sessionId: string | undefined
+  ) => {
+    const { getInjection } = await import('@/di/container');
+    return getInjection('IGetLessonLearningResultsController')(
+      { courseSlug, lessonId },
+      sessionId
+    );
+  },
+});
+
+export type LessonLearningResultsData = Awaited<
+  ReturnType<typeof getLessonLearningResultsAdapter>
+>;
+
 export const setLessonCompletionAdapter = createAdapter({
   name: 'setLessonCompletion',
   callback: async (

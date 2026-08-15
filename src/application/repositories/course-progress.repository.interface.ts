@@ -4,6 +4,7 @@ import type {
   CourseProgressSnapshot,
   CourseQuizResult,
   CourseQuizResultWrite,
+  LessonLearningResultsSnapshot,
 } from '@/src/entities/models/course-progress';
 
 export interface ICourseProgressRepository {
@@ -11,6 +12,10 @@ export interface ICourseProgressRepository {
     userId: string,
     courseSlug: string
   ): Promise<CourseProgressSnapshot>;
+  getLessonLearningResults(
+    courseSlug: string,
+    lessonId: string
+  ): Promise<LessonLearningResultsSnapshot>;
   upsertLessonProgress(
     progress: CourseLessonProgressWrite
   ): Promise<CourseLessonProgress>;

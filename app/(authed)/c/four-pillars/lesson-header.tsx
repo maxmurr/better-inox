@@ -1,6 +1,11 @@
+import type { Route } from 'next';
 import Link from 'next/link';
 
-import { ArrowLeftIcon, ArrowRightIcon } from 'lucide-react';
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  ChartNoAxesColumnIncreasingIcon,
+} from 'lucide-react';
 
 import { Button, buttonVariants } from '@/app/_components/ui/button';
 import { cn } from '@/app/_components/utils';
@@ -56,6 +61,7 @@ export function LessonHeader({
   total,
   previous,
   next,
+  resultsHref,
 }: {
   courseSlug: string;
   title: string;
@@ -63,6 +69,7 @@ export function LessonHeader({
   total: number;
   previous: LessonTarget | undefined;
   next: LessonTarget | undefined;
+  resultsHref: Route;
 }) {
   return (
     <header className="flex flex-col gap-5">
@@ -70,24 +77,40 @@ export function LessonHeader({
         <p className="min-w-0 text-sm text-muted-foreground tabular-nums">
           Lesson&nbsp;{position} of {total}
         </p>
-        <nav
-          aria-label="Lesson navigation"
-          className="flex shrink-0 items-center gap-2"
-        >
-          <LessonNavButton
-            courseSlug={courseSlug}
-            target={previous}
-            direction="previous"
-          />
-          <LessonNavButton
-            courseSlug={courseSlug}
-            target={next}
-            direction="next"
-          />
-        </nav>
+        <div className="flex shrink-0 items-center gap-2">
+          <Link
+            href={resultsHref}
+            className={cn(buttonVariants({ size: 'sm', variant: 'outline' }))}
+          >
+            <ChartNoAxesColumnIncreasingIcon
+              data-icon="inline-start"
+              aria-hidden
+            />
+            Results
+            <span
+              className="absolute top-1/2 left-1/2 size-[max(100%,3rem)] -translate-1/2 pointer-fine:hidden"
+              aria-hidden="true"
+            />
+          </Link>
+          <nav
+            aria-label="Lesson navigation"
+            className="flex shrink-0 items-center gap-2"
+          >
+            <LessonNavButton
+              courseSlug={courseSlug}
+              target={previous}
+              direction="previous"
+            />
+            <LessonNavButton
+              courseSlug={courseSlug}
+              target={next}
+              direction="next"
+            />
+          </nav>
+        </div>
       </div>
 
-      <h2 className="font-heading text-2xl font-bold tracking-tight text-balance text-foreground sm:text-3xl">
+      <h2 className="font-heading text-2xl font-semibold tracking-tight text-balance text-foreground sm:text-3xl">
         {title}
       </h2>
     </header>

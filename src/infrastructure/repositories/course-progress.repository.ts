@@ -5,18 +5,24 @@ import {
   courseLessonProgressSchema,
   courseProgressSnapshotSchema,
   courseQuizResultSchema,
+  lessonLearningResultsSnapshotSchema,
   type CourseLessonProgress,
   type CourseLessonProgressWrite,
   type CourseProgressSnapshot,
   type CourseQuizResult,
   type CourseQuizResultWrite,
+  type LessonLearningResultsSnapshot,
 } from '@/src/entities/models/course-progress';
 import type { ICourseProgressRepository } from '@/src/application/repositories/course-progress.repository.interface';
 import type { ICrashReporterService } from '@/src/application/services/crash-reporter.service.interface';
 import type { IInstrumentationService } from '@/src/application/services/instrumentation.service.interface';
 
 import { db } from '@/drizzle';
-import { courseLessonProgress, courseQuizResults } from '@/drizzle/schema';
+import {
+  courseLessonProgress,
+  courseQuizResults,
+  users,
+} from '@/drizzle/schema';
 
 export class CourseProgressRepository implements ICourseProgressRepository {
   constructor(
@@ -68,6 +74,82 @@ export class CourseProgressRepository implements ICourseProgressRepository {
         } catch (err) {
           this.crashReporterService.report(err);
           throw new DatabaseOperationError('Cannot load course progress.', {
+            cause: err,
+          });
+        }
+      }
+    );
+  }
+
+  async getLessonLearningResults(
+    courseSlug: string,
+    lessonId: string
+  ): Promise<LessonLearningResultsSnapshot> {
+    return await this.instrumentationService.startSpan(
+      { name: 'CourseProgressRepository > getLessonLearningResults' },
+      async () => {
+        try {
+          const lessonProgressQuery = db
+            .select({
+              learnerId: users.id,
+              username: users.username,
+              avatarUrl: users.avatar_url,
+              completed: courseLessonProgress.completed,
+              updatedAt: courseLessonProgress.updatedAt,
+            })
+            .from(courseLessonProgress)
+            .innerJoin(users, eq(courseLessonProgress.userId, users.id))
+            .where(
+              and(
+                eq(courseLessonProgress.courseSlug, courseSlug),
+                eq(courseLessonProgress.lessonId, lessonId)
+              )
+            );
+          const quizResultsQuery = db
+            .select({
+              learnerId: users.id,
+              username: users.username,
+              avatarUrl: users.avatar_url,
+              correct: courseQuizResults.correct,
+              total: courseQuizResults.total,
+              passed: courseQuizResults.passed,
+              submittedAt: courseQuizResults.submittedAt,
+            })
+            .from(courseQuizResults)
+            .innerJoin(users, eq(courseQuizResults.userId, users.id))
+            .where(
+              and(
+                eq(courseQuizResults.courseSlug, courseSlug),
+                eq(courseQuizResults.lessonId, lessonId)
+              )
+            );
+
+          const [lessonProgress, quizResults] = await Promise.all([
+            this.instrumentationService.startSpan(
+              {
+                name: lessonProgressQuery.toSQL().sql,
+                op: 'db.query',
+                attributes: { 'db.system': 'postgresql' },
+              },
+              () => lessonProgressQuery.execute()
+            ),
+            this.instrumentationService.startSpan(
+              {
+                name: quizResultsQuery.toSQL().sql,
+                op: 'db.query',
+                attributes: { 'db.system': 'postgresql' },
+              },
+              () => quizResultsQuery.execute()
+            ),
+          ]);
+
+          return lessonLearningResultsSnapshotSchema.parse({
+            lessonProgress,
+            quizResults,
+          });
+        } catch (err) {
+          this.crashReporterService.report(err);
+          throw new DatabaseOperationError('Cannot load lesson results.', {
             cause: err,
           });
         }

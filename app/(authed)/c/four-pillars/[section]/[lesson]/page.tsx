@@ -8,7 +8,10 @@ import { QuizView } from '@/app/_components/quiz-view';
 import { buttonVariants } from '@/app/_components/ui/button';
 import { cn } from '@/app/_components/utils';
 import { CourseHeaderActions } from '@/app/(authed)/c/four-pillars/course-header-actions';
-import { courseHref } from '@/app/(authed)/c/four-pillars/course-href';
+import {
+  courseHref,
+  lessonResultsHref,
+} from '@/app/(authed)/c/four-pillars/course-href';
 import { LessonFooter } from '@/app/(authed)/c/four-pillars/lesson-footer';
 import { LessonHeader } from '@/app/(authed)/c/four-pillars/lesson-header';
 
@@ -79,6 +82,11 @@ export default async function Page({
               total={navigation.total}
               previous={navigation.previous}
               next={navigation.next}
+              resultsHref={lessonResultsHref(
+                FOUR_PILLARS_COURSE_SLUG,
+                section,
+                lesson
+              )}
             />
 
             {Content ? (

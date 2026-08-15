@@ -15,6 +15,7 @@ import { ISignOutUseCase } from '@/src/application/use-cases/auth/sign-out.use-c
 import { ISignUpUseCase } from '@/src/application/use-cases/auth/sign-up.use-case';
 import { IStartGoogleSignInUseCase } from '@/src/application/use-cases/auth/start-google-sign-in.use-case';
 import { IGetCourseProgressUseCase } from '@/src/application/use-cases/course-progress/get-course-progress.use-case';
+import { IGetLessonLearningResultsUseCase } from '@/src/application/use-cases/course-progress/get-lesson-learning-results.use-case';
 import { ISetLessonCompletionUseCase } from '@/src/application/use-cases/course-progress/set-lesson-completion.use-case';
 import { ISubmitQuizUseCase } from '@/src/application/use-cases/course-progress/submit-quiz.use-case';
 import { ICreateTodoUseCase } from '@/src/application/use-cases/todos/create-todo.use-case';
@@ -28,6 +29,7 @@ import { ISignOutController } from '@/src/interface-adapters/controllers/auth/si
 import { ISignUpController } from '@/src/interface-adapters/controllers/auth/sign-up.controller';
 import { IStartGoogleSignInController } from '@/src/interface-adapters/controllers/auth/start-google-sign-in.controller';
 import { IGetCourseProgressController } from '@/src/interface-adapters/controllers/course-progress/get-course-progress.controller';
+import { IGetLessonLearningResultsController } from '@/src/interface-adapters/controllers/course-progress/get-lesson-learning-results.controller';
 import { ISetLessonCompletionController } from '@/src/interface-adapters/controllers/course-progress/set-lesson-completion.controller';
 import { ISubmitQuizController } from '@/src/interface-adapters/controllers/course-progress/submit-quiz.controller';
 import { IBulkUpdateController } from '@/src/interface-adapters/controllers/todos/bulk-update.controller';
@@ -53,6 +55,9 @@ export const DI_SYMBOLS = {
 
   // Use Cases
   IGetCourseProgressUseCase: Symbol.for('IGetCourseProgressUseCase'),
+  IGetLessonLearningResultsUseCase: Symbol.for(
+    'IGetLessonLearningResultsUseCase'
+  ),
   ISetLessonCompletionUseCase: Symbol.for('ISetLessonCompletionUseCase'),
   ISubmitQuizUseCase: Symbol.for('ISubmitQuizUseCase'),
   ICreateTodoUseCase: Symbol.for('ICreateTodoUseCase'),
@@ -73,6 +78,9 @@ export const DI_SYMBOLS = {
   IStartGoogleSignInController: Symbol.for('IStartGoogleSignInController'),
   IGoogleCallbackController: Symbol.for('IGoogleCallbackController'),
   IGetCourseProgressController: Symbol.for('IGetCourseProgressController'),
+  IGetLessonLearningResultsController: Symbol.for(
+    'IGetLessonLearningResultsController'
+  ),
   ISetLessonCompletionController: Symbol.for('ISetLessonCompletionController'),
   ISubmitQuizController: Symbol.for('ISubmitQuizController'),
   IBulkUpdateController: Symbol.for('IBulkUpdateController'),
@@ -99,6 +107,7 @@ export interface DI_RETURN_TYPES {
 
   // Use Cases
   IGetCourseProgressUseCase: IGetCourseProgressUseCase;
+  IGetLessonLearningResultsUseCase: IGetLessonLearningResultsUseCase;
   ISetLessonCompletionUseCase: ISetLessonCompletionUseCase;
   ISubmitQuizUseCase: ISubmitQuizUseCase;
   ICreateTodoUseCase: ICreateTodoUseCase;
@@ -119,6 +128,7 @@ export interface DI_RETURN_TYPES {
   IStartGoogleSignInController: IStartGoogleSignInController;
   IGoogleCallbackController: IGoogleCallbackController;
   IGetCourseProgressController: IGetCourseProgressController;
+  IGetLessonLearningResultsController: IGetLessonLearningResultsController;
   ISetLessonCompletionController: ISetLessonCompletionController;
   ISubmitQuizController: ISubmitQuizController;
   IBulkUpdateController: IBulkUpdateController;

@@ -55,7 +55,7 @@ export class MockUsersRepository implements IUsersRepository {
   async createUser(input: CreateUser): Promise<User> {
     const createdAt = new Date();
     const newUser: User = {
-      id: this._users.length.toString(),
+      id: input.id,
       username: input.username,
       password_hash: input.password,
       avatar_url: null,

@@ -15,3 +15,12 @@ export function lessonHref(
 ) {
   return `/c/${courseSlug}/${sectionSlug}/${lessonSlug}` as Route;
 }
+
+/** Builds route to one lesson's multi-learner learning results. */
+export function lessonResultsHref(
+  courseSlug: string,
+  sectionSlug: string,
+  lessonSlug: string
+) {
+  return `/c/${courseSlug}/${sectionSlug}/${lessonSlug}/results` as Route;
+}
