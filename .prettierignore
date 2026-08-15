@@ -5,6 +5,7 @@ build
 coverage
 tests/coverage
 drizzle
+tools/oxlint/anti-slop
 pnpm-lock.yaml
 next-env.d.ts
 *.tsbuildinfo
