@@ -21,6 +21,7 @@ const FIRST_LESSON_PATH = `${COURSE_PATH}/${FIRST_LESSON_ID}`;
 const SECOND_LESSON_ID = 'introduction/how-to-get-the-most-out-of-this-course';
 const QUIZ_LESSON_ID = 'introduction/checkpoint';
 const QUIZ_PATH = `${COURSE_PATH}/${QUIZ_LESSON_ID}`;
+const MAINTAINABILITY_QUIZ_PATH = `${COURSE_PATH}/maintainability/quiz-maintainability`;
 const POP_QUESTION_PATH = `${COURSE_PATH}/maintainability/good-and-bad-automated-tests`;
 
 const PASSED_RESULT = {
@@ -186,6 +187,21 @@ test('requires pop questions before enabling lesson completion', async ({
 
   await submitPopQuestion.click();
   await expect(completeLesson).toBeEnabled();
+});
+
+test('uses square checkboxes for multi-answer quiz questions', async ({
+  page,
+  signedIn,
+}) => {
+  await signedIn();
+  await page.goto(MAINTAINABILITY_QUIZ_PATH);
+
+  const firstChoice = page
+    .locator('fieldset')
+    .first()
+    .getByRole('checkbox')
+    .first();
+  await expect(firstChoice).toHaveCSS('border-radius', '4px');
 });
 
 test('restores and replaces only the latest submitted quiz result', async ({
