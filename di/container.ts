@@ -8,7 +8,6 @@ import { createTransactionManagerModule } from '@/di/modules/database.module';
 import { createMonitoringModule } from '@/di/modules/monitoring.module';
 import { createOAuthModule } from '@/di/modules/oauth.module';
 import { createRateLimitModule } from '@/di/modules/rate-limit.module';
-import { createTodosModule } from '@/di/modules/todos.module';
 import { createUsersModule } from '@/di/modules/users.module';
 import { DI_RETURN_TYPES, DI_SYMBOLS } from '@/di/types';
 
@@ -26,7 +25,6 @@ ApplicationContainer.load(
 );
 ApplicationContainer.load(Symbol('UsersModule'), createUsersModule());
 ApplicationContainer.load(Symbol('OAuthModule'), createOAuthModule());
-ApplicationContainer.load(Symbol('TodosModule'), createTodosModule());
 ApplicationContainer.load(
   Symbol('CourseProgressModule'),
   createCourseProgressModule()
