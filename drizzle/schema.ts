@@ -49,15 +49,6 @@ export const sessions = pgTable('session', {
   }).notNull(),
 });
 
-export const todos = pgTable('todos', {
-  id: integer('id').primaryKey().generatedByDefaultAsIdentity(),
-  todo: text('todo').notNull(),
-  completed: boolean('completed').notNull().default(false),
-  userId: text('user_id')
-    .notNull()
-    .references(() => users.id),
-});
-
 export const courseLessonProgress = pgTable(
   'course_lesson_progress',
   {
