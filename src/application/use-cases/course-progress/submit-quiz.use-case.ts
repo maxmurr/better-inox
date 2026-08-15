@@ -3,6 +3,7 @@ import type { CourseQuizResult } from '@/src/entities/models/course-progress';
 import {
   gradeQuizSelections,
   quizSchema,
+  quizSelectionsSchema,
   type Quiz,
 } from '@/src/entities/models/quiz';
 import type { ICourseProgressRepository } from '@/src/application/repositories/course-progress.repository.interface';
@@ -34,7 +35,19 @@ export const submitQuizUseCase =
           });
         }
 
-        const result = gradeQuizSelections(parsedQuiz.data, input.selections);
+        const parsedSelections = quizSelectionsSchema.safeParse(
+          input.selections
+        );
+        if (!parsedSelections.success) {
+          throw new InputParseError('Invalid quiz selections', {
+            cause: parsedSelections.error,
+          });
+        }
+
+        const result = gradeQuizSelections(
+          parsedQuiz.data,
+          parsedSelections.data
+        );
 
         return await courseProgressRepository.upsertQuizResult({
           userId,

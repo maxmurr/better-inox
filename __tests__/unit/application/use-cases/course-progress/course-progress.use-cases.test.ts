@@ -59,16 +59,17 @@ describe('course progress use cases', () => {
       'user-1'
     );
 
+    // Extra caller fields must not override server-derived score/pass fields.
+    const submissionWithUntrustedScore = {
+      courseSlug: COURSE,
+      lessonId: LESSON,
+      selections: { q1: ['right'] },
+      quiz,
+      score: 999,
+      passed: false,
+    };
     const replacement = await submitQuiz(
-      {
-        courseSlug: COURSE,
-        lessonId: LESSON,
-        selections: { q1: ['right'] },
-        quiz,
-        // A caller cannot provide score/pass fields; the use case derives them.
-        score: 999,
-        passed: false,
-      } as Parameters<typeof submitQuiz>[0],
+      submissionWithUntrustedScore,
       'user-1'
     );
 

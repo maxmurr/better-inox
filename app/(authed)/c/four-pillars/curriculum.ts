@@ -39,6 +39,9 @@ function withLessonIds(
 
 export const FOUR_PILLARS_COURSE_SLUG = 'four-pillars';
 
+/** URL slug owned by four-pillars course routes. */
+export type FourPillarsCourseSlug = typeof FOUR_PILLARS_COURSE_SLUG;
+
 const FOUR_PILLARS_OUTLINE: readonly SectionOutline[] = [
   {
     slug: 'introduction',

@@ -2,7 +2,7 @@ import type { MDXContent } from 'mdx/types';
 
 type LessonContentLoader = () => Promise<{ default: MDXContent }>;
 
-const LESSON_CONTENT: Record<string, LessonContentLoader> = {
+const LESSON_CONTENT = {
   'introduction/what-you-ll-learn': () =>
     import('@/content/four-pillars/introduction/what-you-ll-learn.mdx'),
   'introduction/how-to-get-the-most-out-of-this-course': () =>
@@ -61,9 +61,11 @@ const LESSON_CONTENT: Record<string, LessonContentLoader> = {
       import('@/content/four-pillars/resistance-to-refactoring/how-each-type-of-test-scores-in-resistancce-to-refactoring.mdx'),
   'resistance-to-refactoring/give-your-feedback': () =>
     import('@/content/four-pillars/resistance-to-refactoring/give-your-feedback.mdx'),
-};
+} satisfies Record<string, LessonContentLoader>;
 
-const LESSON_POP_QUESTION_IDS: Partial<Record<string, readonly string[]>> = {
+const LESSON_CONTENT_BY_PATH = new Map(Object.entries(LESSON_CONTENT));
+
+const LESSON_POP_QUESTION_IDS = {
   'maintainability/good-and-bad-automated-tests': ['pq-good-bad-tests'],
   'maintainability/which-test-is-easier-to-maintain': ['pq-maintainability'],
   'maintainability/maintainability-in-the-test-pyramid': [
@@ -81,10 +83,14 @@ const LESSON_POP_QUESTION_IDS: Partial<Record<string, readonly string[]>> = {
   'resistance-to-refactoring/resistance-to-refactoring-in-unit-tests': [
     'pq-resistance-unit-which-function',
   ],
-};
+} satisfies Partial<Record<string, readonly string[]>>;
+
+const LESSON_POP_QUESTION_IDS_BY_PATH = new Map(
+  Object.entries(LESSON_POP_QUESTION_IDS)
+);
 
 export function findLessonContent(sectionSlug: string, lessonSlug: string) {
-  return LESSON_CONTENT[`${sectionSlug}/${lessonSlug}`];
+  return LESSON_CONTENT_BY_PATH.get(`${sectionSlug}/${lessonSlug}`);
 }
 
 /** Returns every required pop question ID embedded in one lesson's MDX. */
@@ -92,5 +98,7 @@ export function findLessonPopQuestionIds(
   sectionSlug: string,
   lessonSlug: string
 ) {
-  return LESSON_POP_QUESTION_IDS[`${sectionSlug}/${lessonSlug}`] ?? [];
+  return (
+    LESSON_POP_QUESTION_IDS_BY_PATH.get(`${sectionSlug}/${lessonSlug}`) ?? []
+  );
 }

@@ -23,7 +23,10 @@ import {
 import { Button } from '@/app/_components/ui/button';
 import { cn } from '@/app/_components/utils';
 import { lessonHref } from '@/app/(authed)/c/four-pillars/course-href';
-import type { CourseSection } from '@/app/(authed)/c/four-pillars/course-outline';
+import type {
+  CourseSection,
+  FourPillarsCourseSlug,
+} from '@/app/(authed)/c/four-pillars/course-outline';
 import {
   COURSE_PANEL_ID,
   useCoursePanel,
@@ -35,7 +38,7 @@ export function CoursePanel({
   courseSlug,
   sections,
 }: {
-  courseSlug: string;
+  courseSlug: FourPillarsCourseSlug;
   sections: readonly CourseSection[];
 }) {
   const { panel, isOpen, isModal, panelRef, close } = useCoursePanel();
@@ -78,7 +81,7 @@ export function CoursePanel({
 }
 
 function activeSectionSlug(
-  courseSlug: string,
+  courseSlug: FourPillarsCourseSlug,
   sections: readonly CourseSection[],
   pathname: string
 ) {
@@ -93,7 +96,7 @@ function LessonsPanel({
   courseSlug,
   sections,
 }: {
-  courseSlug: string;
+  courseSlug: FourPillarsCourseSlug;
   sections: readonly CourseSection[];
 }) {
   const { isOpen } = useCoursePanel();

@@ -1,3 +1,4 @@
+/** Reports unexpected failure causes to configured monitoring backend. */
 export interface ICrashReporterService {
-  report(error: any): string;
+  report(cause: unknown): string;
 }

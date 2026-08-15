@@ -1,12 +1,18 @@
-import type { StubErrorName } from './testing/stub-errors';
+import type { z } from 'zod';
+
+import {
+  buildStubError,
+  stubErrorEnvelopeSchema,
+  type StubErrorEnvelope,
+  type StubErrorName,
+} from './testing/stub-errors';
+import { testStubPayloadSchema } from './testing/test-stub-contract';
+
+export type { StubErrorEnvelope } from './testing/stub-errors';
 
 export type StubableAdapter<TArgs extends unknown[], TResult> = ((
   ...args: TArgs
 ) => Promise<TResult>) & { adapterName: string };
-
-export type StubErrorEnvelope = {
-  __stubError: { name: StubErrorName; message: string };
-};
 
 export function stubError(
   name: StubErrorName,
@@ -15,34 +21,41 @@ export function stubError(
   return { __stubError: { name, message } };
 }
 
-function isStubError(value: unknown): value is StubErrorEnvelope {
-  return typeof value === 'object' && value !== null && '__stubError' in value;
-}
+type AdapterConfiguration<TArgs extends unknown[], TResult> = {
+  name: string;
+  callback: (...args: TArgs) => Promise<TResult>;
+  stubSchema: z.ZodType<TResult>;
+};
 
 export function createAdapter<TArgs extends unknown[], TResult>({
   name,
   callback,
-}: {
-  name: string;
-  callback: (...args: TArgs) => Promise<TResult>;
-}): StubableAdapter<TArgs, TResult> {
+  stubSchema,
+}: AdapterConfiguration<TArgs, TResult>): StubableAdapter<TArgs, TResult> {
   const adapter = async (...args: TArgs): Promise<TResult> => {
     if (process.env.NEXT_PUBLIC_PHASE === 'test') {
-      const { fetchStubs } = await import('./testing/test-stub-service');
-      const stubs = await fetchStubs();
+      const { fetchSerializedTestStubs } =
+        await import('./testing/test-stub-service');
+      const serializedStubs = await fetchSerializedTestStubs();
+      const serializedStub = serializedStubs?.[name];
 
-      if (!stubs || !Object.hasOwn(stubs, name)) {
+      if (serializedStub === undefined) {
         throw new Error(`Missing stub for "${name}" adapter`);
       }
 
-      const stub = stubs[name];
+      const stubPayload = testStubPayloadSchema.parse(
+        JSON.parse(serializedStub)
+      );
+      const stubErrorResult = stubErrorEnvelopeSchema.safeParse(stubPayload);
 
-      if (isStubError(stub)) {
-        const { buildStubError } = await import('./testing/stub-errors');
-        throw buildStubError(stub.__stubError.name, stub.__stubError.message);
+      if (stubErrorResult.success) {
+        throw buildStubError(
+          stubErrorResult.data.__stubError.name,
+          stubErrorResult.data.__stubError.message
+        );
       }
 
-      return stub as TResult;
+      return stubSchema.parse(stubPayload);
     }
     return callback(...args);
   };

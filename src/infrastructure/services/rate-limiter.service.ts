@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 import { RateLimitError } from '@/src/entities/errors/auth';
 import { RateLimitPolicy } from '@/src/entities/models/rate-limit';
 import type { ICrashReporterService } from '@/src/application/services/crash-reporter.service.interface';
@@ -56,7 +58,7 @@ export class RateLimiterService implements IRateLimiterService {
             .expire(redisKey, policy.windowSeconds, 'NX')
             .exec();
 
-          assertNoReplyErrors(replies);
+          validateRedisReplies(replies);
           return null;
         })
     );
@@ -90,11 +92,19 @@ function buildKey(policy: RateLimitPolicy, key: string): string {
   return `rl:${policy.bucket}:${key}`;
 }
 
-type Replies = [error: Error | null, result: unknown][] | null;
+type RedisReplies = [error: Error | null, result: unknown][] | null;
 
-function assertNoReplyErrors(
-  replies: Replies
-): [error: null, result: unknown][] {
+type RateLimitState = {
+  count: number;
+  ttl: number;
+};
+
+const redisCountSchema = z.coerce.number().int().nonnegative();
+const redisTtlSchema = z.coerce.number().int();
+
+function validateRedisReplies(
+  replies: RedisReplies
+): NonNullable<RedisReplies> {
   if (!replies) {
     throw new Error('Redis transaction was aborted');
   }
@@ -105,14 +115,14 @@ function assertNoReplyErrors(
     }
   }
 
-  return replies as [error: null, result: unknown][];
+  return replies;
 }
 
-function readReplies(replies: Replies): { count: number; ttl: number } {
-  const [countReply, ttlReply] = assertNoReplyErrors(replies);
+function readReplies(replies: RedisReplies): RateLimitState {
+  const [countReply, ttlReply] = validateRedisReplies(replies);
 
   return {
-    count: Number(countReply?.[1] ?? 0),
-    ttl: Number(ttlReply?.[1] ?? 0),
+    count: redisCountSchema.parse(countReply?.[1] ?? 0),
+    ttl: redisTtlSchema.parse(ttlReply?.[1] ?? 0),
   };
 }

@@ -7,7 +7,10 @@ import type { LearnerCourseProgress } from '@/src/entities/models/course-progres
 
 import { CourseProvider } from '@/app/_components/course-provider';
 import { lessonHref } from '@/app/(authed)/c/four-pillars/course-href';
-import type { CourseSection } from '@/app/(authed)/c/four-pillars/course-outline';
+import type {
+  CourseSection,
+  FourPillarsCourseSlug,
+} from '@/app/(authed)/c/four-pillars/course-outline';
 import { CoursePanel } from '@/app/(authed)/c/four-pillars/course-panel';
 import {
   CoursePanelProvider,
@@ -22,7 +25,7 @@ export function CourseWorkspace({
   initialProgress,
   children,
 }: {
-  courseSlug: string;
+  courseSlug: FourPillarsCourseSlug;
   sections: readonly CourseSection[];
   panelState: CoursePanelState;
   initialProgress: LearnerCourseProgress;

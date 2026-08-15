@@ -1,7 +1,8 @@
-import { ICrashReporterService } from '@/src/application/services/crash-reporter.service.interface';
+import type { ICrashReporterService } from '@/src/application/services/crash-reporter.service.interface';
 
 export class MockCrashReporterService implements ICrashReporterService {
-  report(_: any): string {
+  report(cause: unknown): string {
+    void cause;
     return 'errorId';
   }
 }

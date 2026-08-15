@@ -2,7 +2,7 @@ import type { Quiz } from '@/src/entities/models/quiz';
 
 const PASS_THRESHOLD = 0.5;
 
-const QUIZ_CONTENT: Record<string, Quiz> = {
+const QUIZ_CONTENT = {
   'introduction/checkpoint': {
     passThreshold: PASS_THRESHOLD,
     questions: [
@@ -576,8 +576,10 @@ const QUIZ_CONTENT: Record<string, Quiz> = {
       },
     ],
   },
-};
+} satisfies Record<string, Quiz>;
+
+const QUIZ_CONTENT_BY_PATH = new Map(Object.entries(QUIZ_CONTENT));
 
 export function findQuiz(sectionSlug: string, lessonSlug: string) {
-  return QUIZ_CONTENT[`${sectionSlug}/${lessonSlug}`];
+  return QUIZ_CONTENT_BY_PATH.get(`${sectionSlug}/${lessonSlug}`);
 }

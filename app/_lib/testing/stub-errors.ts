@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 import {
   AuthenticationError,
   OAuthDomainNotAllowedError,
@@ -12,7 +14,39 @@ import {
   NotFoundError,
 } from '@/src/entities/errors/common';
 
-const stubErrors = {
+/** Error names supported by test adapter stubs. */
+export const stubErrorNameSchema = z.enum([
+  'AuthenticationError',
+  'UnauthenticatedError',
+  'UnauthorizedError',
+  'OAuthStateMismatchError',
+  'OAuthProviderError',
+  'OAuthDomainNotAllowedError',
+  'DatabaseOperationError',
+  'NotFoundError',
+  'InputParseError',
+]);
+
+/** Error name supported by test adapter stubs. */
+export type StubErrorName = z.infer<typeof stubErrorNameSchema>;
+
+/** Serialized error envelope accepted by test adapters. */
+export const stubErrorEnvelopeSchema = z.object({
+  __stubError: z.object({
+    name: stubErrorNameSchema,
+    message: z.string(),
+  }),
+});
+
+/** Serialized error envelope accepted by test adapters. */
+export type StubErrorEnvelope = z.infer<typeof stubErrorEnvelopeSchema>;
+
+type StubErrorConstructor = new (
+  message: string,
+  options?: ErrorOptions
+) => Error;
+
+const stubErrorConstructors = {
   AuthenticationError,
   UnauthenticatedError,
   UnauthorizedError,
@@ -22,16 +56,9 @@ const stubErrors = {
   DatabaseOperationError,
   NotFoundError,
   InputParseError,
-};
+} satisfies Record<StubErrorName, StubErrorConstructor>;
 
-export type StubErrorName = keyof typeof stubErrors;
-
-export function buildStubError(name: string, message: string): Error {
-  const StubError = stubErrors[name as StubErrorName];
-
-  if (!StubError) {
-    throw new Error(`Unknown stub error "${name}"`);
-  }
-
+export function buildStubError(name: StubErrorName, message: string): Error {
+  const StubError = stubErrorConstructors[name];
   return new StubError(message);
 }

@@ -114,14 +114,18 @@ export const quizSelectionsSchema = z.record(
 );
 export type QuizSelections = z.infer<typeof quizSelectionsSchema>;
 
+const pickedOptionIdsSchema = z
+  .union([
+    z.string().transform((answer) => (answer === '' ? [] : [answer])),
+    z.array(z.string()),
+  ])
+  .optional()
+  .transform((answer) => answer ?? []);
+
 function pickedOptionIds(
   answer: string | readonly string[] | undefined
 ): string[] {
-  if (typeof answer === 'string') {
-    return answer === '' ? [] : [answer];
-  }
-
-  return answer ? [...answer] : [];
+  return pickedOptionIdsSchema.parse(answer);
 }
 
 export function isAnswered(
@@ -171,16 +175,8 @@ export function gradeQuiz(
 
 export function parseQuizSelections(
   quiz: Quiz,
-  input: unknown
+  selections: QuizSelections
 ): QuizSelections {
-  const parsed = quizSelectionsSchema.safeParse(input);
-  if (!parsed.success) {
-    throw new InputParseError('Invalid quiz selections', {
-      cause: parsed.error,
-    });
-  }
-
-  const selections = parsed.data;
   const questionIds = new Set(quiz.questions.map((question) => question.id));
   const submittedQuestionIds = Object.keys(selections);
 
@@ -216,7 +212,7 @@ export function parseQuizSelections(
   );
 }
 
-export function gradeQuizSelections(quiz: Quiz, input: unknown) {
-  const selections = parseQuizSelections(quiz, input);
-  return gradeQuiz(quiz, (question) => selections[question.id]);
+export function gradeQuizSelections(quiz: Quiz, selections: QuizSelections) {
+  const validatedSelections = parseQuizSelections(quiz, selections);
+  return gradeQuiz(quiz, (question) => validatedSelections[question.id]);
 }

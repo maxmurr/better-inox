@@ -8,6 +8,10 @@ import type {
 } from '@/app/_lib/adapter-service';
 import { getCurrentUserAdapter } from '@/app/_lib/adapters/auth.adapters';
 import { getCourseProgressAdapter } from '@/app/_lib/adapters/course-progress.adapters';
+import {
+  serializeTestStubValue,
+  type SerializedTestStubDictionary,
+} from '@/app/_lib/testing/test-stub-contract';
 
 export type TestUser = {
   id: string;
@@ -51,7 +55,7 @@ export const test = base.extend<{
 }>({
   stubAdapter: async ({ page }, provide) => {
     const sessionId = crypto.randomUUID();
-    const stubs: Record<string, unknown> = {};
+    const stubs: SerializedTestStubDictionary = {};
 
     await page.context().addCookies([
       {
@@ -63,7 +67,10 @@ export const test = base.extend<{
     ]);
 
     const stub: StubAdapterFn = async (adapter, data) => {
-      stubs[adapter.adapterName] = data;
+      stubs[adapter.adapterName] = serializeTestStubValue(
+        adapter.adapterName,
+        data
+      );
       await page.request.post('/api/test-stubs', {
         data: { sessionId, data: stubs },
       });

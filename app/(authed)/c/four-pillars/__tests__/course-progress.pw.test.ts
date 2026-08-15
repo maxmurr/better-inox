@@ -7,6 +7,7 @@ import {
   setLessonCompletionAdapter,
   submitQuizAdapter,
 } from '@/app/_lib/adapters/course-progress.adapters';
+import { serializeTestStubValue } from '@/app/_lib/testing/test-stub-contract';
 import {
   EMPTY_COURSE_PROGRESS,
   expect,
@@ -342,15 +343,20 @@ test('isolates restored state between learner sessions', async ({
           data: {
             sessionId: stubSession,
             data: {
-              [getCurrentUserAdapter.adapterName]: {
-                ...TEST_USER,
-                id: `user-${index}`,
-                username: `learner${index}`,
-              },
-              [getCourseProgressAdapter.adapterName]:
+              [getCurrentUserAdapter.adapterName]: serializeTestStubValue(
+                getCurrentUserAdapter.adapterName,
+                {
+                  ...TEST_USER,
+                  id: `user-${index}`,
+                  username: `learner${index}`,
+                }
+              ),
+              [getCourseProgressAdapter.adapterName]: serializeTestStubValue(
+                getCourseProgressAdapter.adapterName,
                 index === 0
                   ? restoredProgress([FIRST_LESSON_ID])
-                  : EMPTY_COURSE_PROGRESS,
+                  : EMPTY_COURSE_PROGRESS
+              ),
             },
           },
         });

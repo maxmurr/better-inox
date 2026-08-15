@@ -1,4 +1,3 @@
-import type { Route } from 'next';
 import Link from 'next/link';
 
 import {
@@ -9,8 +8,14 @@ import {
 
 import { Button, buttonVariants } from '@/app/_components/ui/button';
 import { cn } from '@/app/_components/utils';
-import { lessonHref } from '@/app/(authed)/c/four-pillars/course-href';
-import type { CourseLesson } from '@/app/(authed)/c/four-pillars/course-outline';
+import {
+  lessonHref,
+  type LessonResultsHref,
+} from '@/app/(authed)/c/four-pillars/course-href';
+import type {
+  CourseLesson,
+  FourPillarsCourseSlug,
+} from '@/app/(authed)/c/four-pillars/course-outline';
 
 type LessonTarget = {
   section: { slug: string };
@@ -22,7 +27,7 @@ function LessonNavButton({
   target,
   direction,
 }: {
-  courseSlug: string;
+  courseSlug: FourPillarsCourseSlug;
   target: LessonTarget | undefined;
   direction: 'previous' | 'next';
 }) {
@@ -63,13 +68,13 @@ export function LessonHeader({
   next,
   resultsHref,
 }: {
-  courseSlug: string;
+  courseSlug: FourPillarsCourseSlug;
   title: string;
   position: number;
   total: number;
   previous: LessonTarget | undefined;
   next: LessonTarget | undefined;
-  resultsHref: Route;
+  resultsHref: LessonResultsHref;
 }) {
   return (
     <header className="flex flex-col gap-5">

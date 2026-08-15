@@ -1,6 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 
-const stubs = new Map<string, Record<string, unknown>>();
+import {
+  allocateTestStubsRequestSchema,
+  type SerializedTestStubDictionary,
+} from '@/app/_lib/testing/test-stub-contract';
+
+const stubsBySessionId = new Map<string, SerializedTestStubDictionary>();
 
 export async function GET(req: NextRequest) {
   if (process.env.NEXT_PUBLIC_PHASE !== 'test') {
@@ -10,7 +15,9 @@ export async function GET(req: NextRequest) {
   const sessionId = req.nextUrl.searchParams.get('sessionId');
 
   if (sessionId) {
-    return NextResponse.json({ stubs: stubs.get(sessionId) ?? null });
+    return NextResponse.json({
+      stubs: stubsBySessionId.get(sessionId) ?? null,
+    });
   }
 
   return NextResponse.json({ status: 'ready' });
@@ -21,11 +28,10 @@ export async function POST(req: NextRequest) {
     return new NextResponse(null, { status: 404 });
   }
 
-  const json: { sessionId: string; data: Record<string, unknown> } =
-    await req.json();
-  const { sessionId, data } = json;
-
-  stubs.set(sessionId, data);
+  const { sessionId, data } = allocateTestStubsRequestSchema.parse(
+    await req.json()
+  );
+  stubsBySessionId.set(sessionId, data);
 
   return NextResponse.json({ message: 'Stub allocated/updated' });
 }

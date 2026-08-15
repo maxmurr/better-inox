@@ -1,5 +1,7 @@
 'use client';
 
+import type { CSSProperties } from 'react';
+
 import {
   CircleCheckIcon,
   InfoIcon,
@@ -8,6 +10,20 @@ import {
   TriangleAlertIcon,
 } from 'lucide-react';
 import { Toaster as Sonner, type ToasterProps } from 'sonner';
+
+type SonnerCssProperties = CSSProperties & {
+  '--normal-bg': string;
+  '--normal-text': string;
+  '--normal-border': string;
+  '--border-radius': string;
+};
+
+const SONNER_CSS_PROPERTIES: SonnerCssProperties = {
+  '--normal-bg': 'var(--popover)',
+  '--normal-text': 'var(--popover-foreground)',
+  '--normal-border': 'var(--border)',
+  '--border-radius': 'var(--radius)',
+};
 
 const Toaster = ({ ...props }: ToasterProps) => {
   return (
@@ -26,14 +42,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
           />
         ),
       }}
-      style={
-        {
-          '--normal-bg': 'var(--popover)',
-          '--normal-text': 'var(--popover-foreground)',
-          '--normal-border': 'var(--border)',
-          '--border-radius': 'var(--radius)',
-        } as React.CSSProperties
-      }
+      style={SONNER_CSS_PROPERTIES}
       toastOptions={{
         classNames: {
           toast: 'cn-toast',

@@ -1,6 +1,12 @@
 import { cookies, headers } from 'next/headers';
 
-export async function fetchStubs(): Promise<Record<string, unknown> | null> {
+import {
+  fetchedTestStubsResponseSchema,
+  type SerializedTestStubDictionary,
+} from './test-stub-contract';
+
+/** Fetches serialized adapter stubs allocated to current test session. */
+export async function fetchSerializedTestStubs(): Promise<SerializedTestStubDictionary | null> {
   const sessionId = (await cookies()).get('x-test-session')?.value;
 
   if (!sessionId) {
@@ -14,8 +20,9 @@ export async function fetchStubs(): Promise<Record<string, unknown> | null> {
       cache: 'no-store',
     }
   );
-  const { stubs }: { stubs: Record<string, unknown> | null } =
-    await response.json();
+  const responsePayload = fetchedTestStubsResponseSchema.parse(
+    await response.json()
+  );
 
-  return stubs;
+  return responsePayload.stubs;
 }
