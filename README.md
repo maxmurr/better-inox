@@ -96,8 +96,8 @@ layers depend only on layers **below them**, but not above.
 - **Application**: where the business logic lives. Sometimes called _core_. This
   layer defines the Use Cases and interfaces for the services and repositories.
   - **Use Cases**:
-    - Represent individual operations, like "Create Todo" or "Sign In" or
-      "Toggle Todo".
+    - Represent individual operations, like "Set Lesson Completion" or "Sign In"
+      or "Submit Quiz".
     - Accept pre-validated input (from controllers) and _handle authorization
       checks_.
     - Use _Repositories_ and _Services_ to access data sources and communicate
@@ -141,10 +141,11 @@ layers depend only on layers **below them**, but not above.
     _Application Layer_ and implements them in their own classes.
   - _Repositories_ are how we implement the database operations. They are
     classes that expose methods that perform a single database operation - like
-    `getTodo`, or `createTodo`, or `updateTodo`. This means that we use the
-    database library / driver in these classes only. They don't perform any data
-    validation, just execute queries and mutations against the database and
-    either throw our custom defined _Errors_ or return results.
+    `getCourseProgress`, or `upsertLessonProgress`, or `upsertQuizResult`. This
+    means that we use the database library / driver in these classes only. They
+    don't perform any data validation, just execute queries and mutations
+    against the database and either throw our custom defined _Errors_ or return
+    results.
   - _Services_ are shared services that are being used across the application -
     like an authentication service, or email service, or implement external
     systems like Stripe (create payments, validate receipts etc...). These
