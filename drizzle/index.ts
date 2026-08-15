@@ -11,7 +11,6 @@ import {
   courseQuizResults,
   oauthAccounts,
   sessions,
-  todos,
   users,
 } from './schema';
 
@@ -31,7 +30,6 @@ export const db = drizzle(pool, {
   schema: {
     users,
     sessions,
-    todos,
     oauthAccounts,
     courseLessonProgress,
     courseQuizResults,
@@ -43,7 +41,6 @@ export const luciaAdapter = new DrizzlePostgreSQLAdapter(db, sessions, users);
 type Schema = {
   users: typeof users;
   sessions: typeof sessions;
-  todos: typeof todos;
   oauthAccounts: typeof oauthAccounts;
   courseLessonProgress: typeof courseLessonProgress;
   courseQuizResults: typeof courseQuizResults;
