@@ -24,7 +24,7 @@ export default function GlobalError({
           id="main-content"
           className="flex max-w-md flex-col items-center gap-4 text-center"
         >
-          <h1 className="font-heading text-xl leading-snug font-semibold tracking-tight text-balance">
+          <h1 className="font-heading text-xl/snug font-semibold tracking-tight text-balance">
             Something went wrong
           </h1>
           <p className="text-sm text-pretty text-muted-foreground">

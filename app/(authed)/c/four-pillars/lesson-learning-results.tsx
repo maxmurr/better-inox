@@ -84,7 +84,7 @@ function LessonResultsSummary({
               Learners with recorded activity.
             </dd>
           </div>
-          <div className="flex min-w-0 flex-col gap-1 py-4 @sm:px-5 @sm:py-5">
+          <div className="flex min-w-0 flex-col gap-1 py-4 @sm:p-5">
             <dt className="truncate text-base font-medium text-foreground sm:text-sm">
               Completed
             </dt>

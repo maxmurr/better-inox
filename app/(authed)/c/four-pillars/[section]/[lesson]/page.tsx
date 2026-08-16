@@ -62,7 +62,7 @@ export default async function Page({
           >
             <ArrowLeftIcon aria-hidden />
           </Link>
-          <h1 className="min-w-0 font-heading text-base leading-snug font-semibold tracking-tight text-balance text-foreground sm:text-lg">
+          <h1 className="min-w-0 font-heading text-base/snug font-semibold tracking-tight text-balance text-foreground sm:text-lg">
             The 4 Pillars of Automated Tests
           </h1>
         </div>

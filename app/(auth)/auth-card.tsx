@@ -23,7 +23,7 @@ export function AuthCard({
   return (
     <Card className="w-full max-w-md [--card-spacing:--spacing(6)]">
       <CardHeader>
-        <h1 className="font-heading text-xl leading-snug font-semibold tracking-tight text-balance text-foreground">
+        <h1 className="font-heading text-xl/snug font-semibold tracking-tight text-balance text-foreground">
           {title}
         </h1>
         <p className="text-sm text-pretty text-muted-foreground">

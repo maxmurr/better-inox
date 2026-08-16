@@ -15,7 +15,7 @@ const components: MDXComponents = {
   ),
   h3: (props) => (
     <h3
-      className="mt-2 font-heading text-lg leading-snug font-medium tracking-tight text-balance text-foreground"
+      className="mt-2 font-heading text-lg/snug font-medium tracking-tight text-balance text-foreground"
       {...props}
     />
   ),

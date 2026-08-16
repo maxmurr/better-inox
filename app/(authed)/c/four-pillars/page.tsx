@@ -11,7 +11,7 @@ export default async function Page() {
   return (
     <>
       <header className="flex h-14 shrink-0 items-center justify-between gap-3 border-b border-border bg-background px-3 sm:px-4">
-        <h1 className="min-w-0 font-heading text-base leading-snug font-semibold tracking-tight text-balance text-foreground sm:text-lg">
+        <h1 className="min-w-0 font-heading text-base/snug font-semibold tracking-tight text-balance text-foreground sm:text-lg">
           The 4 Pillars of Automated Tests
         </h1>
         <UserMenu username={user.username} avatarUrl={user.avatarUrl} />
@@ -41,7 +41,7 @@ export default async function Page() {
           >
             <h2
               id="four-pillars-content"
-              className="font-heading text-lg leading-snug font-medium tracking-tight text-balance text-foreground"
+              className="font-heading text-lg/snug font-medium tracking-tight text-balance text-foreground"
             >
               Content
             </h2>

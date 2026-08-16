@@ -57,7 +57,7 @@ export function CoursePanel({
       className="fixed inset-y-0 right-0 z-30 flex w-full flex-col border-l border-border bg-background pb-[env(safe-area-inset-bottom)] transition-transform duration-250 ease-out-quart outline-none data-[open=false]:translate-x-full data-[open=false]:duration-200 motion-reduce:transition-none lg:w-(--course-panel-width)"
     >
       <div className="flex h-14 shrink-0 items-center justify-between gap-3 border-b border-border px-3 sm:px-4">
-        <h2 className="min-w-0 truncate font-heading text-base leading-snug font-semibold tracking-tight text-foreground sm:text-lg">
+        <h2 className="min-w-0 truncate font-heading text-base/snug font-semibold tracking-tight text-foreground sm:text-lg">
           {title}
         </h2>
         <Button
@@ -126,7 +126,7 @@ function LessonsPanel({
   }, [isOpen]);
 
   return (
-    <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-2 py-2 sm:px-3">
+    <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-2 sm:px-3">
       <Accordion
         multiple
         value={openSections}
