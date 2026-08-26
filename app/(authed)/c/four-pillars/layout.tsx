@@ -1,10 +1,7 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
-import {
-  AuthenticationError,
-  UnauthenticatedError,
-} from '@/src/entities/errors/auth';
+import { UnauthenticatedError } from '@/src/entities/errors/auth';
 
 import { COURSE_PANEL_COOKIE, SESSION_COOKIE } from '@/config';
 
@@ -28,10 +25,7 @@ async function loadCourseProgress(sessionId: string | undefined) {
           sessionId
         );
       } catch (err) {
-        if (
-          err instanceof UnauthenticatedError ||
-          err instanceof AuthenticationError
-        ) {
+        if (err instanceof UnauthenticatedError) {
           redirect('/sign-in');
         }
 

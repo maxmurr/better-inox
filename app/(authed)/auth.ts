@@ -2,10 +2,7 @@ import { cache } from 'react';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
-import {
-  AuthenticationError,
-  UnauthenticatedError,
-} from '@/src/entities/errors/auth';
+import { UnauthenticatedError } from '@/src/entities/errors/auth';
 
 import { SESSION_COOKIE } from '@/config';
 
@@ -26,10 +23,7 @@ export const getCurrentUser = cache(async () => {
       try {
         return await getCurrentUserAdapter(sessionId);
       } catch (err) {
-        if (
-          err instanceof UnauthenticatedError ||
-          err instanceof AuthenticationError
-        ) {
+        if (err instanceof UnauthenticatedError) {
           redirect('/sign-in');
         }
         await reportAppErrorAdapter(err);

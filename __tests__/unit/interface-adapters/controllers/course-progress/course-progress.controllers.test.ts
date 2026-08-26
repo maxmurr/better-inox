@@ -3,10 +3,14 @@ import { describe, expect, it } from 'vitest';
 import { UnauthenticatedError } from '@/src/entities/errors/auth';
 import { InputParseError } from '@/src/entities/errors/common';
 import { quizSchema } from '@/src/entities/models/quiz';
+import {
+  MOCK_OAUTH_CODE_VERIFIER,
+  MOCK_OAUTH_STATE,
+} from '@/src/infrastructure/services/oauth.service.mock';
 
 import { getInjection } from '@/di/container';
 
-const signInUseCase = getInjection('ISignInUseCase');
+const signInWithGoogleUseCase = getInjection('ISignInWithGoogleUseCase');
 const getCourseProgressController = getInjection(
   'IGetCourseProgressController'
 );
@@ -14,6 +18,13 @@ const setLessonCompletionController = getInjection(
   'ISetLessonCompletionController'
 );
 const submitQuizController = getInjection('ISubmitQuizController');
+
+const googleCallback = (code: string) => ({
+  code,
+  state: MOCK_OAUTH_STATE,
+  storedState: MOCK_OAUTH_STATE,
+  codeVerifier: MOCK_OAUTH_CODE_VERIFIER,
+});
 
 const quiz = quizSchema.parse({
   passThreshold: 0.5,
@@ -33,10 +44,9 @@ const quiz = quizSchema.parse({
 
 describe('course progress controllers', () => {
   it('authenticates, saves reversible completion, and presents no identity', async () => {
-    const { session } = await signInUseCase({
-      username: 'one',
-      password: 'password-one',
-    });
+    const { session } = await signInWithGoogleUseCase(
+      googleCallback('course-progress-one')
+    );
 
     await expect(
       setLessonCompletionController(
@@ -76,10 +86,9 @@ describe('course progress controllers', () => {
   });
 
   it('returns a canonical latest quiz result with a derived score', async () => {
-    const { session } = await signInUseCase({
-      username: 'two',
-      password: 'password-two',
-    });
+    const { session } = await signInWithGoogleUseCase(
+      googleCallback('course-progress-two')
+    );
 
     await expect(
       submitQuizController(
@@ -111,10 +120,9 @@ describe('course progress controllers', () => {
   });
 
   it('rejects unauthenticated and malformed requests', async () => {
-    const { session } = await signInUseCase({
-      username: 'three',
-      password: 'password-three',
-    });
+    const { session } = await signInWithGoogleUseCase(
+      googleCallback('course-progress-three')
+    );
 
     await expect(
       setLessonCompletionController(

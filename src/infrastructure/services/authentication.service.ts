@@ -1,4 +1,3 @@
-import { compare } from 'bcrypt-ts';
 import { generateIdFromEntropySize, Lucia } from 'lucia';
 
 import { UnauthenticatedError } from '@/src/entities/errors/auth';
@@ -33,16 +32,6 @@ export class AuthenticationService implements IAuthenticationService {
         };
       },
     });
-  }
-
-  validatePasswords(
-    inputPassword: string,
-    usersHashedPassword: string
-  ): Promise<boolean> {
-    return this._instrumentationService.startSpan(
-      { name: 'verify password hash', op: 'function' },
-      () => compare(inputPassword, usersHashedPassword)
-    );
   }
 
   async validateSession(

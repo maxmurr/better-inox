@@ -6,7 +6,6 @@ import { POST_SIGN_IN_REDIRECT } from '@/config';
 import { AuthCard, AuthLink } from '../auth-card';
 import { GoogleSignIn } from '../google-sign-in';
 import { hasValidSession } from '../session';
-import { SignUpForm } from './sign-up-form';
 
 export const metadata: Metadata = {
   title: 'Sign Up',
@@ -21,7 +20,7 @@ export default async function SignUpPage() {
   return (
     <AuthCard
       title="Sign Up"
-      description="Choose a username and password to get started."
+      description="Create an account with your Inox Google account."
       footer={
         <>
           <span>Already have an account?</span>
@@ -29,7 +28,6 @@ export default async function SignUpPage() {
         </>
       }
     >
-      <SignUpForm />
       <GoogleSignIn />
     </AuthCard>
   );

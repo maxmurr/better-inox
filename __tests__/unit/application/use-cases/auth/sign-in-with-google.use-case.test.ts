@@ -35,7 +35,6 @@ it('creates a user and a session for an unseen Google account', async () => {
 
   const user = await usersRepository.getUser(result.session.userId);
   expect(user?.username).toBe('newcomer');
-  expect(user?.password_hash).toBeNull();
 });
 
 it('stores the avatar URL from the Google identity', async () => {

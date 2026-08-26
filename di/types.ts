@@ -9,9 +9,7 @@ import { IOAuthService } from '@/src/application/services/oauth.service.interfac
 import { IRateLimiterService } from '@/src/application/services/rate-limiter.service.interface';
 import { ITransactionManagerService } from '@/src/application/services/transaction-manager.service.interface';
 import { ISignInWithGoogleUseCase } from '@/src/application/use-cases/auth/sign-in-with-google.use-case';
-import { ISignInUseCase } from '@/src/application/use-cases/auth/sign-in.use-case';
 import { ISignOutUseCase } from '@/src/application/use-cases/auth/sign-out.use-case';
-import { ISignUpUseCase } from '@/src/application/use-cases/auth/sign-up.use-case';
 import { IStartGoogleSignInUseCase } from '@/src/application/use-cases/auth/start-google-sign-in.use-case';
 import { IGetCourseProgressUseCase } from '@/src/application/use-cases/course-progress/get-course-progress.use-case';
 import { IGetLessonLearningResultsUseCase } from '@/src/application/use-cases/course-progress/get-lesson-learning-results.use-case';
@@ -19,9 +17,7 @@ import { ISetLessonCompletionUseCase } from '@/src/application/use-cases/course-
 import { ISubmitQuizUseCase } from '@/src/application/use-cases/course-progress/submit-quiz.use-case';
 import { IGetCurrentUserController } from '@/src/interface-adapters/controllers/auth/get-current-user.controller';
 import { IGoogleCallbackController } from '@/src/interface-adapters/controllers/auth/google-callback.controller';
-import { ISignInController } from '@/src/interface-adapters/controllers/auth/sign-in.controller';
 import { ISignOutController } from '@/src/interface-adapters/controllers/auth/sign-out.controller';
-import { ISignUpController } from '@/src/interface-adapters/controllers/auth/sign-up.controller';
 import { IStartGoogleSignInController } from '@/src/interface-adapters/controllers/auth/start-google-sign-in.controller';
 import { IGetCourseProgressController } from '@/src/interface-adapters/controllers/course-progress/get-course-progress.controller';
 import { IGetLessonLearningResultsController } from '@/src/interface-adapters/controllers/course-progress/get-lesson-learning-results.controller';
@@ -50,17 +46,13 @@ export const DI_SYMBOLS = {
   ),
   ISetLessonCompletionUseCase: Symbol.for('ISetLessonCompletionUseCase'),
   ISubmitQuizUseCase: Symbol.for('ISubmitQuizUseCase'),
-  ISignInUseCase: Symbol.for('ISignInUseCase'),
   ISignOutUseCase: Symbol.for('ISignOutUseCase'),
-  ISignUpUseCase: Symbol.for('ISignUpUseCase'),
   IStartGoogleSignInUseCase: Symbol.for('IStartGoogleSignInUseCase'),
   ISignInWithGoogleUseCase: Symbol.for('ISignInWithGoogleUseCase'),
 
   // Controllers
   IGetCurrentUserController: Symbol.for('IGetCurrentUserController'),
-  ISignInController: Symbol.for('ISignInController'),
   ISignOutController: Symbol.for('ISignOutController'),
-  ISignUpController: Symbol.for('ISignUpController'),
   IStartGoogleSignInController: Symbol.for('IStartGoogleSignInController'),
   IGoogleCallbackController: Symbol.for('IGoogleCallbackController'),
   IGetCourseProgressController: Symbol.for('IGetCourseProgressController'),
@@ -91,17 +83,13 @@ export interface DI_RETURN_TYPES {
   IGetLessonLearningResultsUseCase: IGetLessonLearningResultsUseCase;
   ISetLessonCompletionUseCase: ISetLessonCompletionUseCase;
   ISubmitQuizUseCase: ISubmitQuizUseCase;
-  ISignInUseCase: ISignInUseCase;
   ISignOutUseCase: ISignOutUseCase;
-  ISignUpUseCase: ISignUpUseCase;
   IStartGoogleSignInUseCase: IStartGoogleSignInUseCase;
   ISignInWithGoogleUseCase: ISignInWithGoogleUseCase;
 
   // Controllers
   IGetCurrentUserController: IGetCurrentUserController;
-  ISignInController: ISignInController;
   ISignOutController: ISignOutController;
-  ISignUpController: ISignUpController;
   IStartGoogleSignInController: IStartGoogleSignInController;
   IGoogleCallbackController: IGoogleCallbackController;
   IGetCourseProgressController: IGetCourseProgressController;

@@ -15,7 +15,6 @@ import type { QuestionOutcome } from '@/src/entities/models/quiz';
 export const users = pgTable('user', {
   id: text('id').primaryKey(),
   username: text('username').notNull().unique(),
-  password_hash: text('password_hash'),
   avatar_url: text('avatar_url'),
   created_at: timestamp('created_at', { withTimezone: true, mode: 'date' })
     .notNull()

@@ -28,12 +28,15 @@ test('stays quiet for an unrecognised error code', async ({ page }) => {
   await expect(alerts(page)).toHaveCount(0);
 });
 
-test('offers Google as an alternative on both pages', async ({ page }) => {
+test('offers only Google authentication on both pages', async ({ page }) => {
   for (const path of ['/sign-in', '/sign-up']) {
     await page.goto(path);
 
     await expect(
       page.getByRole('button', { name: 'Continue with Google' })
     ).toHaveAttribute('href', '/api/auth/google');
+    await expect(
+      page.locator('input[name="username"], input[type="password"]')
+    ).toHaveCount(0);
   }
 });

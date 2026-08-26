@@ -3,15 +3,26 @@ import { describe, expect, it } from 'vitest';
 import { UnauthenticatedError } from '@/src/entities/errors/auth';
 import { InputParseError } from '@/src/entities/errors/common';
 import { quizSchema } from '@/src/entities/models/quiz';
+import {
+  MOCK_OAUTH_CODE_VERIFIER,
+  MOCK_OAUTH_STATE,
+} from '@/src/infrastructure/services/oauth.service.mock';
 
 import { getInjection } from '@/di/container';
 
-const signUp = getInjection('ISignUpUseCase');
+const signInWithGoogleUseCase = getInjection('ISignInWithGoogleUseCase');
 const getLessonLearningResults = getInjection(
   'IGetLessonLearningResultsController'
 );
 const setLessonCompletion = getInjection('ISetLessonCompletionController');
 const submitQuiz = getInjection('ISubmitQuizController');
+
+const googleCallback = (code: string) => ({
+  code,
+  state: MOCK_OAUTH_STATE,
+  storedState: MOCK_OAUTH_STATE,
+  codeVerifier: MOCK_OAUTH_CODE_VERIFIER,
+});
 
 const quiz = quizSchema.parse({
   passThreshold: 0.5,
@@ -35,10 +46,9 @@ describe('get lesson learning results controller', () => {
       courseSlug: 'lesson-results-controller-course',
       lessonId: 'section/results-quiz',
     };
-    const first = await signUp({
-      username: 'lesson-results-one',
-      password: 'password-results-one',
-    });
+    const first = await signInWithGoogleUseCase(
+      googleCallback('lesson-results-one')
+    );
 
     await setLessonCompletion({ ...input, completed: true }, first.session.id);
     await submitQuiz(
@@ -47,11 +57,10 @@ describe('get lesson learning results controller', () => {
       quiz
     );
 
-    // Mock sessions share one ID, so finish first learner writes before sign-up.
-    const second = await signUp({
-      username: 'lesson-results-two',
-      password: 'password-results-two',
-    });
+    // Mock sessions share one ID, so finish first learner writes before next sign-in.
+    const second = await signInWithGoogleUseCase(
+      googleCallback('lesson-results-two')
+    );
 
     await setLessonCompletion(
       { ...input, completed: false },
@@ -84,15 +93,13 @@ describe('get lesson learning results controller', () => {
         quizResult: { correct: 0, total: 1, score: 0, passed: false },
       },
     ]);
-    expect(JSON.stringify(presented)).not.toContain('password_hash');
     expect(JSON.stringify(presented)).not.toContain('outcomes');
   });
 
   it('rejects unauthenticated and malformed requests', async () => {
-    const user = await signUp({
-      username: 'lesson-results-three',
-      password: 'password-results-three',
-    });
+    const user = await signInWithGoogleUseCase(
+      googleCallback('lesson-results-three')
+    );
 
     await expect(
       getLessonLearningResults(

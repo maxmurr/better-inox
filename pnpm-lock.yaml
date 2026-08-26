@@ -35,9 +35,6 @@ importers:
       arctic:
         specifier: ^3.7.0
         version: 3.7.0
-      bcrypt-ts:
-        specifier: ^9.0.1
-        version: 9.0.1
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -2671,10 +2668,6 @@ packages:
     engines: {node: '>=6.0.0'}
     hasBin: true
 
-  bcrypt-ts@9.0.1:
-    resolution: {integrity: sha512-S38l8sCnXqTAiqswTMRhdiFFqPgDZqTy+WLfIL2KNbBf4EMe1E2v+ednI9M0hzEdBcoyzdB+VqhIRPqxscomnQ==}
-    engines: {node: '>=22'}
-
   body-parser@2.3.0:
     resolution: {integrity: sha512-2cGmJupaNgg+QUwVLAucDuWuoMZ6EX9iHDRswZ5lsNYEmwPaRknMPCLZz07yTzVq/83p4o/wzbDZbBrTvGGTIw==}
     engines: {node: '>=18'}
@@ -3395,6 +3388,7 @@ packages:
   eslint@9.39.5:
     resolution: {integrity: sha512-DgZS62aPLXKlnxILS/AYCoRvHaZeXceIzlXPkkGGzJWSow1aEk0lbTlxUSlyjC8jcaKxAdOnTDz+o1JFSBsyjw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
     peerDependencies:
       jiti: '*'
@@ -8120,8 +8114,6 @@ snapshots:
   balanced-match@4.0.4: {}
 
   baseline-browser-mapping@2.11.8: {}
-
-  bcrypt-ts@9.0.1: {}
 
   body-parser@2.3.0(supports-color@8.1.1):
     dependencies:

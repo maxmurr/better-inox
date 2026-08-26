@@ -2,10 +2,7 @@
 
 import { cookies } from 'next/headers';
 
-import {
-  AuthenticationError,
-  UnauthenticatedError,
-} from '@/src/entities/errors/auth';
+import { UnauthenticatedError } from '@/src/entities/errors/auth';
 import { InputParseError, NotFoundError } from '@/src/entities/errors/common';
 import type { QuizSelections } from '@/src/entities/models/quiz';
 
@@ -49,10 +46,7 @@ export async function saveLessonCompletion(
 
         return { success: true as const, data: saved };
       } catch (err) {
-        if (
-          err instanceof UnauthenticatedError ||
-          err instanceof AuthenticationError
-        ) {
+        if (err instanceof UnauthenticatedError) {
           return { error: 'Your session expired. Sign in and try again.' };
         }
         if (err instanceof NotFoundError || err instanceof InputParseError) {
@@ -101,10 +95,7 @@ export async function saveQuizSubmission(
 
         return { success: true as const, data: saved };
       } catch (err) {
-        if (
-          err instanceof UnauthenticatedError ||
-          err instanceof AuthenticationError
-        ) {
+        if (err instanceof UnauthenticatedError) {
           return { error: 'Your session expired. Sign in and try again.' };
         }
         if (err instanceof NotFoundError || err instanceof InputParseError) {

@@ -5,10 +5,7 @@ import { notFound, redirect } from 'next/navigation';
 
 import { ArrowLeftIcon } from 'lucide-react';
 
-import {
-  AuthenticationError,
-  UnauthenticatedError,
-} from '@/src/entities/errors/auth';
+import { UnauthenticatedError } from '@/src/entities/errors/auth';
 
 import { SESSION_COOKIE } from '@/config';
 
@@ -40,10 +37,7 @@ async function loadLessonLearningResults(lessonId: string) {
           sessionId
         );
       } catch (err) {
-        if (
-          err instanceof UnauthenticatedError ||
-          err instanceof AuthenticationError
-        ) {
+        if (err instanceof UnauthenticatedError) {
           redirect('/sign-in');
         }
 

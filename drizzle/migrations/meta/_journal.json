@@ -43,6 +43,13 @@
       "when": 1786769934582,
       "tag": "0005_fixed_molten_man",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1787754444727,
+      "tag": "0006_messy_marvel_boy",
+      "breakpoints": true
     }
   ]
 }

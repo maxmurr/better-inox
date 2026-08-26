@@ -1,9 +1,6 @@
 import { cookies } from 'next/headers';
 
-import {
-  AuthenticationError,
-  UnauthenticatedError,
-} from '@/src/entities/errors/auth';
+import { UnauthenticatedError } from '@/src/entities/errors/auth';
 
 import { SESSION_COOKIE } from '@/config';
 
@@ -27,10 +24,7 @@ export async function hasValidSession() {
         await getCurrentUserAdapter(sessionId);
         return true;
       } catch (err) {
-        if (
-          err instanceof UnauthenticatedError ||
-          err instanceof AuthenticationError
-        ) {
+        if (err instanceof UnauthenticatedError) {
           return false;
         }
         await reportAppErrorAdapter(err);

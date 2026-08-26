@@ -8,7 +8,6 @@ import {
 
 import { getInjection } from '@/di/container';
 
-const signInUseCase = getInjection('ISignInUseCase');
 const signInWithGoogleUseCase = getInjection('ISignInWithGoogleUseCase');
 const getCurrentUserController = getInjection('IGetCurrentUserController');
 
@@ -22,34 +21,11 @@ it('returns the username and avatar of the signed-in user', async () => {
     codeVerifier: MOCK_OAUTH_CODE_VERIFIER,
   });
 
-  await expect(getCurrentUserController(session.id)).resolves.toMatchObject({
+  await expect(getCurrentUserController(session.id)).resolves.toStrictEqual({
+    id: session.userId,
     username: 'profile-view',
     avatarUrl: 'https://lh3.googleusercontent.com/mock/profile-view',
   });
-});
-
-it('returns a null avatar for a password user', async () => {
-  const { session } = await signInUseCase({
-    username: 'one',
-    password: 'password-one',
-  });
-
-  await expect(getCurrentUserController(session.id)).resolves.toStrictEqual({
-    id: '1',
-    username: 'one',
-    avatarUrl: null,
-  });
-});
-
-it('never exposes the password hash', async () => {
-  const { session } = await signInUseCase({
-    username: 'two',
-    password: 'password-two',
-  });
-
-  await expect(
-    getCurrentUserController(session.id)
-  ).resolves.not.toHaveProperty('password_hash');
 });
 
 it('throws when unauthenticated', async () => {

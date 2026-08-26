@@ -1,17 +1,11 @@
-import { hash } from 'bcrypt-ts';
 import { eq } from 'drizzle-orm';
 
 import { DatabaseOperationError } from '@/src/entities/errors/common';
-import type {
-  CreateOAuthUser,
-  CreateUser,
-  User,
-} from '@/src/entities/models/user';
+import type { CreateOAuthUser, User } from '@/src/entities/models/user';
 import { IUsersRepository } from '@/src/application/repositories/users.repository.interface';
 import type { ICrashReporterService } from '@/src/application/services/crash-reporter.service.interface';
 import type { IInstrumentationService } from '@/src/application/services/instrumentation.service.interface';
 
-import { PASSWORD_SALT_ROUNDS } from '@/config';
 import { db, Transaction } from '@/drizzle';
 import { users } from '@/drizzle/schema';
 
@@ -80,52 +74,6 @@ export class UsersRepository implements IUsersRepository {
       }
     );
   }
-  async createUser(input: CreateUser): Promise<User> {
-    return await this.instrumentationService.startSpan(
-      { name: 'UsersRepository > createUser' },
-      async () => {
-        try {
-          const password_hash = await this.instrumentationService.startSpan(
-            { name: 'hash password', op: 'function' },
-            () => hash(input.password, PASSWORD_SALT_ROUNDS)
-          );
-
-          const query = db
-            .insert(users)
-            .values({
-              id: input.id,
-              username: input.username,
-              password_hash,
-              avatar_url: null,
-            })
-            .returning();
-
-          const [created] = await this.instrumentationService.startSpan(
-            {
-              name: query.toSQL().sql,
-              op: 'db.query',
-              attributes: { 'db.system': 'postgresql' },
-            },
-            () => query.execute()
-          );
-
-          if (created) {
-            return created;
-          } else {
-            throw new DatabaseOperationError('Cannot create user.');
-          }
-        } catch (err) {
-          this.crashReporterService.report(err);
-          if (err instanceof DatabaseOperationError) {
-            throw err;
-          }
-          throw new DatabaseOperationError('Cannot create user.', {
-            cause: err,
-          });
-        }
-      }
-    );
-  }
   async createOAuthUser(
     input: CreateOAuthUser,
     tx?: Transaction
@@ -141,7 +89,6 @@ export class UsersRepository implements IUsersRepository {
             .values({
               id: input.id,
               username: input.username,
-              password_hash: null,
               avatar_url: input.avatar_url ?? null,
             })
             .returning();

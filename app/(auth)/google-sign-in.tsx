@@ -1,7 +1,6 @@
 import { Suspense } from 'react';
 
 import { Button } from '@/app/_components/ui/button';
-import { Separator } from '@/app/_components/ui/separator';
 
 import { GoogleSignInError } from './google-sign-in-error';
 
@@ -31,13 +30,6 @@ function GoogleIcon({ ...props }: React.ComponentProps<'svg'>) {
 export function GoogleSignIn() {
   return (
     <div className="grid gap-4">
-      <div aria-hidden className="flex items-center gap-3">
-        <Separator className="flex-1" />
-        <span className="text-xs tracking-wider text-muted-foreground uppercase">
-          or
-        </span>
-        <Separator className="flex-1" />
-      </div>
       <Suspense fallback={null}>
         <GoogleSignInError />
       </Suspense>

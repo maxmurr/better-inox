@@ -1,7 +1,6 @@
 import { z } from 'zod';
 
 import {
-  AuthenticationError,
   OAuthDomainNotAllowedError,
   OAuthProviderError,
   OAuthStateMismatchError,
@@ -16,7 +15,6 @@ import {
 
 /** Error names supported by test adapter stubs. */
 export const stubErrorNameSchema = z.enum([
-  'AuthenticationError',
   'UnauthenticatedError',
   'UnauthorizedError',
   'OAuthStateMismatchError',
@@ -47,7 +45,6 @@ type StubErrorConstructor = new (
 ) => Error;
 
 const stubErrorConstructors = {
-  AuthenticationError,
   UnauthenticatedError,
   UnauthorizedError,
   OAuthStateMismatchError,
