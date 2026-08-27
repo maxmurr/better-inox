@@ -26,18 +26,23 @@ const idTokenClaimsSchema = z.object({
   picture: z.url().optional(),
 });
 
-export class OAuthService implements IOAuthService {
-  private _google: Google;
+const googleUserInfoSchema = z.object({
+  picture: z.url().optional(),
+});
 
+export class OAuthService implements IOAuthService {
   constructor(
-    private readonly _instrumentationService: IInstrumentationService
-  ) {
-    this._google = new Google(
+    private readonly _instrumentationService: IInstrumentationService,
+    private readonly _google: Pick<
+      Google,
+      'createAuthorizationURL' | 'validateAuthorizationCode'
+    > = new Google(
       env.GOOGLE_CLIENT_ID,
       env.GOOGLE_CLIENT_SECRET,
       env.GOOGLE_REDIRECT_URI
-    );
-  }
+    ),
+    private readonly _fetch: typeof fetch = fetch
+  ) {}
 
   createGoogleAuthorizationRequest(): GoogleAuthorizationRequest {
     return this._instrumentationService.startSpan(
@@ -63,6 +68,7 @@ export class OAuthService implements IOAuthService {
     return await this._instrumentationService.startSpan(
       { name: 'OAuthService > validateGoogleCallback' },
       async () => {
+        let accessToken: string;
         let idToken: string;
         try {
           const tokens = await this._instrumentationService.startSpan(
@@ -70,6 +76,7 @@ export class OAuthService implements IOAuthService {
             () => this._google.validateAuthorizationCode(code, codeVerifier)
           );
 
+          accessToken = tokens.accessToken();
           idToken = tokens.idToken();
         } catch (err) {
           if (err instanceof OAuth2RequestError) {
@@ -101,14 +108,44 @@ export class OAuthService implements IOAuthService {
           });
         }
 
+        const avatarUrl =
+          claims.picture ??
+          (await this._instrumentationService.startSpan(
+            { name: 'google.userinfo', op: 'http.client' },
+            () => fetchGoogleAvatarUrl(accessToken, this._fetch)
+          ));
+
         return {
           providerUserId: claims.sub,
           email: claims.email,
           name: claims.name,
           hd: claims.hd,
-          avatarUrl: claims.picture,
+          avatarUrl,
         };
       }
     );
+  }
+}
+
+async function fetchGoogleAvatarUrl(
+  accessToken: string,
+  fetchGoogleUserInfo: typeof fetch
+): Promise<string | undefined> {
+  try {
+    const response = await fetchGoogleUserInfo(
+      'https://openidconnect.googleapis.com/v1/userinfo',
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+        cache: 'no-store',
+      }
+    );
+
+    if (!response.ok) {
+      return undefined;
+    }
+
+    return googleUserInfoSchema.safeParse(await response.json()).data?.picture;
+  } catch {
+    return undefined;
   }
 }
