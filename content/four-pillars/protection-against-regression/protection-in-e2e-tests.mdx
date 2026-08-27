@@ -1,21 +1,17 @@
-End-to-end (E2E) tests are supposed to test your application from the user's
-perspective, ensuring all the external dependencies are spinned up — that
-includes:
+End-to-end (E2E) tests run your application from the user's perspective with its
+external dependencies available. These may include:
 
 - APIs
 - Databases
-- File system
-- Cloud Storage
-- Authentication systems (when applicable)
+- File systems
+- Cloud storage
+- Authentication systems
 
-We could argue that this is what really matters for end users — after all, they
-don't use your app in limbo, with fake APIs and stubbed credentials.
+Users interact with the real system, not fake APIs or stubbed credentials. E2E
+tests provide the most protection against regressions. They can catch problems
+in components, pages, API integrations, and other user-facing behavior.
 
-For that reason, we can safely assume E2E tests provide the highest level of
-protection against regressions. They can spot issues in components, pages,
-integration with APIs, and basically anything that your users interact with.
-
-Here's an example E2E test for the same quiz page:
+Here is an E2E test for the same quiz page:
 
 ```ts
 describe('Create Quiz', () => {
@@ -55,29 +51,23 @@ describe('Create Quiz', () => {
     // Redirect to quizzes list
     cy.url().should('match', /\/quizzes$/);
 
-    // list shows our newly-created quiz
+    // Check that the list shows the new quiz.
     cy.contains('JavaScript Basics').should('be.visible');
   });
 });
 ```
 
-Did you notice that this test is pretty much the same as the integration, but
-without the fake stubs?
+This test resembles the integration test, but it does not use stubs. Its
+complexity sits in the environment instead of the test code.
 
-That sounds like a cleaner test, but don't be fooled — the real complexity is
-hidden.
+Every dependency must be available and in the right state. For example, if quiz
+names must be unique, the test must remove any quiz with the same name before it
+starts.
 
-For this test to work as expected, all dependencies must be available and
-functioning correctly simultaneously. If we have, for instance, a unique
-constraint for quiz names, we would have to delete quizzes with the same name
-before the test begins.
-
-Moreover, E2E tests like that one rely on the speed of external dependencies. If
-an API under high load takes several seconds to respond, our test will also take
-longer to execute. Therefore, the trade-off we must pay for this high level of
-protection is the lowest **feedback speed** and **maintainability** in the test
+E2E tests also depend on the speed of external systems. If an API takes several
+seconds to respond under load, the test takes longer too. This strong protection
+comes with the lowest **feedback speed** and **maintainability** in the test
 pyramid.
 
-For that reason, it's usually a best practice to employ E2E tests only for
-**Critical User Journeys**. That is, use cases that are critical for your app to
-work — things like authentication, payment, enrollment, etc.
+Use E2E tests for **critical user journeys** such as authentication, payment,
+and enrollment.

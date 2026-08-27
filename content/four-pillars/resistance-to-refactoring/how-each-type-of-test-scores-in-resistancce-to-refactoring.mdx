@@ -1,6 +1,4 @@
-We can finally include the last metric, "Resistance to Refactoring," in our
-comparison table to visualize the strengths and weaknesses of each test type.
-Here's the final table:
+We can now add **resistance to refactoring** to our comparison table:
 
 ```
 |             | Maintainability | Feedback Speed | Protection      | Resistance     |
@@ -10,25 +8,20 @@ Here's the final table:
 | E2E         | Low             | Low            | High            | High           |
 ```
 
-**Unit tests** ↳ They vary between low and medium resistance to refactoring.
-Unit tests that cover internal functions, classes, or implementation details
-often break. If we focus on units of behavior and public-facing functions,
-however, we have much less brittle tests.
+**Unit tests.** They score **low to medium**. Tests of internal functions,
+classes, or implementation details often break during refactoring. Tests of
+units of behavior through public functions are less brittle.
 
-**Integration tests** ↳ Provide a good amount of resistance since they test the
-behavior from the user's perspective, unaware of most implementation details.
-However, we still have to know the shape of the input and output of external
-dependencies, and if these change, the test will break.
+**Integration tests.** They score **medium** because they check behavior from
+the user's perspective and avoid most implementation details. They still depend
+on the inputs and outputs of external boundaries, so changes to those contracts
+can break the test.
 
-**E2E tests** ↳ Provide the highest possible level of resistance. Pretty much
-everything can change internally, as long as the described behavior remains the
-same, the test will pass.
+**E2E tests.** They score **high**. Internal code can change while the test
+keeps passing, as long as observable behavior stays the same.
 
-Now, what type of tests are the best? Which of these attributes should we focus
-on?
-
-To answer that question, we can use the illustration provided by Vladimir
-Khorikov in his book:
+Which test type is best, and which attributes should we prioritize? Vladimir
+Khorikov illustrates the trade-off this way:
 
 <img
   src={'/images/four-pillars/test-types-tradeoff.png'}
@@ -39,16 +32,13 @@ Khorikov in his book:
   height={994}
 />
 
-The **two most important** attributes for **any** test are **Resistance to
-Refactoring** and **Maintainability.** Whatever the layer you choose, the tests
-should be trustworthy and as easy as possible to read, understand, and change.
-That's why both circles above state "Max Out".
+Every test should maximize **resistance to refactoring** and
+**maintainability**. Tests should remain trustworthy and as easy as possible to
+read, understand, and change. That is why the diagram marks both attributes "Max
+Out."
 
-That being said, we are left to choose between **Protection** and **Speed.** If
-we strive for higher protection, at the cost of speed, we should focus on **E2E
-Tests.** On the other side of this spectrum, we have **unit tests**, which will
-be the fastest possible — but at the cost of some protection.
+The remaining trade-off is between **protection** and **speed**. E2E tests favor
+protection but run slowly. Unit tests run fastest but provide less protection.
 
-Finally, in the very middle, we have **Integration Tests** - they strike the
-best balance between protection and speed, which is precisely the reason we
-recommend focusing on them.
+**Integration tests** balance protection and speed, so we recommend focusing on
+them.

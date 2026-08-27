@@ -1,15 +1,9 @@
-We've just discussed the importance of feedback speed, while also mentioning
-that there's a way to obtain that feedback very quickly - and that is through
-automated tests, the key topic of this course.
+Automated tests give us fast feedback. A well-written test provides evidence
+that a new feature works as intended and alerts us when we make an
+implementation mistake.
 
-When we develop a new feature in any system, a well-written automated test is a
-form of proof that the software works as intended. If we made an implementation
-mistake, the test will immediately signal that back to us.
-
-However, if we really want to maximize the gains of such tests and collect
-feedback fast, the best we can do is to create these tests closer (in time) to
-their implementation. As soon as we change the software's behavior, a test must
-follow.
+Write tests close to the code change to get this feedback sooner. When you
+change the software's behavior, update or add a test at the same time.
 
 <img
   src={'/images/four-pillars/slow-vs-fast-feedback.png'}
@@ -20,15 +14,13 @@ follow.
   height={392}
 />
 
-That's why Test-First development practices are generally good engineering
-practices too — you build the system with fast feedback in mind from the get-go.
-You describe the behavior you'd like to see before implementing it, and collect
-information on whether it works very quickly.
+Test-first development builds this fast feedback into your workflow. You
+describe the behavior before implementing it, then quickly learn whether it
+works.
 
-But how fast is fast enough? Even automated tests will significantly vary in
-their execution speed. Let's see some examples.
+But automated tests vary in execution speed. Consider these examples.
 
-### Test Case 1
+### Test case 1
 
 ```ts
 import { buildPermissionPayload } from './build-permission-payload';
@@ -54,7 +46,7 @@ describe('buildPermissionPayload', () => {
 });
 ```
 
-### Test Case 2
+### Test case 2
 
 ```tsx
 describe('PermissionsForm', () => {
@@ -88,7 +80,7 @@ describe('PermissionsForm', () => {
 });
 ```
 
-### Test Case 3
+### Test case 3
 
 ```ts
 describe('Attribute-Based Permissions Page - E2E', () => {
@@ -100,7 +92,7 @@ describe('Attribute-Based Permissions Page - E2E', () => {
     cy.get('input[name="attributes"]').type('read,write');
     cy.get('button').contains('Save').click();
 
-    // real API call to backend here
+    // Send a real API request to the backend.
     cy.get('[data-testid="success-message"]').should(
       'contain.text',
       'Permissions saved successfully'
@@ -128,6 +120,6 @@ describe('Attribute-Based Permissions Page - E2E', () => {
     },
   ]}
   explanation={
-    "**Test case 3** is a full end-to-end test case that spins up a UI, interacts with it, and sends requests over the network, which will be the most resource-intensive - hence, the slowest one. Test case 2 would be in second place, as it also depends on setting up a UI and interacting with it, although the API requests are stubbed. Lastly, test case 1 is a simple unit test that doesn't rely on any out-of-process dependencies, making it the fastest."
+    '**Test case 3** is the slowest because it runs the full user interface and sends requests over the network. Test case 2 also runs and interacts with a user interface, but it stubs API requests, so it comes second. Test case 1 is fastest because it is a unit test with no out-of-process dependencies.'
   }
 />

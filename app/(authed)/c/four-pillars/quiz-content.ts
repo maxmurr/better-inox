@@ -5,19 +5,18 @@ const PASS_THRESHOLD = 0.5;
 const QUIZ_CONTENT = {
   'maintainability/quiz-maintainability': {
     intro:
-      "We've briefly discussed out-of-process dependencies and their contribution to maintainability - now it's time to answer a few questions to recap the concepts.",
+      "Review how out-of-process dependencies affect a test's maintainability.",
     passThreshold: PASS_THRESHOLD,
     questions: [
       {
         id: 'q1',
         kind: 'multiple',
-        prompt:
-          'Select the options below that represent examples of out-of-process dependencies.',
+        prompt: 'Which options are examples of out-of-process dependencies?',
         options: [
-          { id: 'a', text: 'Local Storage' },
-          { id: 'b', text: 'Event Loop' },
-          { id: 'c', text: 'Database' },
-          { id: 'd', text: 'A utility package (like lodash)' },
+          { id: 'a', text: 'Local storage' },
+          { id: 'b', text: 'Event loop' },
+          { id: 'c', text: 'A database' },
+          { id: 'd', text: 'A utility package such as Lodash' },
           { id: 'e', text: 'An external API' },
         ],
         correctOptionIds: ['a', 'c', 'e'],
@@ -25,42 +24,41 @@ const QUIZ_CONTENT = {
       {
         id: 'q2',
         kind: 'multiple',
-        prompt: "Select the options that *increase* a test's maintainability",
+        prompt: "Which options increase a test's maintainability?",
         options: [
-          { id: 'a', text: "Usage of 'for' loops" },
-          { id: 'b', text: 'Setting up API interceptions' },
+          { id: 'a', text: 'Using for loops' },
+          { id: 'b', text: 'Setting up intercepted API responses' },
           {
             id: 'c',
-            text: 'Explicit separation of Arrange, Act and Assert blocks',
+            text: 'Separating Arrange, Act, and Assert blocks',
           },
-          { id: 'd', text: 'Descriptive variable names' },
-          { id: 'e', text: 'Scenario - Action - Outcome test descriptions' },
+          { id: 'd', text: 'Using descriptive variable names' },
+          { id: 'e', text: 'Using Scenario, Action, Outcome descriptions' },
         ],
         correctOptionIds: ['c', 'd', 'e'],
       },
     ],
   },
   'feedback-speed/quiz-feedback-and-speed': {
-    intro: "Let us recap what we've learned so far about feedback and speed:",
+    intro: "Review what you've learned about feedback and speed.",
     passThreshold: PASS_THRESHOLD,
     questions: [
       {
         id: 'q1',
         kind: 'single',
-        prompt:
-          'What best explains the true purpose of feedback during the development process?',
+        prompt: 'What is the purpose of feedback during software development?',
         options: [
           {
             id: 'a',
-            text: 'To collect user opinions about the visual design of the software.',
+            text: "To collect users' opinions about the software's visual design.",
           },
           {
             id: 'b',
-            text: 'To identify opportunities to optimize code performance before deployment.',
+            text: 'To find ways to improve code performance before deployment.',
           },
           {
             id: 'c',
-            text: 'To determine whether recent changes have successfully moved the system closer to solving the intended problem.',
+            text: 'To determine whether recent changes moved the system closer to solving the intended problem.',
           },
         ],
         correctOptionIds: ['c'],
@@ -68,24 +66,23 @@ const QUIZ_CONTENT = {
       {
         id: 'q2',
         kind: 'single',
-        prompt:
-          'Why is feedback speed critical during the software development cycle?',
+        prompt: 'Why does feedback speed matter during software development?',
         options: [
           {
             id: 'a',
-            text: 'Because it allows developers to complete features faster regardless of quality.',
+            text: 'It lets developers finish features faster, regardless of quality.',
           },
           {
             id: 'b',
-            text: 'Because rapid cycles eliminate the need for requirement analysis or design adjustments.',
+            text: 'Fast cycles remove the need to analyze requirements or adjust designs.',
           },
           {
             id: 'c',
-            text: 'Because faster feedback ensures the product is visually appealing before release.',
+            text: 'Fast feedback makes sure the product looks appealing before release.',
           },
           {
             id: 'd',
-            text: 'Because quick feedback prevents the accumulation of errors and misunderstandings, reducing rework and wasted effort.',
+            text: 'Fast feedback catches errors and misunderstandings before they create more rework.',
           },
         ],
         correctOptionIds: ['d'],
@@ -93,30 +90,29 @@ const QUIZ_CONTENT = {
     ],
   },
   'feedback-speed/quiz-fast-feedback': {
-    intro:
-      "Let's do a final round to review what we learned in the past two lessons:",
+    intro: "Review what you've learned about tests and feedback speed.",
     passThreshold: PASS_THRESHOLD,
     questions: [
       {
         id: 'q1',
         kind: 'single',
-        prompt: 'Why does writing tests maximize the benefits?',
+        prompt: 'What main benefit does an automated test provide?',
         options: [
           {
             id: 'a',
-            text: 'They will cover every possible edge case automatically',
+            text: 'It automatically covers every possible edge case.',
           },
           {
             id: 'b',
-            text: "Tests reduce the need for refactoring later by locking the system's design",
+            text: "It reduces future refactoring by locking the system's design.",
           },
           {
             id: 'c',
-            text: 'To receive feedback whether the system behaves as intended',
+            text: 'It tells you whether the system behaves as intended.',
           },
           {
             id: 'd',
-            text: 'Tests guarantee that next features will be easier to implement — regardless of their complexity',
+            text: 'It guarantees that every future feature will be easier to build, regardless of complexity.',
           },
         ],
         correctOptionIds: ['c'],
@@ -125,23 +121,23 @@ const QUIZ_CONTENT = {
         id: 'q2',
         kind: 'single',
         prompt:
-          'Why still invest in integration and end-to-end tests, considering unit tests score highest in both Maintainability and Feedback Speed?',
+          'Why use integration and end-to-end tests when unit tests score highest in maintainability and feedback speed?',
         options: [
           {
             id: 'a',
-            text: 'High-level tests run faster once a system grows, eventually outperforming unit tests',
+            text: 'High-level tests become faster than unit tests as a system grows.',
           },
           {
             id: 'b',
-            text: "Unit tests alone doesn't verify whether everything is wired well together and works.",
+            text: 'Unit tests alone do not verify that all parts work together.',
           },
           {
             id: 'c',
-            text: "Because integration and E2E tests automatically generate documentation for the system's architecture",
+            text: "Integration and E2E tests automatically document the system's architecture.",
           },
           {
             id: 'd',
-            text: 'Because unit tests become obsolete once integration tests are introduced into the project',
+            text: 'Unit tests become obsolete once a project has integration tests.',
           },
         ],
         correctOptionIds: ['b'],
@@ -155,23 +151,23 @@ const QUIZ_CONTENT = {
         id: 'q1',
         kind: 'single',
         prompt:
-          'Why does "Protection Against Regression" become increasingly important as a software system grows?',
+          'Why does protection against regressions matter more as a software system grows?',
         options: [
           {
             id: 'a',
-            text: 'Because larger systems automatically reduce the number of bugs, making tests less necessary unless regressions are intentionally introduced.',
+            text: 'Larger systems have fewer bugs, so they need tests only when someone introduces a regression intentionally.',
           },
           {
             id: 'b',
-            text: 'Because growing codebases accumulate more hidden coupling and unpredictable interactions, making it easier for small changes to unintentionally break existing behavior.',
+            text: 'Growing codebases gain hidden coupling and unpredictable interactions, so small changes can break existing behavior.',
           },
           {
             id: 'c',
-            text: 'Because refactoring becomes unnecessary as soon as regression testing is introduced, shifting the focus entirely to new feature development.',
+            text: 'Regression tests remove the need to refactor, so teams can focus only on new features.',
           },
           {
             id: 'd',
-            text: 'Because regressions only occur in legacy systems, and modern applications are naturally resistant to them.',
+            text: 'Regressions occur only in legacy systems because modern applications resist them.',
           },
         ],
         correctOptionIds: ['b'],
@@ -180,23 +176,23 @@ const QUIZ_CONTENT = {
         id: 'q2',
         kind: 'single',
         prompt:
-          'What does Protection Against Regression measure in the context of automated tests?',
+          'What does protection against regressions measure for an automated test?',
         options: [
           {
             id: 'a',
-            text: 'How quickly a test executes compared to other test types.',
+            text: 'How quickly the test runs compared with other test types.',
           },
           {
             id: 'b',
-            text: 'How well a test helps prevent previously working features from breaking when the codebase changes.',
+            text: 'How well the test catches previously working behavior that breaks after a code change.',
           },
           {
             id: 'c',
-            text: 'How easy it is to maintain the test suite over long periods of time.',
+            text: 'How easy the test suite is to maintain over time.',
           },
           {
             id: 'd',
-            text: 'How many new features can be implemented before the test needs to be updated.',
+            text: 'How many features developers can add before updating the test.',
           },
         ],
         correctOptionIds: ['b'],
@@ -204,18 +200,18 @@ const QUIZ_CONTENT = {
     ],
   },
   'protection-against-regression/quiz-the-3-attributes-that-matter': {
-    intro: "Let's recap what we've just learned",
+    intro: "Review what you've learned about protection against regressions.",
     passThreshold: PASS_THRESHOLD,
     questions: [
       {
         id: 'q1',
         kind: 'single',
         prompt:
-          'Which determines how strongly a test protects against regressions?',
+          'Which factors determine how strongly a test protects against regressions?',
         options: [
           {
             id: 'a',
-            text: 'Test readability, code style consistency, and number of mocks used',
+            text: 'Test readability, code style consistency, and the number of mocks used',
           },
           {
             id: 'b',
@@ -223,7 +219,7 @@ const QUIZ_CONTENT = {
           },
           {
             id: 'c',
-            text: 'Test coverage breadth, code complexity, and the business importance of the exercised functionality',
+            text: 'Test coverage, code complexity, and the business importance of the tested behavior',
           },
           {
             id: 'd',
@@ -236,23 +232,23 @@ const QUIZ_CONTENT = {
         id: 'q2',
         kind: 'single',
         prompt:
-          'Why do tests that target highly complex or business-critical code offer stronger protection against regression?',
+          'Why do tests of complex or business-critical code offer stronger protection against regressions?',
         options: [
           {
             id: 'a',
-            text: 'Because they run faster and therefore detect issues more frequently',
+            text: 'They run faster, so they detect problems more often.',
           },
           {
             id: 'b',
-            text: 'Because they require fewer dependencies and thus fail less often',
+            text: 'They use fewer dependencies, so they fail less often.',
           },
           {
             id: 'c',
-            text: 'Because trivial code is inherently unstable and changes more frequently',
+            text: 'Trivial code is unstable and changes more often.',
           },
           {
             id: 'd',
-            text: 'Because complex and domain-relevant code is more prone to bugs and changes, making failures in these areas more impactful',
+            text: 'Complex, business-critical code is more prone to bugs and changes, and failures there have greater impact.',
           },
         ],
         correctOptionIds: ['d'],
@@ -260,8 +256,7 @@ const QUIZ_CONTENT = {
     ],
   },
   'protection-against-regression/quiz-integration-and-e2e-protection': {
-    intro:
-      "Based on what we discussed so far about integration and E2E tests' level of protection, answer the following questions:",
+    intro: 'Review how integration and E2E tests protect against regressions.',
     passThreshold: PASS_THRESHOLD,
     questions: [
       {
@@ -272,7 +267,7 @@ const QUIZ_CONTENT = {
         options: [
           {
             id: 'a',
-            text: 'They run faster, cover less logic by reducing the chance of missing issues',
+            text: 'They run faster and cover less logic.',
           },
           {
             id: 'b',
@@ -280,34 +275,33 @@ const QUIZ_CONTENT = {
           },
           {
             id: 'c',
-            text: 'Integration tests replace the need for E2E tests by covering the entire system',
+            text: 'They cover the entire system, so they replace E2E tests.',
           },
           {
             id: 'd',
-            text: 'Tests mock every dependency, ensuring complete isolation',
+            text: 'They mock every dependency to provide complete isolation.',
           },
-          { id: 'e', text: 'They cover every logical branch of a use case' },
+          { id: 'e', text: 'They cover every logical branch in a use case.' },
         ],
         correctOptionIds: ['b'],
       },
       {
         id: 'q2',
         kind: 'single',
-        prompt:
-          'What is the main reason E2E tests offer the highest protection against bugs?',
+        prompt: 'Why do E2E tests offer the strongest protection against bugs?',
         options: [
           {
             id: 'a',
-            text: 'They execute only pure in-memory functions with no external effects',
+            text: 'They run only pure in-memory functions with no external effects.',
           },
-          { id: 'b', text: 'They handle UI interactions' },
+          { id: 'b', text: 'They handle UI interactions.' },
           {
             id: 'c',
-            text: 'They run the full application exactly as the user experiences it, including real APIs, databases, and other external systems',
+            text: 'They run the full application as the user experiences it, including real APIs, databases, and external systems.',
           },
           {
             id: 'd',
-            text: 'They require fewer setup steps and are easier to maintain than integration tests',
+            text: 'They need less setup and are easier to maintain than integration tests.',
           },
         ],
         correctOptionIds: ['c'],
@@ -315,23 +309,23 @@ const QUIZ_CONTENT = {
       {
         id: 'q3',
         kind: 'single',
-        prompt: 'Select the best scenario for an E2E test:',
+        prompt: 'Which scenario is best suited to an E2E test?',
         options: [
           {
             id: 'a',
-            text: 'Verifying whether the createQuizModel function trims whitespace',
+            text: 'Check whether the createQuizModel function trims whitespace.',
           },
           {
             id: 'b',
-            text: 'Ensuring the quiz is created via fakes adapters and stubbed network responses',
+            text: 'Check quiz creation with fake adapters and stubbed network responses.',
           },
           {
             id: 'c',
-            text: 'Checking that UI components render correctly when isolated in Storybook',
+            text: 'Check whether isolated UI components render correctly in Storybook.',
           },
           {
             id: 'd',
-            text: "Asserting the authentication, because creating quiz isn't possible otherwise",
+            text: 'Verify that an authenticated user can create a quiz through the full application.',
           },
         ],
         correctOptionIds: ['d'],
@@ -339,29 +333,29 @@ const QUIZ_CONTENT = {
     ],
   },
   'resistance-to-refactoring/quiz-define-refactoring': {
-    intro: "Let's recap what we've just learned about Refactoring:",
+    intro: "Review what you've learned about refactoring.",
     passThreshold: PASS_THRESHOLD,
     questions: [
       {
         id: 'q1',
         kind: 'single',
-        prompt: 'Select the best refactoring description/definition.',
+        prompt: 'Which description best defines refactoring?',
         options: [
           {
             id: 'a',
-            text: 'Optimizing performance even if the outputs change slightly',
+            text: 'Improving performance even when the outputs change slightly',
           },
           {
             id: 'b',
-            text: 'Rewriting the entire codebase to match new architectural requirements',
+            text: 'Rewriting the entire codebase to meet new architectural requirements',
           },
           {
             id: 'c',
-            text: 'Modifying internal structure without altering the external, observable behavior',
+            text: 'Changing internal structure without changing external, observable behavior',
           },
           {
             id: 'd',
-            text: "Changing the system's behavior to add new features more quickly",
+            text: "Changing the system's behavior to add features faster",
           },
         ],
         correctOptionIds: ['c'],
@@ -369,24 +363,23 @@ const QUIZ_CONTENT = {
       {
         id: 'q2',
         kind: 'single',
-        prompt:
-          'Which scenario qualifies as refactoring based on the explanation?',
+        prompt: 'Which scenario is an example of refactoring?',
         options: [
           {
             id: 'a',
-            text: 'Changing the logic so that the same input now returns a different output',
+            text: 'Change the logic so the same input returns a different output.',
           },
           {
             id: 'b',
-            text: 'Replacing a loop with a more readable functional composition while keeping input/output the same',
+            text: 'Replace a loop with clearer functional code while preserving the same input and output.',
           },
           {
             id: 'c',
-            text: 'Adding a new endpoint that introduces new externally visible behavior',
+            text: 'Add an endpoint that introduces new externally visible behavior.',
           },
           {
             id: 'd',
-            text: 'Updating UI text because marketing requested new wording',
+            text: 'Update UI text after marketing requests new wording.',
           },
         ],
         correctOptionIds: ['b'],
@@ -394,30 +387,29 @@ const QUIZ_CONTENT = {
     ],
   },
   'resistance-to-refactoring/quiz-resistance-to-refactoring': {
-    intro: "Let's recap what we've just learned:",
+    intro: "Review what you've learned about resistance to refactoring.",
     passThreshold: PASS_THRESHOLD,
     questions: [
       {
         id: 'q1',
         kind: 'single',
-        prompt:
-          'What does “Resistance to Refactoring” mean in the context of automated tests?',
+        prompt: 'What does resistance to refactoring mean for automated tests?',
         options: [
           {
             id: 'a',
-            text: 'The ability of a test to detect internal implementation changes immediately',
+            text: 'How well a test detects internal implementation changes',
           },
           {
             id: 'b',
-            text: 'The speed at which tests execute after code cleanup',
+            text: 'How fast tests run after code cleanup',
           },
           {
             id: 'c',
-            text: 'The number of refactorings a test requires before failing',
+            text: 'How many refactorings occur before a test fails',
           },
           {
             id: 'd',
-            text: 'The degree to which a test suite remains green after the system is refactored without behavior changes',
+            text: 'How well a test suite stays green after refactoring that preserves behavior',
           },
         ],
         correctOptionIds: ['d'],
@@ -433,11 +425,11 @@ const QUIZ_CONTENT = {
           },
           {
             id: 'b',
-            text: 'test that verifies observable behavior through public APIs or UI interactions',
+            text: 'A test that checks observable behavior through public APIs or UI interactions',
           },
           {
             id: 'c',
-            text: 'A test that checks specific internal steps, components, or intermediate states of the system',
+            text: 'A test that checks specific internal steps, components, or intermediate states',
           },
           {
             id: 'd',
@@ -450,14 +442,15 @@ const QUIZ_CONTENT = {
   },
   'resistance-to-refactoring/quiz-resistance-to-refactoring-in-integration-tests':
     {
-      intro: "Let's recap what we've learned:",
+      intro:
+        'Review how integration tests resist changes to implementation details.',
       passThreshold: PASS_THRESHOLD,
       questions: [
         {
           id: 'q1',
           kind: 'single',
           prompt:
-            'Why integration tests are more resistant to refactoring than unit tests?',
+            'Why are integration tests more resistant to refactoring than unit tests?',
           options: [
             {
               id: 'a',
@@ -467,7 +460,7 @@ const QUIZ_CONTENT = {
             { id: 'c', text: 'Because they test the code in isolation' },
             {
               id: 'd',
-              text: 'Because they test the code from the user perspective and not the implementation details',
+              text: "Because they test from the user's perspective instead of checking implementation details",
             },
           ],
           correctOptionIds: ['d'],
@@ -475,14 +468,14 @@ const QUIZ_CONTENT = {
       ],
     },
   'resistance-to-refactoring/quiz-resistance-to-refactoring-final': {
-    intro: "Let's do a final recap of what we've learned so far:",
+    intro: "Review what you've learned about the four pillars.",
     passThreshold: PASS_THRESHOLD,
     questions: [
       {
         id: 'q1',
         kind: 'single',
         prompt:
-          'Consider two types of automated tests: white-box and black-box. Which type scores better at resistance to refactoring?',
+          'Which test type is more resistant to refactoring: white-box or black-box?',
         options: [
           { id: 'a', text: 'White-box' },
           { id: 'b', text: 'Black-box' },
@@ -494,12 +487,12 @@ const QUIZ_CONTENT = {
         id: 'q2',
         kind: 'single',
         prompt:
-          'Given a scenario of an application that has complex business rules but a comparatively simple UI, and we have a constraint of CI time to execute the tests, which type of automated test should we focus on?',
+          'Which test type should you prioritize for an app with complex business rules, a simple UI, and limited CI time?',
         options: [
-          { id: 'a', text: 'Unit Tests' },
-          { id: 'b', text: 'Integration Tests' },
-          { id: 'c', text: 'E2E Tests' },
-          { id: 'd', text: 'Smoke Tests' },
+          { id: 'a', text: 'Unit tests' },
+          { id: 'b', text: 'Integration tests' },
+          { id: 'c', text: 'E2E tests' },
+          { id: 'd', text: 'Smoke tests' },
         ],
         correctOptionIds: ['a'],
       },
@@ -507,24 +500,24 @@ const QUIZ_CONTENT = {
         id: 'q3',
         kind: 'multiple',
         prompt:
-          'Given that you have a legacy application with no tests yet, which types of tests should you prioritize, and why?',
+          'Which tests should you prioritize first in a legacy app with no tests, and why?',
         options: [
-          { id: 'a', text: 'Unit Tests, because they are simpler to create' },
+          { id: 'a', text: 'Unit tests, because they are easier to create' },
           {
             id: 'b',
-            text: 'Integration Tests, because they are faster to execute',
+            text: 'Integration tests, because they run faster',
           },
           {
             id: 'c',
-            text: 'Unit Tests, because they provide the highest protection against regressions',
+            text: 'Unit tests, because they provide the strongest protection against regressions',
           },
           {
             id: 'd',
-            text: 'E2E Tests, because they provide the highest resistance to refactoring',
+            text: 'E2E tests, because they provide the strongest resistance to refactoring',
           },
           {
             id: 'e',
-            text: 'Integration tests, because they strike the best balance between all pillars.',
+            text: 'Integration tests, because they offer the best balance across all four pillars',
           },
         ],
         correctOptionIds: ['e'],
@@ -532,19 +525,18 @@ const QUIZ_CONTENT = {
       {
         id: 'q4',
         kind: 'single',
-        prompt:
-          'Given the hard constraint for each type of automated test, what two attributes from the four pillars should we invest the most?',
+        prompt: 'Which two attributes should every automated test maximize?',
         options: [
-          { id: 'a', text: 'Feedback Speed and Maintainability' },
+          { id: 'a', text: 'Feedback speed and maintainability' },
           {
             id: 'b',
-            text: 'Maintainability and Protection against Regressions',
+            text: 'Maintainability and protection against regressions',
           },
           {
             id: 'c',
-            text: 'Resistance to Refactoring and Protection against Regressions',
+            text: 'Resistance to refactoring and protection against regressions',
           },
-          { id: 'd', text: 'Maintainability and Resistance to Refactoring' },
+          { id: 'd', text: 'Maintainability and resistance to refactoring' },
         ],
         correctOptionIds: ['d'],
       },

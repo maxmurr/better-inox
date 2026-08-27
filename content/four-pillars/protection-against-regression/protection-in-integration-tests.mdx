@@ -1,11 +1,9 @@
-Integration Tests cover multiple components, hooks, and even some out-of-process
-dependencies. That means they offer, by definition, more protection against
-regressions than unit tests, given their inherently higher code coverage.
+Integration tests cover multiple components, hooks, and some out-of-process
+boundaries. Because they exercise more code, they catch more regressions than
+unit tests.
 
-Let's use the same example as before — Creating a new quiz in our app.
-
-During unit tests, we could only assert the output of the _createQuizModel()_
-function. Here's an example:
+Consider the earlier example of creating a quiz. A unit test can check the
+output of _createQuizModel()_:
 
 ```ts
 import { createQuizModel } from './createQuizModel';
@@ -44,20 +42,15 @@ describe('createQuizModel', () => {
 });
 ```
 
-As we mentioned, this is a good unit test, but it doesn't guarantee any of the
-following works as intended:
+This unit test does not show whether these parts work together:
 
 - Page navigation
 - Form inputs
 - Form buttons
 - Data submission
 
-That's precisely where (good) integration tests shine. They ensure that
-everything is wired together well and that the user journey to create a new quiz
-actually works.
-
-Here's an example: _(integration test with Cypress for Nextjs app that use
-server action)_
+An integration test checks that wiring and the full journey for creating a quiz.
+Here is a Cypress integration test for a Next.js app that uses a server action:
 
 ```ts
 import { useCreateQuiz } from '@/features/quizzes/useCreateQuiz';
@@ -66,7 +59,7 @@ import { useRetrieveQuizzes } from '@/features/quizzes/useRetrieveQuizzes';
 describe('Create Quiz', () => {
   it('creates a quiz successfully', () => {
     // --- Stub backend adapters (server action) ---
-    // When form submits → server responds successfully
+    // Return a successful response when the form submits.
     cy.injectFakeAdapter(useCreateQuiz, {
       body: {
         id: 'QUICK_ID',
@@ -113,13 +106,10 @@ describe('Create Quiz', () => {
 });
 ```
 
-Note that this type of test, while providing a much higher protection, already
-starts degrading the two other attributes we discussed before:
+This broader protection reduces two other attributes:
 
-- Maintainability → Setting up an integration test requires more details and
-  coordination
-- Feedback Speed → Executing the UI takes way more time than in-memory function
-  executions.
+- **Maintainability.** An integration test requires more setup and coordination.
+- **Feedback speed.** Running the UI takes longer than running a function in
+  memory.
 
-But can we go even further in the safety scale with tests? Let's find out in the
-next lesson.
+The next lesson looks at tests with even broader protection.

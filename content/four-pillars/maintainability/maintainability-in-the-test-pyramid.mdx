@@ -1,24 +1,18 @@
-Now that we have a better understanding of what the pillar of Maintainability
-is, it's time to discuss its relationship with each type of test in the test
-pyramid. Specifically for the front-end, unit, integration, and e2e test cases
-can be (briefly) described as follows:
+Maintainability differs across the three frontend test types in the test
+pyramid:
 
-- **Unit Tests** — Assert the behavior of **units**, which can be _functions_ or
-  _classes_ (e.g., different states of the ViewModel). Usually, these functions
-  are independent of any framework code (e.g., React or Next.js).
-  [Vitest](https://vitest.dev) and [Jest](https://jestjs.io) are the most common
+- **Unit tests.** They check the behavior of a unit, such as a function or
+  class. These units usually do not depend on framework code such as React or
+  Next.js. [Vitest](https://vitest.dev) and [Jest](https://jestjs.io) are common
   test runners for this layer.
-- **Integration Tests** — These tests assert user journeys in the app, often
-  integrating components, hooks, and UI elements - but they should **not**
-  integrate with production APIs or external services.
-  [Cypress](https://www.cypress.io) and Playwright (in components mode) or
-  [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
-  are the most used tools for these tests.
-- **E2E Tests** — Also assert user journeys, but focused on the critical paths -
-  that is, the most crucial use cases in the platform. They demand the entire
-  system to be spun up (APIs, database, external services). Cypress and
-  [Playwright](https://playwright.dev) (in E2E testing mode) are the tools of
-  the trade here.
+- **Integration tests.** They check user journeys across components, hooks, and
+  UI elements, but they should **not** call production APIs or external
+  services. Common tools include [Cypress](https://www.cypress.io), Playwright
+  in component mode, and
+  [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/).
+- **E2E tests.** They check critical user journeys with the entire system
+  running, including APIs, databases, and external services. Common tools
+  include Cypress and [Playwright](https://playwright.dev) in E2E mode.
 
 <img
   src={'/images/four-pillars/test-pyramid.png'}
@@ -29,14 +23,13 @@ can be (briefly) described as follows:
   height={903}
 />
 
-Let's practice identifying each test type in the layer again. Check out the
-examples below:
+Practice identifying each test type with these examples.
 
-**TEST CASE 1**
+**Test case 1**
 
 ```ts
 describe('Login Flow', () => {
-  it('allows a user to log in and see dashboard', () => {
+  it('allows a user to log in and see the dashboard', () => {
     cy.intercept('POST', '/api/login', {
       statusCode: 200,
       body: {
@@ -57,7 +50,7 @@ describe('Login Flow', () => {
 
 <PopQuestion
   id={'pq-pyramid-tc1'}
-  prompt={'The test cases above can be classified as:'}
+  prompt={'How should the test above be classified?'}
   correctOptionId={'b'}
   options={[
     {
@@ -74,11 +67,11 @@ describe('Login Flow', () => {
     },
   ]}
   explanation={
-    '**Integration.** It drives a real user journey through the UI — visit, type, click — but stubs the API with **cy.intercept**, so no production backend or external service is exercised.'
+    '**Integration.** It drives a user journey through the UI by visiting, typing, and clicking, but stubs the API with **cy.intercept**. It does not use a production backend or external service.'
   }
 />
 
-**TEST CASE 2**
+**Test case 2**
 
 ```ts
 import { describe, expect, it } from 'vitest';
@@ -94,7 +87,7 @@ describe('formatPrice', () => {
 
 <PopQuestion
   id={'pq-pyramid-tc2'}
-  prompt={'The test cases above can be classified as:'}
+  prompt={'How should the test above be classified?'}
   correctOptionId={'a'}
   options={[
     {
@@ -111,15 +104,15 @@ describe('formatPrice', () => {
     },
   ]}
   explanation={
-    '**Unit.** It checks a single pure function, **formatPrice**, in isolation: input in, output asserted, with no framework, UI, or I/O.'
+    '**Unit.** It checks the pure **formatPrice** function in isolation. The test passes an input and checks the output without a framework, UI, or I/O.'
   }
 />
 
-**TEST CASE 3**
+**Test case 3**
 
 ```ts
 it('completes a checkout flow', () => {
-  // Setup: Create a user and some products
+  // Setup: Create a user and products.
   const credentials = { email: 'alice@doe.com', password: 'password' };
   cy.signup(credentials);
   cy.login(credentials);
@@ -153,7 +146,7 @@ it('completes a checkout flow', () => {
 
 <PopQuestion
   id={'pq-pyramid-tc3'}
-  prompt={'The test cases above can be classified as:'}
+  prompt={'How should the test above be classified?'}
   correctOptionId={'c'}
   options={[
     {
@@ -170,6 +163,6 @@ it('completes a checkout flow', () => {
     },
   ]}
   explanation={
-    '**E2E.** It spins up the whole system — real signup, product creation, cart, checkout, and confirmation — exercising a critical path end to end with nothing stubbed.'
+    '**E2E.** It runs the whole system without stubs, including signup, product creation, the cart, checkout, and confirmation.'
   }
 />

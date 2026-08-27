@@ -1,21 +1,12 @@
-Before diving into what exactly "Protection against Regression" is, it's worth
-exploring what **Regression** itself means.
+A **regression** is a bug that breaks behavior that used to work. It can happen
+when we add a feature or refactor existing code.
 
-You've probably seen that term before, often linked to terms like Regression
-Testing, which is honestly a misleading/confusing term. A **Regression** is
-basically a software bug. It happens when we change the code, either by
-introducing new functionality or by refactoring an existing one, and break the
-previously working behavior.
+As a codebase grows, it often gains more hidden coupling and unexpected
+interactions. A small change can then break several features and make future
+changes expensive.
 
-Regressions also tend to occur more often as the codebase evolves. Any software
-that introduces more features is likely to have more hidden coupling, circular
-references, and unexpected behavior. If we are not careful, it might get to a
-point where it's practically impossible to change the software due to
-prohibitive maintenance costs. Whenever you change even the smallest piece of
-code, many other features break unexpectedly.
-
-That's why we need **good automated tests**. They are the safety net that makes
-our software sustainable, enabling continuous change as our system grows.
+**Good automated tests** catch these breaks early. They let us keep changing the
+system as it grows.
 
 <img
   src={'/images/four-pillars/cost-of-change.png'}
@@ -26,6 +17,6 @@ our software sustainable, enabling continuous change as our system grows.
   height={363}
 />
 
-Therefore, **Protection Against Regressions** is an attribute that measures how
-effectively an automated test prevents regressions. We'll see in the next
-lessons how to evaluate that property for each test type.
+**Protection against regressions** measures how well an automated test catches
+broken behavior after a code change. Next, we'll evaluate this attribute for
+each test type.

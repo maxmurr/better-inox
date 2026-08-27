@@ -1,10 +1,8 @@
-We finally got the last level of the test pyramid - End-to-end (E2E) tests. It's
-worth noting that these types of tests are very similar in shape to the
-integration tests (usually using the same tools and structure), but with much
-heavier configuration and environment requirements since they rely on
-production-like dependencies.
+End-to-end (E2E) tests are the final level of the test pyramid. They often use
+the same tools and structure as integration tests, but need more configuration
+because they rely on production-like dependencies.
 
-Let's recap an example of an e2e test for the quiz creation:
+Here is the E2E test for creating a quiz:
 
 ```ts
 describe('Create Quiz', () => {
@@ -44,17 +42,16 @@ describe('Create Quiz', () => {
     // Redirect to quizzes list
     cy.url().should('match', /\/quizzes$/);
 
-    // list shows our newly-created quiz
+    // Check that the list shows the new quiz.
     cy.contains('JavaScript Basics').should('be.visible');
   });
 });
 ```
 
-As we mentioned, ensuring the API and any external dependencies (like Local
-Storage) are up and running in the desired state can be complex, but this test
-has the highest possible resistance to refactorings. Notice that it **will
-pass** even if:
+Keeping the API and external dependencies such as local storage available and in
+the right state can be difficult. In return, this test provides the strongest
+resistance to refactoring. It **will pass** if we:
 
-- We change the internal hook used to create the quiz
-- We change the external API endpoint
-- We change the internal Quiz model representation
+- Change the internal hook that creates the quiz
+- Change the external API endpoint
+- Change the internal quiz model

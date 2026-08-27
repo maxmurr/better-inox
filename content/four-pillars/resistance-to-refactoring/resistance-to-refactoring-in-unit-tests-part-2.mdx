@@ -1,6 +1,5 @@
-You now understand that public-facing functions provide more value when tested.
-But even so, we have to be careful not to make its unit test brittle. Let's see
-an example:
+Tests of public functions usually provide more value, but they can still be
+brittle. Consider this example:
 
 ```ts
 import { createQuizModel } from './createQuizModel';
@@ -36,10 +35,8 @@ describe('createQuizModel (brittle)', () => {
 });
 ```
 
-The test case above uses jest spies to verify whether the validation functions
-were called with the correct arguments (the form). But what happens if we change
-their signature, for instance, the `validateQuestions`, so it accepts as an
-argument only the form's questions?
+This test uses Jest spies to check whether the validation functions received the
+whole form. Suppose we change `validateQuestions` to accept only the questions:
 
 ```ts
 function validateQuestions(questions: Question[]) {
@@ -47,13 +44,11 @@ function validateQuestions(questions: Question[]) {
 }
 ```
 
-The unit test above will **break**, even if the **observable behavior** is the
-same. This is what we call a false positive, which hurts our trust in the test
-suite. This happens every time we focus our tests on the "steps to achieve a
-goal", instead of testing the input → output.
+The test will **break** even though **observable behavior** stays the same. This
+false positive makes the suite less trustworthy. It happens because the test
+checks internal steps instead of inputs and outputs.
 
-So, how should we test this function? Again, focusing on the expected outputs
-for known inputs:
+Test the function with known inputs and expected outputs instead:
 
 ```ts
 import { createQuizModel } from './createQuizModel';
@@ -102,8 +97,7 @@ describe('createQuizModel (resistant)', () => {
 });
 ```
 
-🎓 Lesson: (Almost) every time we use mocks or spies in unit tests, we're
-focusing on implementation details, making them brittle. Always identify the
-most public-facing function and test its **observable behavior**.
+Mocks or spies inside a unit often couple tests to implementation details. Find
+the most public function and test its **observable behavior** instead.
 
-The bigger the unit of behavior, the better.
+Prefer larger units of behavior when they remain easy to test.

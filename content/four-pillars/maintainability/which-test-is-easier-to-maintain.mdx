@@ -1,21 +1,21 @@
-As mentioned before, readability is one part of the "Maintainability" score, but
-there's more to it. Let's compare the two test cases below:
+Readability is one part of maintainability. Setup and dependencies also matter.
+Compare these two tests:
 
-**Test Case 1**
+**Test case 1**
 
 ```ts
 // cypress/e2e/login.cy.ts
 describe('Login Flow', () => {
   it('logs in successfully and stores token in local storage', () => {
-    // Arrange – visit login page
+    // Arrange: Visit the login page.
     cy.visit('/login');
 
-    // Act – fill form and submit
+    // Act: Fill out and submit the form.
     cy.get('input[name="email"]').type('user@example.com');
     cy.get('input[name="password"]').type('password123');
     cy.get('button[type="submit"]').click();
 
-    // Assert – verify API request and local storage side effects
+    // Assert: Check the API request and local storage side effects.
     cy.intercept('POST', '/api/login').as('loginRequest');
     cy.wait('@loginRequest').then(({ response }) => {
       expect(response?.statusCode).to.eq(200);
@@ -23,13 +23,13 @@ describe('Login Flow', () => {
       expect(localStorage.getItem('auth_token')).to.eq(token);
     });
 
-    // Assert – user is redirected to dashboard
+    // Assert: Check the redirect to the dashboard.
     cy.url().should('include', '/dashboard');
   });
 });
 ```
 
-**Test Case 2**
+**Test case 2**
 
 ```ts
 // login.service.spec.ts
@@ -56,9 +56,7 @@ describe('handleLoginResponse', () => {
 
 <PopQuestion
   id={'pq-maintainability'}
-  prompt={
-    'Which test from the previous example is easier to maintain, that is, is easier to change and evolve?'
-  }
+  prompt={'Which test is easier to maintain as the code changes?'}
   correctOptionId={'b'}
   options={[
     {
@@ -71,7 +69,7 @@ describe('handleLoginResponse', () => {
     },
   ]}
   feedback={{
-    a: 'This test case handles external API interaction, local storage, and business logic, all in one place. Keeping everything correctly coordinated is an additional chore.',
-    b: 'The **Test Case 2** is a simple input → output scenario using in-process memory and execution, which makes it quite straightforward.',
+    a: 'This test handles an external API interaction, local storage, and business logic in one place. Coordinating these dependencies adds maintenance work.',
+    b: '**Test case 2** runs entirely in memory. It passes an input to a function and checks the output, so it has little setup.',
   }}
 />

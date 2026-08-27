@@ -1,10 +1,9 @@
-You've just discovered the first characteristic that determines the
-**Maintainability** of a test - it's readability, or, in other words, how hard
-it is to understand that test.
+**Readability** is the first part of a test's maintainability. It measures how
+easy the test is to understand.
 
-Let's recap the two test cases:
+Compare the two tests again:
 
-**Test Case 1**
+**Test case 1**
 
 ```ts
 test('test1', () => {
@@ -17,7 +16,7 @@ test('test1', () => {
 });
 ```
 
-**Test Case 2**
+**Test case 2**
 
 ```ts
 describe('BankAccount.withdraw', () => {
@@ -34,14 +33,12 @@ describe('BankAccount.withdraw', () => {
 });
 ```
 
-Notice that in the first example, the test description is vague, we're using
-cryptic variable names like a = new BankAccount(100), x = 0, and even a for loop
-in the test. All of that makes the test case more difficult to understand.
+The first test has a vague description, cryptic variable names such as `a` and
+`x`, and an unnecessary `for` loop. These choices make it hard to understand.
 
-In contrast, the second test case uses a descriptive name (which includes
-scenario, action, and expected result) and is clearly divided into the three
-stages of the xUnit pattern: **Arranging** the test data, **Acting** on the
-data, and **Asserting** the expected outcome.
+The second test names the scenario, action, and expected result. It also
+separates the three stages of the xUnit pattern: **Arrange** the test data,
+**Act** on the subject, and **Assert** the expected result.
 
-However, that's not the only attribute that determines a test's maintainability.
-Let's see a different example in the next section.
+Readability is not the only part of maintainability. The next lesson covers
+another.

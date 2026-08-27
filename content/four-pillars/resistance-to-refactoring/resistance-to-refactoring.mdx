@@ -1,25 +1,19 @@
-We've defined what a Refactor is; Therefore, we just have to understand the
-"resistance" part of the pillar.
+**Resistance to refactoring** measures whether a test keeps passing when we
+change internal code without changing observable behavior:
 
-**Resistance to refactoring** is the degree to which an automated test continues
-to pass even after the underlying system has been refactored. In other words:
+- A use case has an existing test suite.
+- We refactor its implementation.
+- The test suite stays green.
 
-- Given an existing test suite for a use case in our system
-- When the use case implementation is refactored
-- The test suite is still green ✅
+Resistant tests avoid **false positives**.
 
-That's a crucial attribute for automated tests — it ensures our test cases don't
-produce **false positives**.
+> A false positive occurs when a test fails because an implementation detail
+> changed, even though observable behavior stayed the same. Repeated false
+> positives make teams trust the suite less, which raises the chance that they
+> overlook a real bug.
 
-> A false positive occurs when the automated test fails, not because the
-> behavior has changed, but because an implementation detail was refactored.
-> When a test suite produces false positives, the team loses confidence in it,
-> increasing the likelihood that a bug slips into production.
-
-But how can we design automated tests that are **resilient to refactorings?**
-
-We can start by understanding what makes them _brittle_ (the opposite of
-resistant): tests coupled to implementation details, rather than observable
+To make tests **resistant to refactoring**, avoid coupling them to
+implementation details. Brittle tests check internal steps instead of observable
 behavior:
 
 <img
@@ -31,11 +25,10 @@ behavior:
   height={749}
 />
 
-Such test cases tend to rely on internal components, testing specific steps that
-our system takes to accomplish a use case. If any of these steps change their
-design, the tests will break.
+These tests depend on specific internal components or steps. Changing those
+steps breaks the tests even when the use case still works.
 
-The counterpart to that is to create tests that assert the observable behavior:
+Resistant tests check observable behavior instead:
 
 <img
   src={'/images/four-pillars/resistant-test-case.png'}
@@ -46,6 +39,5 @@ The counterpart to that is to create tests that assert the observable behavior:
   height={749}
 />
 
-These tests will stand the test of time. They only break when the behavior has
-changed, ensuring the development team will raise an eyebrow if a test case
-unexpectedly fails — this means there's definitely a bug there.
+These tests break when observable behavior changes, not when internal structure
+changes. An unexpected failure is more likely to point to a real bug.

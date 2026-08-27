@@ -1,11 +1,9 @@
-Unit tests cover smaller pieces of code in our applications - they are generally
-tied to specific functions, classes, or a group comprised of both components.
-The fact that this type of test is more coupled to the production code makes it
-also slightly more brittle than the high-level tests. Hence, we have to be extra
-careful to ensure they are valuable and less coupled to implementation details.
+Unit tests cover small pieces of an application, such as functions, classes, or
+groups of them. This close connection to production code can make unit tests
+more brittle than higher-level tests. Valuable unit tests avoid implementation
+details.
 
-Let's recap what our quiz creation screen looks like to devise a practical
-example:
+Consider our quiz creation screen:
 
 <img
   src={'/images/four-pillars/create-quiz-form.png'}
@@ -16,8 +14,7 @@ example:
   height={1572}
 />
 
-To create and validate the quiz fields, we have the _createQuizModel()_ function
-presented earlier. Suppose it has the following steps:
+The _createQuizModel()_ function creates and validates the quiz fields:
 
 ```ts
 export function createQuizModel(form: QuizForm): QuizModel {
@@ -38,7 +35,7 @@ export function createQuizModel(form: QuizForm): QuizModel {
 }
 ```
 
-When deciding what should be unitarily tested, we have a few options:
+We could unit-test any of these functions:
 
 - _validateTitle()_ function
 - _validateQuestions()_ function
@@ -48,7 +45,7 @@ When deciding what should be unitarily tested, we have a few options:
 <PopQuestion
   id={'pq-resistance-unit-which-function'}
   prompt={
-    'In light of what we have learned so far about Refactoring, which function should we test?'
+    'Which function should we test to preserve resistance to refactoring?'
   }
   correctOptionId={'d'}
   options={[
@@ -70,6 +67,6 @@ When deciding what should be unitarily tested, we have a few options:
     },
   ]}
   explanation={
-    'Each function within **createQuizModel** is a sub-step that builds the Quiz object. These functions are merely implementation details. It means that if we create tests for them, they can easily become obsolete as soon as we **refactor the parent function** (For instance, if we inline the **validateTitlte** function with something like **form.title.trim().length > 0**). Therefore, **createQuizModel** is the truly public API in this scenario, and unit tests for it are more resistant to refactors.'
+    '**createQuizModel** is the public function in this example. Its helper functions are implementation details, so their tests may become obsolete when we refactor the parent function. For example, we could replace **validateTitle** with **form.title.trim().length > 0** without changing observable behavior. A unit test of **createQuizModel** is more resistant to that refactoring.'
   }
 />

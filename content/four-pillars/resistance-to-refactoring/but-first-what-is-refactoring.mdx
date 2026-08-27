@@ -1,9 +1,7 @@
-Refactoring is one of these words with overloaded usages. Some might understand
-it simply as "changing the code", while others might see it as a hazardous
-practice (especially if you don't have tests to cover your back 😉). Is there,
-however, a classical definition we can rely on? Well, we can probably stick with
-the
-[homonymous book "Refactoring", by Martin Fowler](https://martinfowler.com/books/refactoring.html):
+People use "refactoring" to mean different things, from any code change to a
+risky cleanup. Martin Fowler's book
+[Refactoring](https://martinfowler.com/books/refactoring.html) gives us a more
+precise definition:
 
 <img
   src={'/images/four-pillars/refactoring-book-cover.jpg'}
@@ -14,22 +12,22 @@ the
   height={522}
 />
 
-In the very preface, it defines **refactoring** as follows:
+The preface defines **refactoring** this way:
 
 > _Refactoring is the process of changing a software system in a way that does
 > not alter the external behavior of the code yet improves the internal
 > structure. It is a disciplined way to clean up code that minimizes the chance
-> of introducing bugs._ _— Martin Fowler_
+> of introducing bugs._
+>
+> Martin Fowler
 
-Two things stand out from this definition:
+This definition makes two points:
 
-1. It assumes the external (observable) behavior must not change.
-2. The goal is to reduce the chances of introducing bugs.
+1. External, observable behavior must not change.
+2. Refactoring should reduce the chance of introducing bugs.
 
-The second point is very straightforward, and every sensible developer would
-agree it's a reasonable goal, but what about the first point - what is
-observable behavior? To simplify, think of a software system as a system that
-receives an **input,** processes it, and returns an **output**:
+To understand the first point, think of software as a system that receives an
+**input**, processes it, and returns an **output**:
 
 <img
   src={'/images/four-pillars/input-impl-output.png'}
@@ -40,10 +38,9 @@ receives an **input,** processes it, and returns an **output**:
   height={749}
 />
 
-The Observable Behavior is what the user of this system can measure. The
-**inputs** and **outputs** can be clearly defined and _observed_ from the client
-perspective, but the internal processing of those inputs is what we call
-**implementation detail**:
+**Observable behavior** is what a user or client can measure. Inputs and outputs
+are observable. The internal steps that transform one into the other are
+**implementation details**:
 
 <img
   src={'/images/four-pillars/observable-behavior.png'}
@@ -54,6 +51,5 @@ perspective, but the internal processing of those inputs is what we call
   height={749}
 />
 
-Hence, Refactoring occurs when we change the internal behavior of a system,
-while keeping the same input → output association. Let's see some examples in
-the next lesson.
+Refactoring changes those implementation details while preserving the same
+relationship between inputs and outputs. The next lesson gives examples.

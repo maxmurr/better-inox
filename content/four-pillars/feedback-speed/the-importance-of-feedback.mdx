@@ -1,35 +1,22 @@
-Before discussing why feedback **speed** is relevant, we must understand why
-**feedback** itself is crucial. You may already be familiar with the term from
-other scenarios, like giving or receiving professional feedback, and it all
-boils down to **improving** something — either correcting a mistake or
-reinforcing something good you did.
+Feedback tells you whether your work moved you closer to a goal. You can use it
+to correct a mistake or repeat what worked.
 
-That same concept translates well to software engineering. Our job as software
-engineers is to solve business problems using technology, digital tools, and a
-**scientific approach**. That last one is just a fancy term for the process of
-solving problems **iteratively**. But what is that iteration about?
+Software engineers solve problems through iteration. We make a change, observe
+the result, and use that feedback to decide what to do next.
 
-Suppose you're working on a web calendar application to help patients schedule
-appointments with healthcare professionals. The app allows doctors to specify
-their availability and patients to select a slot with the professional they
-want. However, a new requirement arises: patients would like to ask their
-doctors questions within the application. To allow that, you'll have to
-implement a **chat interface**.
+Suppose you work on a web calendar that helps patients schedule appointments.
+Doctors set their availability, and patients choose a time slot. Now patients
+need to ask their doctors questions in the app, so you must add a **chat
+interface**.
 
-The application code must be updated to accommodate this new requirement. You
-start implementing the new page, components, and interactions with the back-end
-API. But **how do you know it works?**
+You build a page, components, and interactions with the backend API. But **how
+do you know it works?**
 
-The most obvious answer is to run the application and check whether the new page
-loads, and whether we can send messages between the users. If, however, you did
-something wrong along the way, you'll see an error (maybe a compilation one).
-Then, you have to go back to the code and **fix it**.
+Run the app and check whether the page loads and users can send messages. If the
+code does not compile, fix it and try again. The app may then load, but fail to
+send messages. Fix that issue and repeat.
 
-You try again, fix the compilation issues, and run the application. It seems to
-work! But the messages aren't being sent — time to go back to the code and fix
-another issue. This process of changing the code, observing the output, and
-adapting accordingly **is the iteration we've talked about.** We can visualize
-it as follows:
+This cycle of changing code, observing the result, and adapting is iteration:
 
 <img
   src={'/images/four-pillars/feedback-loop.png'}
@@ -40,7 +27,6 @@ it as follows:
   height={299}
 />
 
-The information on whether the change worked or not is the **feedback**. We
-can't know whether we've achieved our goal without feedback; it's like driving a
-car with a blindfold on. This is why feedback is essential. In the next lesson,
-we'll discuss why its speed is crucial as well.
+The result tells you whether the change worked. That is **feedback**. Without
+it, you cannot know whether you reached your goal. Next, we'll look at why fast
+feedback matters.

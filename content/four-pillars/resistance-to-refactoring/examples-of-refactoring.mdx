@@ -1,17 +1,13 @@
-Now that we understand refactoring as _changing the internal structure without
-altering the observable behavior_, let's make that concrete with a few examples
-in a React/Nextjs context.
+Refactoring changes internal structure without changing observable behavior.
+These React and Next.js examples show the difference between refactoring and a
+feature change.
 
-Frontend developers refactor all the time — sometimes knowingly, other times
-unintentionally breaking client-visible behavior. The difference between a
-_refactor_ and a _feature change_ is always the same test:
+Ask one question:
 
-> **Does the same input still produce the same observable output?** **If yes →
-> refactoring** **If no → behavior change**
+> **Does the same input still produce the same observable output?** If yes, it
+> is refactoring. If no, it is a behavior change.
 
-Let's walk through a few examples.
-
-### Example #1 — Extracting a component
+### Example 1: Extract a component
 
 Before:
 
@@ -26,7 +22,7 @@ export function QuizCard({ quiz }) {
 }
 ```
 
-After (same output, internal structure improved)
+After, with the same output and a clearer internal structure:
 
 ```tsx
 function QuizTitle({ title }: { title: string }) {
@@ -47,12 +43,11 @@ export function QuizCard({ quiz }) {
 }
 ```
 
-We didn't change what the user sees. We only improved the structure and
-readability.
+The user sees the same result. Only the internal structure changed.
 
-**This is refactoring ✅**
+**This is refactoring.**
 
-### Example #2 — Changing what the user can do
+### Example 2: Change what the user can do
 
 **Before**
 
@@ -85,17 +80,14 @@ return (
   ...
 ```
 
-This change alters observable behavior: ↳ The user no longer has the option to
-retry the deletion.
+This change removes the user's option to retry the deletion. An integration test
+that covers retrying should fail.
 
-One of our integration tests should definitely break.
+**This is not refactoring.**
 
-**This is not a refactoring ❌**
+### Example 3: Change the quiz sorting algorithm
 
-### Example #3 — Quizzes sorting algorithm
-
-Let's see an example code change for our Quiz app that involves showing the
-quizzes sorted by title:
+Suppose our quiz app sorts quizzes by title:
 
 **Before**
 
@@ -126,6 +118,6 @@ const sorted = quizzes.toSorted((a, b) => {
     },
   ]}
   explanation={
-    "**This is refactoring ✅** The user still sees quizzes sorted the same way. The observable behavior did not change; only the implementation detail has changed to make it safer (the .sort() function mutates the array and can mess with React's state)."
+    '**This is refactoring.** The user still sees quizzes in the same order. Only the implementation changed. The new version avoids mutating the array with **.sort()**, which could cause problems with React state.'
   }
 />

@@ -1,6 +1,5 @@
-We have covered what defines each type of test in the front-end and how to
-assess a test's **Maintainability** score (ease of reading, changing and setting
-it up). We can now compare them and draw some conclusions:
+A test's **maintainability** reflects how easy it is to read, change, and set
+up. Here is how frontend test types compare:
 
 ```
 |             | Maintainability           |
@@ -10,19 +9,15 @@ it up). We can now compare them and draw some conclusions:
 | E2E         | Low (= hard to maintain)  |
 ```
 
-**Unit Tests** → These have a **high score** in maintainability because they
-usually don't require too much set up, and easier to ensure they are readable
-and compact.
+**Unit tests.** They score **high** because they usually need little setup and
+are easier to keep short and readable.
 
-**Integration Tests** → Usually require more effort to set up additional
-dependencies and cover a broader part of a use case, making them a bit harder to
-maintain. Hence, they have a **medium** score.
+**Integration tests.** They score **medium** because they cover more of a use
+case and require more dependencies and setup.
 
-**E2E Tests** → Naturally harder to set up, write, and maintain in general,
-which makes them the **lowest** score of the three.
+**E2E tests.** They score **low** because they require the most setup and are
+harder to write and change.
 
-The points above indicate how hard it might be to maintain each type of test by
-their intrinsic characteristics, but that does not mean we should just "accept"
-that Integration and E2E tests are gonna be harder to keep clean and concise. In
-fact, it's the opposite: It indicates we should put even more effort into making
-sure these tests are readable, easy to understand, and easy to change.
+These scores describe the built-in maintenance cost of each test type. They do
+not excuse unclear integration or E2E tests. Their higher cost makes readable,
+concise tests even more important.

@@ -1,5 +1,5 @@
-We have covered what defines Protection Against Regressions and how each type of
-test provides it. We can now add this comparison to our table:
+Protection against regressions measures how well a test catches broken behavior
+after code changes. We can now add it to our comparison:
 
 ```
 |             | Maintainability | Feedback Speed | Protection      |
@@ -9,20 +9,19 @@ test provides it. We can now add this comparison to our table:
 | E2E         | Low             | Low            | High            |
 ```
 
-**Unit Tests** → They cover smaller portions of the code (functions and
-classes), which limits how many regressions they can catch. When they focus on
-complex, business-critical units, their protection improves — hence the **low to
-medium** score.
+**Unit tests.** They cover small portions of code, such as functions and
+classes, which limits how many regressions they can catch. Tests of complex,
+business-critical units provide more protection, so unit tests score **low to
+medium**.
 
-**Integration Tests** → They exercise entire user journeys, integrating
-components, hooks, and stubbed boundaries. Covering that much more code gives
-them a **medium to high** protection score.
+**Integration tests.** They exercise user journeys across components, hooks, and
+stubbed boundaries. Their broader coverage gives them a **medium to high**
+score.
 
-**E2E Tests** → They run the whole system — UI, APIs, database, and external
-services — exactly as the user experiences it. That makes them the **highest**
-level of protection against regressions.
+**E2E tests.** They run the whole system as a user experiences it, including the
+UI, APIs, database, and external services. They provide the **highest**
+protection against regressions.
 
-Notice how this pillar inverts the previous scores: the tests that are the
-hardest to maintain and the slowest to run are precisely the ones that protect
-us the most. In the next section, we'll see the last pillar that completes this
+This pillar reverses the earlier scores. Tests that are harder to maintain and
+slower to run also catch more regressions. The final pillar completes this
 trade-off.

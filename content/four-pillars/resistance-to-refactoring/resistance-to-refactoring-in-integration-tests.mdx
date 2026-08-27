@@ -1,7 +1,5 @@
-We've discussed how unit tests fare in terms of resistance to refactoring, so we
-should move one step up the test pyramid to explore Integration Tests.
-
-Let's see an example for a React Hook:
+Integration tests sit one level above unit tests in the test pyramid. Consider
+this React hook:
 
 ```ts
 // useCreateQuiz.ts
@@ -29,11 +27,10 @@ export function useCreateQuiz() {
 }
 ```
 
-Testing this React hook in isolation (with unit tests) is a common
-misunderstanding — a byproduct of not knowing the fundamentals we discussed in
-this course. Let's see why with the example below:
+Testing this hook in isolation couples the test to its implementation. This unit
+test shows the problem:
 
-**Unit Test:**
+**Unit test:**
 
 ```ts
 import { act, renderHook } from '@testing-library/react';
@@ -68,8 +65,8 @@ describe('useCreateQuiz', () => {
 });
 ```
 
-Although simple to set up and understand, this test will fail if you refactor
-**any** of the following — _even if observable behavior stays the same_:
+Although this test is easy to set up, it fails after any of these changes, even
+when observable behavior stays the same:
 
 - Inline _createQuizModel()_ into the hook
 - Rename or remove _createQuizModel()_
@@ -77,29 +74,25 @@ Although simple to set up and understand, this test will fail if you refactor
 - Move loading state handling elsewhere
 - Change how the payload is assembled internally
 
-Yet, from the user's perspective:
+From the user's perspective, nothing changed:
 
-- The quiz is still being created
-- The UI still shows loading
-- The same API call is made
-- The same outcome is achieved
+- The quiz is still created.
+- The UI still shows a loading state.
+- The app still makes the same API call.
+- The user sees the same result.
 
-The behavior did **not** change — but the test breaks anyway.
+The test breaks because its **mocks** expose implementation details. Mocks can
+be useful at observable system boundaries, but mocking collaborators inside the
+hook couples the test to its internal steps. Instead of unit-testing this hook,
+test its behavior through an integration test:
 
-The leading cause of that brittleness is the reliance on **mocks**, which is
-quite common in unit tests. Developers often believe mocks should replace
-interactions with anything outside the scope of the System Under Test (SUT), but
-those interactions are frequently implementation details. That's why we advise
-**against** unit-testing React hooks. Instead, we should test them indirectly
-through integration tests:
-
-**Integration Test:**
+**Integration test:**
 
 ```ts
 import { useCreateQuiz } from '@/features/quizzes/useCreateQuiz';
 import { useRetrieveQuizzes } from '@/features/quizzes/useRetrieveQuizzes';
 
-describe('Create Quiz — integration', () => {
+describe('Create Quiz integration', () => {
   it('creates a quiz successfully', () => {
     // --- Fake backend adapters (observable boundary) ---
     cy.injectFakeAdapter(useCreateQuiz, {
@@ -132,7 +125,7 @@ describe('Create Quiz — integration', () => {
 });
 ```
 
-This test **does not care** about:
+This test does not depend on:
 
 - Whether _createQuizModel()_ exists
 - How the hook builds the payload
@@ -140,14 +133,11 @@ This test **does not care** about:
 - Whether the hook uses _useState_, _useReducer_, or _useTransition_
 - Whether the API call lives in the hook or in a service
 
-You can freely refactor all of that.
+You can refactor all of those details. The test keeps passing as long as the
+user can:
 
-As long as:
-
-- The user fills the form
-- Clicks onto the "Create Quiz"
-- sees a success message
-- gets redirected
-- sees the quiz in the list
-
-...the test remains green.
+- Fill out the form
+- Click "Create Quiz"
+- See a success message
+- Reach the quiz list
+- See the new quiz

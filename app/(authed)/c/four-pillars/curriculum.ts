@@ -133,11 +133,11 @@ const FOUR_PILLARS_OUTLINE: readonly SectionOutline[] = [
   },
   {
     slug: 'resistance-to-refactoring',
-    title: 'The fourth Pillar - Resistance to Refactoring',
+    title: 'The Fourth Pillar - Resistance to Refactoring',
     lessons: [
       {
         slug: 'but-first-what-is-refactoring',
-        title: 'But first, what is Refactoring',
+        title: 'But first, what is refactoring?',
       },
       {
         slug: 'quiz-define-refactoring',
@@ -177,13 +177,13 @@ const FOUR_PILLARS_OUTLINE: readonly SectionOutline[] = [
       },
       {
         slug: 'how-each-type-of-test-scores-in-resistancce-to-refactoring',
-        title: 'How each type of test scores in Resistancce to Refactoring',
+        title: 'How each type of test scores in Resistance to Refactoring',
       },
       {
         slug: 'quiz-resistance-to-refactoring-final',
         title: 'Quiz - Resistance to Refactoring (Final)',
       },
-      { slug: 'give-your-feedback', title: 'Give your Feedback!' },
+      { slug: 'give-your-feedback', title: 'Give your feedback' },
     ],
   },
 ];
