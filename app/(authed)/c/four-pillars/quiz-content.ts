@@ -3,32 +3,6 @@ import type { Quiz } from '@/src/entities/models/quiz';
 const PASS_THRESHOLD = 0.5;
 
 const QUIZ_CONTENT = {
-  'introduction/checkpoint': {
-    passThreshold: PASS_THRESHOLD,
-    questions: [
-      {
-        id: 'q1',
-        kind: 'multiple',
-        prompt:
-          "Check the boxes below to acknowledge what you've learned so far",
-        options: [
-          {
-            id: 'a',
-            text: 'I understand that this is a self-paced course with a focus on the attributes of good automated tests',
-          },
-          {
-            id: 'b',
-            text: 'I commit to at least 10 minutes of learning every day to keep motivated',
-          },
-          {
-            id: 'c',
-            text: 'I understood that Retrieval Practice is one of the best ways to acquire and retain knowledge',
-          },
-        ],
-        correctOptionIds: ['a', 'b', 'c'],
-      },
-    ],
-  },
   'maintainability/quiz-maintainability': {
     intro:
       "We've briefly discussed out-of-process dependencies and their contribution to maintainability - now it's time to answer a few questions to recap the concepts.",

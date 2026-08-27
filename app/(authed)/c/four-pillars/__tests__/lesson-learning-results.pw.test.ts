@@ -1,7 +1,7 @@
 import { getLessonLearningResultsAdapter } from '@/app/_lib/adapters/course-progress.adapters';
 import { expect, test } from '@/playwright/fixtures';
 
-const QUIZ_PATH = '/c/four-pillars/introduction/checkpoint';
+const QUIZ_PATH = '/c/four-pillars/maintainability/quiz-maintainability';
 const RESULTS_PATH = `${QUIZ_PATH}/results`;
 
 const RECORDED_LESSON_RESULTS = {
@@ -62,7 +62,7 @@ test('opens results from the original lesson and shows recorded learner outcomes
 
   await expect(page).toHaveURL(RESULTS_PATH);
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-    'Checkpoint'
+    'Quiz - Maintainability'
   );
 
   const summary = page.getByRole('region', { name: 'Results summary' });

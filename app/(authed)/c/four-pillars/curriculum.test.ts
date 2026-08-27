@@ -21,11 +21,13 @@ describe('Four Pillars curriculum persistence IDs', () => {
     expect(ids.every((id) => id.includes('/') && !/^l-\d+$/.test(id))).toBe(
       true
     );
-    expect(findLessonById('introduction/what-you-ll-learn')).toMatchObject({
-      section: { slug: 'introduction' },
+    expect(
+      findLessonById('maintainability/good-and-bad-automated-tests')
+    ).toMatchObject({
+      section: { slug: 'maintainability' },
       lesson: {
-        id: 'introduction/what-you-ll-learn',
-        slug: 'what-you-ll-learn',
+        id: 'maintainability/good-and-bad-automated-tests',
+        slug: 'good-and-bad-automated-tests',
       },
     });
   });
@@ -36,7 +38,7 @@ describe('Four Pillars curriculum persistence IDs', () => {
     );
 
     expect(firstUnfinishedLesson(completed)?.lesson.id).toBe(
-      'introduction/checkpoint'
+      'maintainability/which-test-is-easier-to-maintain'
     );
   });
 
@@ -51,7 +53,7 @@ describe('Four Pillars curriculum persistence IDs', () => {
       .map(({ section, lesson }) => findQuiz(section.slug, lesson.slug))
       .filter((quiz) => quiz !== undefined);
 
-    expect(quizzes).toHaveLength(11);
+    expect(quizzes).toHaveLength(10);
     for (const quiz of quizzes) {
       expect(() => quizSchema.parse(quiz)).not.toThrow();
     }

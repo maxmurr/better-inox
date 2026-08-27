@@ -1,7 +1,8 @@
 import { expect, test } from '@/playwright/fixtures';
 
 const COURSE_PATH = '/c/four-pillars';
-const LESSON_PATH = '/c/four-pillars/introduction/what-you-ll-learn';
+const LESSON_PATH =
+  '/c/four-pillars/maintainability/good-and-bad-automated-tests';
 
 test('shows the course panel only on lesson pages', async ({
   page,
@@ -28,7 +29,7 @@ test('shows the course panel only on lesson pages', async ({
   const coursePanel = page.locator('#course-panel');
   await expect(coursePanel).toBeVisible();
   await expect(
-    coursePanel.getByRole('link', { name: /What you'll learn/ })
+    coursePanel.getByRole('link', { name: /Good and Bad Automated Tests/ })
   ).toHaveAttribute('aria-current', 'page');
 
   await page.getByRole('link', { name: 'Back to course' }).click();

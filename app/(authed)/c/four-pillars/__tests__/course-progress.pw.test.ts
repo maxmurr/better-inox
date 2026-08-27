@@ -16,10 +16,11 @@ import {
 } from '@/playwright/fixtures';
 
 const COURSE_PATH = '/c/four-pillars';
-const FIRST_LESSON_ID = 'introduction/what-you-ll-learn';
+const FIRST_LESSON_ID = 'maintainability/good-and-bad-automated-tests';
 const FIRST_LESSON_PATH = `${COURSE_PATH}/${FIRST_LESSON_ID}`;
-const SECOND_LESSON_ID = 'introduction/how-to-get-the-most-out-of-this-course';
-const QUIZ_LESSON_ID = 'introduction/checkpoint';
+const COMPLETION_LESSON_ID = 'maintainability/readability';
+const COMPLETION_LESSON_PATH = `${COURSE_PATH}/${COMPLETION_LESSON_ID}`;
+const QUIZ_LESSON_ID = 'maintainability/quiz-maintainability';
 const QUIZ_PATH = `${COURSE_PATH}/${QUIZ_LESSON_ID}`;
 const MAINTAINABILITY_QUIZ_PATH = `${COURSE_PATH}/maintainability/quiz-maintainability`;
 const POP_QUESTION_PATH = `${COURSE_PATH}/maintainability/good-and-bad-automated-tests`;
@@ -30,13 +31,19 @@ const PASSED_RESULT = {
     outcomes: [
       {
         questionId: 'q1',
-        selectedOptionIds: ['a', 'b', 'c'],
-        correctOptionIds: ['a', 'b', 'c'],
+        selectedOptionIds: ['a', 'c', 'e'],
+        correctOptionIds: ['a', 'c', 'e'],
+        isCorrect: true,
+      },
+      {
+        questionId: 'q2',
+        selectedOptionIds: ['c', 'd', 'e'],
+        correctOptionIds: ['c', 'd', 'e'],
         isCorrect: true,
       },
     ],
-    correct: 1,
-    total: 1,
+    correct: 2,
+    total: 2,
     score: 1,
     passed: true,
   },
@@ -48,13 +55,19 @@ const FAILED_RESULT = {
     outcomes: [
       {
         questionId: 'q1',
+        selectedOptionIds: ['b'],
+        correctOptionIds: ['a', 'c', 'e'],
+        isCorrect: false,
+      },
+      {
+        questionId: 'q2',
         selectedOptionIds: ['a'],
-        correctOptionIds: ['a', 'b', 'c'],
+        correctOptionIds: ['c', 'd', 'e'],
         isCorrect: false,
       },
     ],
     correct: 0,
-    total: 1,
+    total: 2,
     score: 0,
     passed: false,
   },
@@ -81,21 +94,25 @@ test('starts empty and restores the first-incomplete Continue target', async ({
     FIRST_LESSON_PATH
   );
   await expect(
-    page.getByRole('link', { name: /What you'll learn Not completed/ })
+    page.getByRole('link', {
+      name: /Good and Bad Automated Tests Not completed/,
+    })
   ).toBeVisible();
 
   await stubAdapter(
     getCourseProgressAdapter,
-    restoredProgress([FIRST_LESSON_ID, SECOND_LESSON_ID])
+    restoredProgress([FIRST_LESSON_ID])
   );
   await page.reload();
 
   await expect(page.getByRole('link', { name: /Continue/ })).toHaveAttribute(
     'href',
-    QUIZ_PATH
+    COMPLETION_LESSON_PATH
   );
   await expect(
-    page.getByRole('link', { name: /What you'll learn Completed/ })
+    page.getByRole('link', {
+      name: /Good and Bad Automated Tests Completed/,
+    })
   ).toBeVisible();
 });
 
@@ -106,10 +123,10 @@ test('persists reversible completion and updates every shared indicator', async 
 }) => {
   await signedIn();
   await stubAdapter(setLessonCompletionAdapter, {
-    lessonId: FIRST_LESSON_ID,
+    lessonId: COMPLETION_LESSON_ID,
     completed: true,
   });
-  await page.goto(FIRST_LESSON_PATH);
+  await page.goto(COMPLETION_LESSON_PATH);
 
   await page.getByRole('button', { name: 'Complete Lesson' }).click();
   await expect(page.getByRole('button', { name: 'Completed' })).toBeVisible();
@@ -117,19 +134,19 @@ test('persists reversible completion and updates every shared indicator', async 
   await page.getByRole('button', { name: 'Lessons', exact: true }).click();
   await expect(
     page.locator('#course-panel').getByRole('link', {
-      name: /What you'll learn Completed/,
+      name: /Readability Completed/,
     })
   ).toBeVisible();
 
   await stubAdapter(
     getCourseProgressAdapter,
-    restoredProgress([FIRST_LESSON_ID])
+    restoredProgress([COMPLETION_LESSON_ID])
   );
   await page.reload();
   await expect(page.getByRole('button', { name: 'Completed' })).toBeVisible();
 
   await stubAdapter(setLessonCompletionAdapter, {
-    lessonId: FIRST_LESSON_ID,
+    lessonId: COMPLETION_LESSON_ID,
     completed: false,
   });
   await page.getByRole('button', { name: 'Completed' }).click();
@@ -230,7 +247,7 @@ test('restores and replaces only the latest submitted quiz result', async ({
   await submitAnswers.click();
 
   await expect(page.getByText('100%')).toBeVisible();
-  await expect(page.getByText('1/1')).toBeVisible();
+  await expect(page.getByText('2/2')).toBeVisible();
   await expect(completeLesson).toBeEnabled();
 
   await stubAdapter(
@@ -244,12 +261,14 @@ test('restores and replaces only the latest submitted quiz result', async ({
   await page.getByRole('button', { name: 'Retake Quiz' }).click();
   await page.getByRole('button', { name: 'Retake & Clear Answers' }).click();
   await expect(completeLesson).toBeEnabled();
-  await page.getByRole('checkbox').first().click();
+  for (const fieldset of await page.locator('fieldset').all()) {
+    await fieldset.getByRole('checkbox').first().click();
+  }
 
   await stubAdapter(submitQuizAdapter, FAILED_RESULT);
   await page.getByRole('button', { name: 'Submit Answers' }).click();
   await expect(page.getByText('0%')).toBeVisible();
-  await expect(page.getByText('0/1')).toBeVisible();
+  await expect(page.getByText('0/2')).toBeVisible();
 
   await stubAdapter(
     getCourseProgressAdapter,
@@ -298,7 +317,7 @@ test('keeps selections and saved state unchanged after safe failures', async ({
     setLessonCompletionAdapter,
     stubError('DatabaseOperationError', 'private database detail')
   );
-  await page.goto(FIRST_LESSON_PATH);
+  await page.goto(COMPLETION_LESSON_PATH);
   await page.getByRole('button', { name: 'Complete Lesson' }).click();
 
   await expect(page.getByText(/Could not save lesson progress/)).toBeVisible();
@@ -389,7 +408,7 @@ test('isolates restored state between learner sessions', async ({
 
     await expect(
       firstPage.getByRole('link', { name: /Continue/ })
-    ).toHaveAttribute('href', `${COURSE_PATH}/${SECOND_LESSON_ID}`);
+    ).toHaveAttribute('href', COMPLETION_LESSON_PATH);
     await expect(
       secondPage.getByRole('link', { name: /Continue/ })
     ).toHaveAttribute('href', FIRST_LESSON_PATH);

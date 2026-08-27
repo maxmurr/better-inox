@@ -3,10 +3,6 @@ import type { MDXContent } from 'mdx/types';
 type LessonContentLoader = () => Promise<{ default: MDXContent }>;
 
 const LESSON_CONTENT = {
-  'introduction/what-you-ll-learn': () =>
-    import('@/content/four-pillars/introduction/what-you-ll-learn.mdx'),
-  'introduction/how-to-get-the-most-out-of-this-course': () =>
-    import('@/content/four-pillars/introduction/how-to-get-the-most-out-of-this-course.mdx'),
   'maintainability/good-and-bad-automated-tests': () =>
     import('@/content/four-pillars/maintainability/good-and-bad-automated-tests.mdx'),
   'maintainability/readability': () =>

@@ -44,18 +44,6 @@ export type FourPillarsCourseSlug = typeof FOUR_PILLARS_COURSE_SLUG;
 
 const FOUR_PILLARS_OUTLINE: readonly SectionOutline[] = [
   {
-    slug: 'introduction',
-    title: 'Introduction',
-    lessons: [
-      { slug: 'what-you-ll-learn', title: "What you'll learn" },
-      {
-        slug: 'how-to-get-the-most-out-of-this-course',
-        title: 'How to get the most out of this course',
-      },
-      { slug: 'checkpoint', title: 'Checkpoint' },
-    ],
-  },
-  {
     slug: 'maintainability',
     title: 'The First Pillar - Maintainability',
     lessons: [
