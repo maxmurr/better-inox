@@ -1,6 +1,8 @@
 'use client';
 
+import type { Route } from 'next';
 import { useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { ArrowRightIcon, CircleCheckIcon, LoaderIcon } from 'lucide-react';
 import { toast } from 'sonner';
@@ -10,12 +12,14 @@ import { Button } from '@/app/_components/ui/button';
 
 import { saveLessonCompletion } from './actions';
 
-export function LessonFooter({
+export function LessonFooter<T extends string>({
   lessonId,
+  nextLessonHref,
   isQuizLesson,
   requiredPopQuestionIds,
 }: {
   lessonId: string;
+  nextLessonHref: Route<T> | undefined;
   isQuizLesson: boolean;
   requiredPopQuestionIds: readonly string[];
 }) {
@@ -25,6 +29,7 @@ export function LessonFooter({
     hasSavedQuizResult,
     isPopQuestionSubmitted,
   } = useCourse();
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const completed = isLessonCompleted(lessonId);
   const hasUnsubmittedQuiz = isQuizLesson && !hasSavedQuizResult(lessonId);
@@ -53,6 +58,9 @@ export function LessonFooter({
         }
 
         applyLessonCompletion(response.data.lessonId, response.data.completed);
+        if (response.data.completed && nextLessonHref) {
+          router.push(nextLessonHref);
+        }
       } catch {
         toast.error('Could not save lesson progress. Please try again.');
       }

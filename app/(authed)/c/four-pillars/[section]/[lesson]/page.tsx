@@ -5,6 +5,7 @@ import { QuizView } from '@/app/_components/quiz-view';
 import { CourseHeaderActions } from '@/app/(authed)/c/four-pillars/course-header-actions';
 import {
   courseHref,
+  lessonHref,
   lessonResultsHref,
 } from '@/app/(authed)/c/four-pillars/course-href';
 import {
@@ -49,6 +50,13 @@ export default async function Page({
   const Content = loadContent ? (await loadContent()).default : undefined;
   const quiz = findQuiz(section, lesson);
   const requiredPopQuestionIds = findLessonPopQuestionIds(section, lesson);
+  const nextLessonHref = navigation.next
+    ? lessonHref(
+        FOUR_PILLARS_COURSE_SLUG,
+        navigation.next.section.slug,
+        navigation.next.lesson.slug
+      )
+    : undefined;
 
   return (
     <>
@@ -102,6 +110,7 @@ export default async function Page({
 
       <LessonFooter
         lessonId={currentLesson.id}
+        nextLessonHref={nextLessonHref}
         isQuizLesson={Boolean(quiz)}
         requiredPopQuestionIds={requiredPopQuestionIds}
       />

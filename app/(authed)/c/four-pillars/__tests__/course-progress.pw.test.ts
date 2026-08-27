@@ -116,6 +116,29 @@ test('starts empty and restores the first-incomplete Continue target', async ({
   ).toBeVisible();
 });
 
+test('moves to the next lesson after completing the current lesson', async ({
+  page,
+  signedIn,
+  stubAdapter,
+}) => {
+  await signedIn();
+  await stubAdapter(setLessonCompletionAdapter, {
+    lessonId: COMPLETION_LESSON_ID,
+    completed: true,
+  });
+  await page.goto(COMPLETION_LESSON_PATH);
+
+  const nextLessonPath = `${COURSE_PATH}/maintainability/which-test-is-easier-to-maintain`;
+  await expect(page.getByRole('link', { name: /Next lesson/ })).toHaveAttribute(
+    'href',
+    nextLessonPath
+  );
+
+  await page.getByRole('button', { name: 'Complete Lesson' }).click();
+
+  await expect(page).toHaveURL(nextLessonPath);
+});
+
 test('persists reversible completion and updates every shared indicator', async ({
   page,
   signedIn,
@@ -129,7 +152,6 @@ test('persists reversible completion and updates every shared indicator', async 
   await page.goto(COMPLETION_LESSON_PATH);
 
   await page.getByRole('button', { name: 'Complete Lesson' }).click();
-  await expect(page.getByRole('button', { name: 'Completed' })).toBeVisible();
 
   await page.getByRole('button', { name: 'Lessons', exact: true }).click();
   await expect(
@@ -142,7 +164,7 @@ test('persists reversible completion and updates every shared indicator', async 
     getCourseProgressAdapter,
     restoredProgress([COMPLETION_LESSON_ID])
   );
-  await page.reload();
+  await page.goto(COMPLETION_LESSON_PATH);
   await expect(page.getByRole('button', { name: 'Completed' })).toBeVisible();
 
   await stubAdapter(setLessonCompletionAdapter, {
