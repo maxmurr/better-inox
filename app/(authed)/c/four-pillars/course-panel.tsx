@@ -4,13 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import {
-  ArrowUpIcon,
-  CircleCheckIcon,
-  CircleIcon,
-  MessageCircleIcon,
-  XIcon,
-} from 'lucide-react';
+import { ArrowUpIcon, MessageCircleIcon, XIcon } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { useCourse } from '@/app/_components/course-provider';
@@ -21,6 +15,19 @@ import {
   AccordionTrigger,
 } from '@/app/_components/ui/accordion';
 import { Button } from '@/app/_components/ui/button';
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from '@/app/_components/ui/empty';
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupTextarea,
+} from '@/app/_components/ui/input-group';
 import { cn } from '@/app/_components/utils';
 import { lessonHref } from '@/app/(authed)/c/four-pillars/course-href';
 import type {
@@ -31,6 +38,7 @@ import {
   COURSE_PANEL_ID,
   useCoursePanel,
 } from '@/app/(authed)/c/four-pillars/course-panel-context';
+import { LessonCompletionStatus } from '@/app/(authed)/c/four-pillars/lesson-completion-status';
 
 const PANEL_TITLES = { comments: 'Comments', lessons: 'Lessons' } as const;
 
@@ -169,30 +177,18 @@ function LessonsPanel({
                           isActive && 'bg-muted'
                         )}
                       >
-                        {completed ? (
-                          <CircleCheckIcon
-                            aria-hidden
-                            className="size-4 shrink-0 text-success"
-                          />
-                        ) : (
-                          <CircleIcon
-                            aria-hidden
-                            className="size-4 shrink-0 text-muted-foreground"
-                          />
-                        )}
-                        <span
-                          className={cn(
-                            'min-w-0 flex-1 truncate',
-                            isActive
-                              ? 'text-foreground'
-                              : 'text-muted-foreground'
-                          )}
-                        >
-                          {lesson.title}
-                        </span>
-                        <span className="sr-only">
-                          {completed ? 'Completed' : 'Not completed'}
-                        </span>
+                        <LessonCompletionStatus completed={completed}>
+                          <span
+                            className={cn(
+                              'min-w-0 flex-1 truncate',
+                              isActive
+                                ? 'text-foreground'
+                                : 'text-muted-foreground'
+                            )}
+                          >
+                            {lesson.title}
+                          </span>
+                        </LessonCompletionStatus>
                       </Link>
                     </li>
                   );
@@ -221,19 +217,19 @@ function CommentsPanel() {
 
   return (
     <>
-      <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-4 px-6 text-center">
-        <div className="flex size-11 items-center justify-center rounded-xl bg-muted">
-          <MessageCircleIcon aria-hidden className="size-5 text-foreground" />
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <p className="font-heading text-base font-semibold text-foreground">
+      <Empty className="rounded-none px-6 py-0">
+        <EmptyHeader>
+          <EmptyMedia variant="icon" className="size-11 rounded-xl">
+            <MessageCircleIcon aria-hidden className="size-5" />
+          </EmptyMedia>
+          <EmptyTitle className="font-semibold sm:text-base">
             Say hi!
-          </p>
-          <p className="text-sm text-pretty text-muted-foreground">
+          </EmptyTitle>
+          <EmptyDescription className="text-sm">
             Be the first to comment on this lesson
-          </p>
-        </div>
-      </div>
+          </EmptyDescription>
+        </EmptyHeader>
+      </Empty>
 
       <form
         onSubmit={(event) => {
@@ -242,8 +238,8 @@ function CommentsPanel() {
         }}
         className="shrink-0 border-t border-border p-3"
       >
-        <div className="relative rounded-xl border border-input bg-muted/40 transition-colors focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50">
-          <textarea
+        <InputGroup className="h-auto rounded-xl bg-muted/40">
+          <InputGroupTextarea
             name="comment"
             value={message}
             onChange={(event) => setMessage(event.target.value)}
@@ -261,19 +257,21 @@ function CommentsPanel() {
             rows={3}
             placeholder="Type a message…"
             aria-label="Comment"
-            className="w-full resize-none bg-transparent px-3 pt-2.5 pb-11 text-base outline-none placeholder:text-muted-foreground sm:text-sm"
+            className="px-3 pt-2.5 sm:text-sm"
           />
-          <Button
-            type="submit"
-            size="icon"
-            variant="secondary"
-            disabled={!canSend}
-            aria-label="Send comment"
-            className="absolute right-2 bottom-2 rounded-full"
-          >
-            <ArrowUpIcon aria-hidden />
-          </Button>
-        </div>
+          <InputGroupAddon align="block-end" className="justify-end px-2">
+            <InputGroupButton
+              type="submit"
+              size="icon-sm"
+              variant="secondary"
+              disabled={!canSend}
+              aria-label="Send comment"
+              className="rounded-full"
+            >
+              <ArrowUpIcon aria-hidden />
+            </InputGroupButton>
+          </InputGroupAddon>
+        </InputGroup>
       </form>
     </>
   );

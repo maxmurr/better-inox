@@ -14,6 +14,7 @@ import {
 } from '@/src/entities/models/quiz';
 
 import { useCourse } from '@/app/_components/course-provider';
+import { FormAlert } from '@/app/_components/form-alert';
 import { Button } from '@/app/_components/ui/button';
 import { Card, CardContent } from '@/app/_components/ui/card';
 import { Checkbox } from '@/app/_components/ui/checkbox';
@@ -136,6 +137,43 @@ function Verdict({ outcome }: { outcome: QuestionOutcome }) {
   );
 }
 
+function QuizOptionRow({
+  className,
+  control,
+  disabled,
+  isCorrectAnswer,
+  isWrongSelection,
+  text,
+}: {
+  className?: string;
+  control: React.ReactNode;
+  disabled: boolean;
+  isCorrectAnswer: boolean;
+  isWrongSelection: boolean;
+  text: string;
+}) {
+  return (
+    <label
+      className={cn(
+        'flex items-center gap-3 rounded-md px-2 py-2.5 transition-colors',
+        !disabled && 'cursor-pointer hover:bg-muted/50',
+        className
+      )}
+    >
+      {control}
+      <span
+        className={cn(
+          'flex-1 text-sm',
+          isCorrectAnswer && 'font-medium text-foreground',
+          isWrongSelection && 'text-muted-foreground line-through'
+        )}
+      >
+        {text}
+      </span>
+    </label>
+  );
+}
+
 function Question({
   lesson,
   question,
@@ -191,30 +229,22 @@ function Question({
             const isAnswer = outcome?.correctOptionIds.includes(option.id);
             const isWrongPick = submitted && isPicked && !isAnswer;
             return (
-              <label
+              <QuizOptionRow
                 key={option.id}
-                className={cn(
-                  'flex items-center gap-3 rounded-md px-2 py-2.5 transition-colors',
-                  !disabled && 'cursor-pointer hover:bg-muted/50'
-                )}
-              >
-                <Checkbox
-                  checked={isPicked}
-                  disabled={disabled}
-                  onCheckedChange={() =>
-                    toggleSelection(lesson.id, question.id, option.id)
-                  }
-                />
-                <span
-                  className={cn(
-                    'flex-1 text-sm',
-                    submitted && isAnswer && 'font-medium text-foreground',
-                    isWrongPick && 'text-muted-foreground line-through'
-                  )}
-                >
-                  {option.text}
-                </span>
-              </label>
+                control={
+                  <Checkbox
+                    checked={isPicked}
+                    disabled={disabled}
+                    onCheckedChange={() =>
+                      toggleSelection(lesson.id, question.id, option.id)
+                    }
+                  />
+                }
+                disabled={disabled}
+                isCorrectAnswer={submitted && Boolean(isAnswer)}
+                isWrongSelection={isWrongPick}
+                text={option.text}
+              />
             );
           })}
         </div>
@@ -232,24 +262,14 @@ function Question({
             const isAnswer = outcome?.correctOptionIds.includes(option.id);
             const isWrongPick = submitted && picked(option.id) && !isAnswer;
             return (
-              <label
+              <QuizOptionRow
                 key={option.id}
-                className={cn(
-                  'flex items-center gap-3 rounded-md px-2 py-2.5 transition-colors',
-                  !disabled && 'cursor-pointer hover:bg-muted/50'
-                )}
-              >
-                <RadioGroupItem value={option.id} />
-                <span
-                  className={cn(
-                    'flex-1 text-sm',
-                    submitted && isAnswer && 'font-medium text-foreground',
-                    isWrongPick && 'text-muted-foreground line-through'
-                  )}
-                >
-                  {option.text}
-                </span>
-              </label>
+                control={<RadioGroupItem value={option.id} />}
+                disabled={disabled}
+                isCorrectAnswer={submitted && Boolean(isAnswer)}
+                isWrongSelection={isWrongPick}
+                text={option.text}
+              />
             );
           })}
         </RadioGroup>
@@ -341,9 +361,7 @@ export function QuizView({ lesson }: { lesson: QuizLesson }) {
               )}
             </Button>
             {submitError ? (
-              <p role="alert" className="text-xs font-medium text-destructive">
-                {submitError}
-              </p>
+              <FormAlert className="text-xs">{submitError}</FormAlert>
             ) : !complete ? (
               <p className="text-xs text-muted-foreground">
                 Answer every question to submit.

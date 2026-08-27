@@ -6,6 +6,9 @@ import { useEffect } from 'react';
 
 import * as Sentry from '@sentry/nextjs';
 
+import { PageMessage } from '@/app/_components/page-message';
+import { Button } from '@/app/_components/ui/button';
+
 export default function GlobalError({
   error,
   reset,
@@ -20,25 +23,14 @@ export default function GlobalError({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="flex min-h-dvh items-center justify-center bg-muted/80 px-4 font-sans text-foreground antialiased">
-        <main
-          id="main-content"
-          className="flex max-w-md flex-col items-center gap-4 text-center"
+        <PageMessage
+          title="Something went wrong"
+          description="This page could not be loaded. Try again — if the error keeps coming back, reload the page or check again in a few minutes."
         >
-          <h1 className="font-heading text-xl/snug font-semibold tracking-tight text-balance">
-            Something went wrong
-          </h1>
-          <p className="text-sm text-pretty text-muted-foreground">
-            This page could not be loaded. Try again — if the error keeps coming
-            back, reload the page or check again in a few minutes.
-          </p>
-          <button
-            type="button"
-            onClick={reset}
-            className="inline-flex h-9 items-center justify-center rounded-lg bg-primary px-3 text-sm font-medium text-primary-foreground transition-colors outline-none select-none hover:bg-primary/80 focus-visible:ring-3 focus-visible:ring-ring/50 active:translate-y-px"
-          >
+          <Button type="button" size="lg" className="px-3" onClick={reset}>
             Try Again
-          </button>
-        </main>
+          </Button>
+        </PageMessage>
       </body>
     </html>
   );

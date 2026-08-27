@@ -3,8 +3,6 @@
 import { useState } from 'react';
 import Link from 'next/link';
 
-import { CircleCheckIcon, CircleIcon } from 'lucide-react';
-
 import { useCourse } from '@/app/_components/course-provider';
 import {
   Accordion,
@@ -16,6 +14,7 @@ import { Button } from '@/app/_components/ui/button';
 
 import { lessonHref } from './course-href';
 import type { CourseSection, FourPillarsCourseSlug } from './curriculum';
+import { LessonCompletionStatus } from './lesson-completion-status';
 
 export type {
   CourseLesson,
@@ -106,23 +105,11 @@ export function CourseOutline({
                         href={lessonHref(courseSlug, section.slug, lesson.slug)}
                         className="-mx-2 flex min-h-9 touch-manipulation items-center gap-3 rounded-lg border border-transparent px-2 py-1 transition-colors outline-none hover:bg-muted/40 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
                       >
-                        {completed ? (
-                          <CircleCheckIcon
-                            aria-hidden
-                            className="size-4 shrink-0 text-success"
-                          />
-                        ) : (
-                          <CircleIcon
-                            aria-hidden
-                            className="size-4 shrink-0 text-muted-foreground"
-                          />
-                        )}
-                        <span className="min-w-0 flex-1 text-pretty text-foreground">
-                          {lesson.title}
-                        </span>
-                        <span className="sr-only">
-                          {completed ? 'Completed' : 'Not completed'}
-                        </span>
+                        <LessonCompletionStatus completed={completed}>
+                          <span className="min-w-0 flex-1 text-pretty text-foreground">
+                            {lesson.title}
+                          </span>
+                        </LessonCompletionStatus>
                       </Link>
                     </li>
                   );

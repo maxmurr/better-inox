@@ -16,6 +16,7 @@ import {
   TableRow,
 } from '@/app/_components/ui/table';
 import { UserAvatar } from '@/app/_components/user-avatar';
+import { cn } from '@/app/_components/utils';
 import type { LessonLearningResultsData } from '@/app/_lib/adapters/course-progress.adapters';
 
 const percentageFormatter = new Intl.NumberFormat('en', {
@@ -27,6 +28,32 @@ type LessonLearner = LessonLearningResultsData['learners'][number];
 
 function formatPercentage(value: number) {
   return percentageFormatter.format(value);
+}
+
+function LessonResultMetric({
+  className,
+  description,
+  label,
+  value,
+}: {
+  className?: string;
+  description: React.ReactNode;
+  label: React.ReactNode;
+  value: React.ReactNode;
+}) {
+  return (
+    <div className={cn('flex min-w-0 flex-col gap-1', className)}>
+      <dt className="truncate text-base font-medium text-foreground sm:text-sm">
+        {label}
+      </dt>
+      <dd className="font-heading text-2xl font-semibold text-foreground tabular-nums">
+        {value}
+      </dd>
+      <dd className="text-base text-pretty text-muted-foreground sm:text-sm">
+        {description}
+      </dd>
+    </div>
+  );
 }
 
 function CompletionBadge({ completed }: { completed: boolean }) {
@@ -73,43 +100,32 @@ function LessonResultsSummary({
       </h2>
       <div className="@container">
         <dl className="grid divide-y divide-border border-y border-border @sm:grid-cols-3 @sm:divide-x @sm:divide-y-0">
-          <div className="flex min-w-0 flex-col gap-1 py-4 @sm:py-5 @sm:pr-5">
-            <dt className="truncate text-base font-medium text-foreground sm:text-sm">
-              Started
-            </dt>
-            <dd className="font-heading text-2xl font-semibold text-foreground tabular-nums">
-              {summary.startedCount}
-            </dd>
-            <dd className="text-base text-pretty text-muted-foreground sm:text-sm">
-              Learners with recorded activity.
-            </dd>
-          </div>
-          <div className="flex min-w-0 flex-col gap-1 py-4 @sm:p-5">
-            <dt className="truncate text-base font-medium text-foreground sm:text-sm">
-              Completed
-            </dt>
-            <dd className="font-heading text-2xl font-semibold text-foreground tabular-nums">
-              {summary.completedCount} of {summary.startedCount}
-            </dd>
-            <dd className="text-base text-pretty text-muted-foreground sm:text-sm">
-              {formatPercentage(summary.completionRate)} completion.
-            </dd>
-          </div>
-          <div className="flex min-w-0 flex-col gap-1 py-4 @sm:py-5 @sm:pl-5">
-            <dt className="truncate text-base font-medium text-foreground sm:text-sm">
-              {hasQuiz ? 'Average quiz score' : 'Understanding signal'}
-            </dt>
-            <dd className="font-heading text-2xl font-semibold text-foreground tabular-nums">
-              {hasQuiz && summary.averageQuizScore !== null
+          <LessonResultMetric
+            label="Started"
+            value={summary.startedCount}
+            description="Learners with recorded activity."
+            className="py-4 @sm:py-5 @sm:pr-5"
+          />
+          <LessonResultMetric
+            label="Completed"
+            value={`${summary.completedCount} of ${summary.startedCount}`}
+            description={`${formatPercentage(summary.completionRate)} completion.`}
+            className="py-4 @sm:p-5"
+          />
+          <LessonResultMetric
+            label={hasQuiz ? 'Average quiz score' : 'Understanding signal'}
+            value={
+              hasQuiz && summary.averageQuizScore !== null
                 ? formatPercentage(summary.averageQuizScore)
-                : '—'}
-            </dd>
-            <dd className="text-base text-pretty text-muted-foreground sm:text-sm">
-              {hasQuiz
+                : '—'
+            }
+            description={
+              hasQuiz
                 ? `${summary.quizSubmissionCount} quiz ${summary.quizSubmissionCount === 1 ? 'submission' : 'submissions'}.`
-                : 'This lesson uses completion only.'}
-            </dd>
-          </div>
+                : 'This lesson uses completion only.'
+            }
+            className="py-4 @sm:py-5 @sm:pl-5"
+          />
         </dl>
       </div>
     </section>

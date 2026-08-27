@@ -1,17 +1,12 @@
 import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
-import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
-
-import { ArrowLeftIcon } from 'lucide-react';
 
 import { UnauthenticatedError } from '@/src/entities/errors/auth';
 
 import { SESSION_COOKIE } from '@/config';
 
-import { buttonVariants } from '@/app/_components/ui/button';
 import { UserMenu } from '@/app/_components/user-menu';
-import { cn } from '@/app/_components/utils';
 import { getLessonLearningResultsAdapter } from '@/app/_lib/adapters/course-progress.adapters';
 import {
   reportAppErrorAdapter,
@@ -19,6 +14,10 @@ import {
 } from '@/app/_lib/adapters/monitoring.adapters';
 import { getCurrentUser } from '@/app/(authed)/auth';
 import { lessonHref } from '@/app/(authed)/c/four-pillars/course-href';
+import {
+  FourPillarsCourseHeader,
+  FourPillarsCourseMain,
+} from '@/app/(authed)/c/four-pillars/course-page-shell';
 import { LessonLearningResults } from '@/app/(authed)/c/four-pillars/lesson-learning-results';
 
 import { findLesson, FOUR_PILLARS_COURSE_SLUG } from '../../../curriculum';
@@ -79,46 +78,36 @@ export default async function Page({
 
   return (
     <>
-      <header className="flex h-14 shrink-0 items-center justify-between gap-3 border-b border-border bg-background px-3 sm:px-4">
-        <div className="flex min-w-0 items-center gap-2">
-          <Link
-            href={originalLessonHref}
-            aria-label={`Back to lesson: ${currentLesson.title}`}
-            className={cn(buttonVariants({ size: 'icon', variant: 'ghost' }))}
-          >
-            <ArrowLeftIcon aria-hidden />
-          </Link>
-          <p className="min-w-0 truncate font-heading text-base font-semibold text-foreground sm:text-lg">
-            The 4 Pillars of Automated Tests
+      <FourPillarsCourseHeader
+        actions={
+          <UserMenu username={user.username} avatarUrl={user.avatarUrl} />
+        }
+        back={{
+          href: originalLessonHref,
+          label: `Back to lesson: ${currentLesson.title}`,
+        }}
+        titleAs="p"
+      />
+
+      <FourPillarsCourseMain maxWidth="5xl">
+        <header className="flex flex-col gap-2">
+          <p className="text-base font-medium text-muted-foreground sm:text-sm">
+            Lesson results
           </p>
-        </div>
-        <UserMenu username={user.username} avatarUrl={user.avatarUrl} />
-      </header>
+          <h1 className="max-w-[40ch] font-heading text-3xl font-semibold tracking-tight text-balance text-foreground">
+            {currentLesson.title}
+          </h1>
+          <p className="max-w-[56ch] text-base text-pretty text-muted-foreground sm:text-sm">
+            See who completed this lesson and their latest recorded
+            understanding signal.
+          </p>
+        </header>
 
-      <main
-        id="main-content"
-        className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
-      >
-        <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-5 py-8 sm:gap-10 sm:px-8 sm:py-10">
-          <header className="flex flex-col gap-2">
-            <p className="text-base font-medium text-muted-foreground sm:text-sm">
-              Lesson results
-            </p>
-            <h1 className="max-w-[40ch] font-heading text-3xl font-semibold tracking-tight text-balance text-foreground">
-              {currentLesson.title}
-            </h1>
-            <p className="max-w-[56ch] text-base text-pretty text-muted-foreground sm:text-sm">
-              See who completed this lesson and their latest recorded
-              understanding signal.
-            </p>
-          </header>
-
-          <LessonLearningResults
-            results={results}
-            hasQuiz={Boolean(findQuiz(section, lesson))}
-          />
-        </div>
-      </main>
+        <LessonLearningResults
+          results={results}
+          hasQuiz={Boolean(findQuiz(section, lesson))}
+        />
+      </FourPillarsCourseMain>
     </>
   );
 }
