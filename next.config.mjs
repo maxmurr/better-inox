@@ -1,7 +1,11 @@
 import createMDX from '@next/mdx';
 import { withSentryConfig } from '@sentry/nextjs';
 
-const withMDX = createMDX();
+const withMDX = createMDX({
+  options: {
+    remarkPlugins: ['@sugar-high/remark'],
+  },
+});
 
 function warnOnMissingBuildEnv() {
   if (process.env.__BUILD_ENV_CHECKED) {

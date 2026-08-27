@@ -1,6 +1,7 @@
 import type { MDXComponents } from 'mdx/types';
 
 import { PopQuestion } from '@/app/_components/pop-question';
+import { cn } from '@/app/_components/utils';
 
 /**
  * Global MDX components. Lesson prose is laid out by the flex column that wraps
@@ -52,15 +53,22 @@ const components: MDXComponents = {
       {...props}
     />
   ),
-  code: (props) => (
+  code: ({ className, ...props }) => (
     <code
-      className="rounded-md border border-border bg-muted px-1.5 py-0.5 font-mono text-[0.85em] text-foreground"
+      className={cn(
+        'rounded-md border border-border bg-muted px-1.5 py-0.5 font-mono text-foreground',
+        className
+      )}
       {...props}
     />
   ),
-  pre: (props) => (
+  pre: ({ className, tabIndex = 0, ...props }) => (
     <pre
-      className="overflow-x-auto rounded-xl border border-border bg-muted/60 p-4 font-mono text-[0.8rem] leading-relaxed text-foreground [&_code]:rounded-none [&_code]:border-0 [&_code]:bg-transparent [&_code]:p-0 [&_code]:text-inherit"
+      className={cn(
+        'code-highlight relative overflow-x-auto rounded-xl bg-code p-4 font-mono text-base/7 [tab-size:2] text-code-foreground ring-1 ring-code-border focus-visible:outline-2 focus-visible:outline-offset-2 sm:p-5 sm:text-sm/6 [&_code]:rounded-none [&_code]:border-0 [&_code]:bg-transparent [&_code]:p-0 [&_code]:text-inherit',
+        className
+      )}
+      tabIndex={tabIndex}
       {...props}
     />
   ),
