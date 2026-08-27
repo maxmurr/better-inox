@@ -183,7 +183,6 @@ const FOUR_PILLARS_OUTLINE: readonly SectionOutline[] = [
         slug: 'quiz-resistance-to-refactoring-final',
         title: 'Quiz - Resistance to Refactoring (Final)',
       },
-      { slug: 'give-your-feedback', title: 'Give your feedback' },
     ],
   },
 ];

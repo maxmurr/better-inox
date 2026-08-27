@@ -55,8 +55,6 @@ const LESSON_CONTENT = {
   'resistance-to-refactoring/how-each-type-of-test-scores-in-resistancce-to-refactoring':
     () =>
       import('@/content/four-pillars/resistance-to-refactoring/how-each-type-of-test-scores-in-resistancce-to-refactoring.mdx'),
-  'resistance-to-refactoring/give-your-feedback': () =>
-    import('@/content/four-pillars/resistance-to-refactoring/give-your-feedback.mdx'),
 } satisfies Record<string, LessonContentLoader>;
 
 const LESSON_CONTENT_BY_PATH = new Map(Object.entries(LESSON_CONTENT));
