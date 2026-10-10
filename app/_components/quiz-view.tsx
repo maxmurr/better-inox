@@ -155,7 +155,7 @@ function QuizOptionRow({
   return (
     <label
       className={cn(
-        'flex items-center gap-3 rounded-md px-2 py-2.5 transition-colors',
+        'flex items-start gap-3 rounded-md px-2 py-2.5 transition-colors',
         !disabled && 'cursor-pointer hover:bg-muted/50',
         className
       )}
@@ -163,7 +163,7 @@ function QuizOptionRow({
       {control}
       <span
         className={cn(
-          'flex-1 text-sm',
+          'min-w-0 flex-1 text-sm wrap-anywhere',
           isCorrectAnswer && 'font-medium text-foreground',
           isWrongSelection && 'text-muted-foreground line-through'
         )}
@@ -208,7 +208,7 @@ function Question({
     <fieldset
       id={`q-${question.id}`}
       disabled={disabled}
-      className="flex scroll-mt-4 flex-col gap-3"
+      className="flex min-w-0 scroll-mt-4 flex-col gap-3"
     >
       <legend className="mb-3 text-base font-semibold">
         {question.prompt}
@@ -233,6 +233,7 @@ function Question({
                 key={option.id}
                 control={
                   <Checkbox
+                    className="mt-0.5"
                     checked={isPicked}
                     disabled={disabled}
                     onCheckedChange={() =>
@@ -264,7 +265,9 @@ function Question({
             return (
               <QuizOptionRow
                 key={option.id}
-                control={<RadioGroupItem value={option.id} />}
+                control={
+                  <RadioGroupItem value={option.id} className="mt-0.5" />
+                }
                 disabled={disabled}
                 isCorrectAnswer={submitted && Boolean(isAnswer)}
                 isWrongSelection={isWrongPick}

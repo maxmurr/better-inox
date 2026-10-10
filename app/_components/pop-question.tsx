@@ -10,7 +10,7 @@ import { Button } from '@/app/_components/ui/button';
 import { RadioGroup } from '@/app/_components/ui/radio-group';
 import { cn } from '@/app/_components/utils';
 
-const LETTERS = 'ABCDEFGH';
+export const POP_QUESTION_LETTERS = 'ABCDEFGH';
 
 type PopQuestionOption = {
   id: string;
@@ -80,7 +80,7 @@ function Option({
       >
         {letter}
       </span>
-      <span className="flex-1">{text}</span>
+      <span className="min-w-0 flex-1 wrap-anywhere">{text}</span>
     </RadioPrimitive.Root>
   );
 }
@@ -118,7 +118,7 @@ export function PopQuestion({
   };
 
   return (
-    <fieldset className="mt-3 flex flex-col gap-4 border-t border-border pt-8">
+    <fieldset className="mt-3 flex min-w-0 flex-col gap-4 border-t border-border pt-8">
       <legend className="text-lg font-semibold tracking-tight text-balance text-foreground">
         {prompt}
         {!submitted ? (
@@ -138,7 +138,7 @@ export function PopQuestion({
             <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
               <CornerDownRightIcon className="size-3.5 shrink-0" aria-hidden />
               <span className="italic">You answered:</span>
-              <span className="font-medium text-foreground">
+              <span className="min-w-0 font-medium wrap-anywhere text-foreground">
                 {answeredText}
               </span>
             </p>
@@ -169,7 +169,7 @@ export function PopQuestion({
               <Option
                 key={option.id}
                 value={option.id}
-                letter={LETTERS[index] ?? '?'}
+                letter={POP_QUESTION_LETTERS[index] ?? '?'}
                 text={option.text}
               />
             ))}

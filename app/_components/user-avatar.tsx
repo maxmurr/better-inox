@@ -21,7 +21,15 @@ export function UserAvatar({
   );
 }
 
-function initials(name: string): string {
+// `usernameFromEmail` pads short email names as `user<name>` (plus a collision
+// suffix); initials come from the email name, not the padding.
+const PADDED_USERNAME = /^user([a-z0-9_-]{1,2}?)\d*$/;
+
+export function initials(name: string): string {
+  const padded = PADDED_USERNAME.exec(name)?.[1];
+  if (padded) {
+    return padded.toUpperCase();
+  }
   const parts = name.trim().split(/\s+/).filter(Boolean);
   if (parts.length >= 2) {
     return `${parts[0]![0] ?? ''}${parts[1]![0] ?? ''}`.toUpperCase();

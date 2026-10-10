@@ -17,7 +17,7 @@ function buildCsp(nonce: string, isDev: boolean) {
     `default-src 'self'`,
     `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${isDev ? " 'unsafe-eval'" : ''}`,
     `style-src 'self' 'unsafe-inline'`,
-    `img-src 'self' blob: data:`,
+    `img-src 'self' blob: data: https://lh3.googleusercontent.com`,
     `font-src 'self'`,
     `connect-src 'self'${SENTRY_ORIGIN}${isDev ? ' ws:' : ''}`,
     `worker-src 'self' blob:`,

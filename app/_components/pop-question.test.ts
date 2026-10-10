@@ -3,7 +3,10 @@ import { join } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
-import { resolvePopQuestionResponse } from '@/app/_components/pop-question';
+import {
+  POP_QUESTION_LETTERS,
+  resolvePopQuestionResponse,
+} from '@/app/_components/pop-question';
 import {
   CONTENT_DIR,
   parsePopQuestions,
@@ -81,6 +84,7 @@ describe('lesson PopQuestion content', () => {
     'resolves a response for every option of $id in $file',
     ({ optionIds, feedbackKeys, hasExplanation }) => {
       expect(optionIds.length).toBeGreaterThan(0);
+      expect(optionIds.length).toBeLessThanOrEqual(POP_QUESTION_LETTERS.length);
 
       for (const optionId of optionIds) {
         expect(

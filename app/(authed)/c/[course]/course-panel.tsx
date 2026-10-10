@@ -148,7 +148,7 @@ function LessonsPanel({
               indicator="start"
               className="min-h-9 gap-2 px-2 py-1.5 text-[13px] font-semibold hover:bg-muted/40 focus-visible:ring-inset pointer-coarse:min-h-11"
             >
-              <span className="min-w-0 flex-1 text-pretty">
+              <span className="min-w-0 flex-1 text-pretty wrap-anywhere">
                 {section.title}
               </span>
             </AccordionTrigger>
@@ -176,8 +176,9 @@ function LessonsPanel({
                       >
                         <LessonCompletionStatus completed={completed}>
                           <span
+                            title={lesson.title}
                             className={cn(
-                              'min-w-0 flex-1 truncate',
+                              'line-clamp-2 min-w-0 flex-1 wrap-anywhere',
                               isActive
                                 ? 'text-foreground'
                                 : 'text-muted-foreground'

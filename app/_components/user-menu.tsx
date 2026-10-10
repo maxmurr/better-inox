@@ -28,9 +28,11 @@ export function UserMenu({
       >
         <UserAvatar username={username} avatarUrl={avatarUrl} />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" sideOffset={4}>
+      <DropdownMenuContent align="end" sideOffset={4} className="min-w-48">
         <DropdownMenuGroup>
-          <DropdownMenuLabel>{username}</DropdownMenuLabel>
+          <DropdownMenuLabel title={username} className="truncate">
+            {username}
+          </DropdownMenuLabel>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="cursor-pointer" onClick={() => signOut()}>

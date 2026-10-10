@@ -50,7 +50,9 @@ export function CourseOutline({
     <div className="flex flex-col gap-3">
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-border pb-3">
         <p className="min-w-0 text-sm text-pretty text-muted-foreground tabular-nums">
-          {sections.length}&nbsp;sections • {lessonCount}&nbsp;lessons
+          {sections.length}&nbsp;
+          {sections.length === 1 ? 'section' : 'sections'} • {lessonCount}&nbsp;
+          {lessonCount === 1 ? 'lesson' : 'lessons'}
         </p>
         <Button
           type="button"
@@ -83,11 +85,12 @@ export function CourseOutline({
               indicator="start"
               className="min-h-12 gap-3 rounded-none px-4 hover:bg-muted/40 focus-visible:ring-inset"
             >
-              <span className="min-w-0 flex-1 text-pretty">
+              <span className="min-w-0 flex-1 text-pretty wrap-anywhere">
                 {section.title}
               </span>
               <span className="shrink-0 text-xs text-muted-foreground tabular-nums">
-                {section.lessons.length}&nbsp;lessons
+                {section.lessons.length}&nbsp;
+                {section.lessons.length === 1 ? 'lesson' : 'lessons'}
               </span>
             </AccordionTrigger>
             <AccordionContent className="bg-background px-4 pt-1 pb-3 [&_a]:no-underline">
@@ -102,7 +105,7 @@ export function CourseOutline({
                         className="-mx-2 flex min-h-9 touch-manipulation items-center gap-3 rounded-lg border border-transparent px-2 py-1 transition-colors outline-none hover:bg-muted/40 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
                       >
                         <LessonCompletionStatus completed={completed}>
-                          <span className="min-w-0 flex-1 text-pretty text-foreground">
+                          <span className="min-w-0 flex-1 text-pretty wrap-anywhere text-foreground">
                             {lesson.title}
                           </span>
                         </LessonCompletionStatus>

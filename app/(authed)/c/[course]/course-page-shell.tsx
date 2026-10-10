@@ -47,10 +47,11 @@ export function CoursePageHeader<T extends string = string>({
           </Link>
         ) : null}
         <Title
+          title={courseTitle}
           className={
             titleAs === 'p'
               ? 'min-w-0 truncate font-heading text-base font-semibold text-foreground sm:text-lg'
-              : 'min-w-0 font-heading text-base/snug font-semibold tracking-tight text-balance text-foreground sm:text-lg'
+              : 'min-w-0 truncate font-heading text-base/snug font-semibold tracking-tight text-foreground sm:text-lg'
           }
         >
           {courseTitle}

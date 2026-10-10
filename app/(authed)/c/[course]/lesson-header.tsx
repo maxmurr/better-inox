@@ -112,7 +112,7 @@ export function LessonHeader({
         </div>
       </div>
 
-      <h2 className="font-heading text-2xl font-semibold tracking-tight text-balance text-foreground sm:text-3xl">
+      <h2 className="font-heading text-2xl font-semibold tracking-tight text-balance wrap-anywhere text-foreground sm:text-3xl">
         {title}
       </h2>
     </header>

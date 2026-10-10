@@ -26,6 +26,12 @@ const percentageFormatter = new Intl.NumberFormat('en', {
 
 type LessonLearner = LessonLearningResultsData['learners'][number];
 
+const countFormatter = new Intl.NumberFormat('en');
+
+function formatCount(value: number) {
+  return countFormatter.format(value);
+}
+
 function formatPercentage(value: number) {
   return percentageFormatter.format(value);
 }
@@ -53,6 +59,24 @@ function LessonResultMetric({
         {description}
       </dd>
     </div>
+  );
+}
+
+// Usernames that collide differ only in their suffix (`name2`, `name1b2c3`), so
+// the end stays visible and the middle is elided.
+function MiddleTruncatedName({ name }: { name: string }) {
+  const tail = name.slice(-6);
+
+  return (
+    <p title={name} className="max-w-56 min-w-0 font-medium text-foreground">
+      <span aria-hidden className="flex">
+        <span className="overflow-hidden text-ellipsis whitespace-pre">
+          {name.slice(0, -tail.length)}
+        </span>
+        <span className="shrink-0 whitespace-pre">{tail}</span>
+      </span>
+      <span className="sr-only">{name}</span>
+    </p>
   );
 }
 
@@ -102,13 +126,13 @@ function LessonResultsSummary({
         <dl className="grid divide-y divide-border border-y border-border @sm:grid-cols-3 @sm:divide-x @sm:divide-y-0">
           <LessonResultMetric
             label="Started"
-            value={summary.startedCount}
+            value={formatCount(summary.startedCount)}
             description="Learners with recorded activity."
             className="py-4 @sm:py-5 @sm:pr-5"
           />
           <LessonResultMetric
             label="Completed"
-            value={`${summary.completedCount} of ${summary.startedCount}`}
+            value={`${formatCount(summary.completedCount)} of ${formatCount(summary.startedCount)}`}
             description={`${formatPercentage(summary.completionRate)} completion.`}
             className="py-4 @sm:p-5"
           />
@@ -121,7 +145,7 @@ function LessonResultsSummary({
             }
             description={
               hasQuiz
-                ? `${summary.quizSubmissionCount} quiz ${summary.quizSubmissionCount === 1 ? 'submission' : 'submissions'}.`
+                ? `${formatCount(summary.quizSubmissionCount)} quiz ${summary.quizSubmissionCount === 1 ? 'submission' : 'submissions'}.`
                 : 'This lesson uses completion only.'
             }
             className="py-4 @sm:py-5 @sm:pl-5"
@@ -160,9 +184,7 @@ function CompactLearnerResultsTable({
                       username={learner.username}
                       avatarUrl={learner.avatarUrl}
                     />
-                    <p className="max-w-56 min-w-0 truncate font-medium text-foreground">
-                      {learner.username}
-                    </p>
+                    <MiddleTruncatedName name={learner.username} />
                   </div>
                 </TableCell>
                 <TableCell className="px-6 py-3.5 text-center">
@@ -212,7 +234,7 @@ export function LessonLearningResults({
               Learners
             </h2>
             <p className="text-base text-muted-foreground tabular-nums sm:text-sm">
-              {results.learners.length} started
+              {formatCount(results.learners.length)} started
             </p>
           </div>
           <p className="max-w-[56ch] text-base text-pretty text-muted-foreground sm:text-sm">

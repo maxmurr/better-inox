@@ -6,6 +6,8 @@ export const courseSlugSchema = z
   .string()
   .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Slugs use lowercase kebab-case');
 
+const MAX_TITLE_LENGTH = 150;
+
 function uniqueSlugs(
   items: readonly { slug: string }[],
   context: z.RefinementCtx,
@@ -23,13 +25,13 @@ function uniqueSlugs(
 
 const courseLessonOutlineSchema = z.object({
   slug: courseSlugSchema,
-  title: z.string().min(1),
+  title: z.string().min(1).max(MAX_TITLE_LENGTH),
 });
 
 const courseSectionOutlineSchema = z
   .object({
     slug: courseSlugSchema,
-    title: z.string().min(1),
+    title: z.string().min(1).max(MAX_TITLE_LENGTH),
     lessons: z.array(courseLessonOutlineSchema).min(1),
   })
   .superRefine((section, context) =>
@@ -39,7 +41,7 @@ const courseSectionOutlineSchema = z
 /** Shape of `content/<course>/course.json`. */
 export const courseOutlineSchema = z
   .object({
-    title: z.string().min(1),
+    title: z.string().min(1).max(MAX_TITLE_LENGTH),
     sections: z.array(courseSectionOutlineSchema).min(1),
   })
   .superRefine((course, context) =>
