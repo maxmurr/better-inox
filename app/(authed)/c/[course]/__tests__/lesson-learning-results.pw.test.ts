@@ -168,3 +168,44 @@ test('keeps the compact learner table readable on mobile', async ({
     )
   ).toBe(true);
 });
+
+test('pages through learners 50 at a time', async ({
+  page,
+  signedIn,
+  stubAdapter,
+}) => {
+  const learners = Array.from({ length: 120 }, (_, index) => ({
+    learnerId: `learner-${index}`,
+    username: `learner${String(index).padStart(3, '0')}`,
+    avatarUrl: null,
+    completed: true,
+    quizResult: null,
+  }));
+  await signedIn();
+  await stubAdapter(getLessonLearningResultsAdapter, {
+    summary: {
+      startedCount: 120,
+      completedCount: 120,
+      completionRate: 1,
+      quizSubmissionCount: 0,
+      averageQuizScore: null,
+    },
+    learners,
+  });
+  await page.goto(RESULTS_PATH);
+
+  const table = page.getByRole('table');
+  const pages = page.getByRole('navigation', { name: 'Learner pages' });
+  await expect(table.getByRole('row')).toHaveCount(51);
+  await expect(pages).toContainText('Showing 1–50 of 120');
+  await expect(pages.getByRole('button', { name: 'Previous' })).toBeDisabled();
+
+  await pages.getByRole('link', { name: 'Next' }).click();
+  await expect(page).toHaveURL(`${RESULTS_PATH}?page=2#lesson-learners-title`);
+  await expect(table.getByRole('row').nth(1)).toContainText('learner050');
+
+  await page.goto(`${RESULTS_PATH}?page=9`);
+  await expect(table.getByRole('row')).toHaveCount(21);
+  await expect(pages).toContainText('Showing 101–120 of 120');
+  await expect(pages.getByRole('button', { name: 'Next' })).toBeDisabled();
+});

@@ -13,11 +13,15 @@ import {
   startAppSpanAdapter,
 } from '@/app/_lib/adapters/monitoring.adapters';
 import { getCurrentUser } from '@/app/(authed)/auth';
-import { lessonHref } from '@/app/(authed)/c/[course]/course-href';
+import {
+  lessonHref,
+  lessonResultsHref,
+} from '@/app/(authed)/c/[course]/course-href';
 import {
   CoursePageHeader,
   CoursePageMain,
 } from '@/app/(authed)/c/[course]/course-page-shell';
+import { parseLearnersPage } from '@/app/(authed)/c/[course]/learner-pages';
 import { LessonLearningResults } from '@/app/(authed)/c/[course]/lesson-learning-results';
 
 import { loadCourse, loadLesson } from '../../../course-content';
@@ -60,6 +64,7 @@ export async function generateMetadata({
 
 export default async function Page({
   params,
+  searchParams,
 }: PageProps<'/c/[course]/[section]/[lesson]/results'>) {
   const { course: courseSlug, section, lesson } = await params;
   const course = await loadCourse(courseSlug);
@@ -69,10 +74,11 @@ export default async function Page({
     notFound();
   }
 
-  const [user, results, { quiz }] = await Promise.all([
+  const [user, results, { quiz }, { page }] = await Promise.all([
     getCurrentUser(),
     loadLessonLearningResults(course.slug, currentLesson.id),
     loadLesson(course.slug, section, lesson),
+    searchParams,
   ]);
   const originalLessonHref = lessonHref(course.slug, section, lesson);
 
@@ -104,7 +110,12 @@ export default async function Page({
           </p>
         </header>
 
-        <LessonLearningResults results={results} hasQuiz={Boolean(quiz)} />
+        <LessonLearningResults
+          results={results}
+          hasQuiz={Boolean(quiz)}
+          requestedPage={parseLearnersPage(page)}
+          resultsHref={lessonResultsHref(course.slug, section, lesson)}
+        />
       </CoursePageMain>
     </>
   );

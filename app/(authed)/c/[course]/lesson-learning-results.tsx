@@ -1,6 +1,9 @@
+import Link from 'next/link';
+
 import { UsersIcon } from 'lucide-react';
 
 import { Badge } from '@/app/_components/ui/badge';
+import { Button, buttonVariants } from '@/app/_components/ui/button';
 import {
   Empty,
   EmptyDescription,
@@ -18,6 +21,11 @@ import {
 import { UserAvatar } from '@/app/_components/user-avatar';
 import { cn } from '@/app/_components/utils';
 import type { LessonLearningResultsData } from '@/app/_lib/adapters/course-progress.adapters';
+import type { LessonResultsHref } from '@/app/(authed)/c/[course]/course-href';
+import {
+  LEARNERS_PAGE_SIZE,
+  learnersPage,
+} from '@/app/(authed)/c/[course]/learner-pages';
 
 const percentageFormatter = new Intl.NumberFormat('en', {
   style: 'percent',
@@ -25,6 +33,8 @@ const percentageFormatter = new Intl.NumberFormat('en', {
 });
 
 type LessonLearner = LessonLearningResultsData['learners'][number];
+
+const LEARNERS_HEADING_ID = 'lesson-learners-title';
 
 const countFormatter = new Intl.NumberFormat('en');
 
@@ -209,26 +219,105 @@ function CompactLearnerResultsTable({
   );
 }
 
-/** Shows minimal lesson summary plus one result row per recorded learner. */
+function LearnerPageLink({
+  href,
+  label,
+}: {
+  href:
+    | `${LessonResultsHref}${'' | `?page=${number}`}#${typeof LEARNERS_HEADING_ID}`
+    | undefined;
+  label: string;
+}) {
+  if (!href) {
+    return (
+      <Button type="button" size="sm" variant="outline" disabled>
+        {label}
+      </Button>
+    );
+  }
+
+  return (
+    <Link
+      href={href}
+      className={buttonVariants({ size: 'sm', variant: 'outline' })}
+    >
+      {label}
+    </Link>
+  );
+}
+
+function LearnerPagination({
+  page,
+  pageCount,
+  start,
+  total,
+  resultsHref,
+}: {
+  page: number;
+  pageCount: number;
+  start: number;
+  total: number;
+  resultsHref: LessonResultsHref;
+}) {
+  // The heading anchor scrolls the nested <main> back to the top of the list.
+  const pageHref = (target: number) =>
+    target === 1
+      ? (`${resultsHref}#${LEARNERS_HEADING_ID}` as const)
+      : (`${resultsHref}?page=${target}#${LEARNERS_HEADING_ID}` as const);
+
+  return (
+    <nav
+      aria-label="Learner pages"
+      className="flex flex-wrap items-center justify-between gap-3"
+    >
+      <p className="text-base text-muted-foreground tabular-nums sm:text-sm">
+        Showing {formatCount(start + 1)}–
+        {formatCount(Math.min(start + LEARNERS_PAGE_SIZE, total))} of{' '}
+        {formatCount(total)}
+      </p>
+      <div className="flex gap-2">
+        <LearnerPageLink
+          label="Previous"
+          href={page > 1 ? pageHref(page - 1) : undefined}
+        />
+        <LearnerPageLink
+          label="Next"
+          href={page < pageCount ? pageHref(page + 1) : undefined}
+        />
+      </div>
+    </nav>
+  );
+}
+
+/** Shows minimal lesson summary plus one page of learner result rows. */
 export function LessonLearningResults({
   results,
   hasQuiz,
+  requestedPage,
+  resultsHref,
 }: {
   results: LessonLearningResultsData;
   hasQuiz: boolean;
+  requestedPage: number;
+  resultsHref: LessonResultsHref;
 }) {
+  const { learners, page, pageCount, start } = learnersPage(
+    results.learners,
+    requestedPage
+  );
+
   return (
     <div className="flex flex-col gap-8 sm:gap-10">
       <LessonResultsSummary results={results} hasQuiz={hasQuiz} />
 
       <section
-        aria-labelledby="lesson-learners-title"
+        aria-labelledby={LEARNERS_HEADING_ID}
         className="flex flex-col gap-4"
       >
         <div className="flex flex-col gap-1">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <h2
-              id="lesson-learners-title"
+              id={LEARNERS_HEADING_ID}
               className="font-heading text-xl font-semibold text-balance text-foreground"
             >
               Learners
@@ -255,10 +344,18 @@ export function LessonLearningResults({
             </EmptyHeader>
           </Empty>
         ) : (
-          <CompactLearnerResultsTable
-            learners={results.learners}
-            hasQuiz={hasQuiz}
-          />
+          <>
+            <CompactLearnerResultsTable learners={learners} hasQuiz={hasQuiz} />
+            {pageCount > 1 ? (
+              <LearnerPagination
+                page={page}
+                pageCount={pageCount}
+                start={start}
+                total={results.learners.length}
+                resultsHref={resultsHref}
+              />
+            ) : null}
+          </>
         )}
       </section>
     </div>
