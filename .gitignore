@@ -51,7 +51,13 @@ db.sqlite*
 
 # agents
 .agents
-.claude
+.claude/*
+!.claude/skills/
+.claude/skills/*
+# Project skills shared with course authors
+!.claude/skills/create-course/
+!.claude/skills/writing-quality/
+!.claude/skills/writing-guidelines/
 skills-lock.json
 PLAN.md
 plans/
