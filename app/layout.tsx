@@ -2,10 +2,13 @@ import './globals.css';
 
 import type { Metadata, Viewport } from 'next';
 import { Inter as FontSans } from 'next/font/google';
+import { cookies } from 'next/headers';
 import { connection } from 'next/server';
 
+import { DevDatasetToggle } from './_components/dev-dataset-toggle';
 import { Toaster } from './_components/ui/sonner';
 import { TooltipProvider } from './_components/ui/tooltip';
+import { DEV_DATASET_COOKIE, parseDevDataset } from './_lib/dev-data/datasets';
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -36,6 +39,13 @@ export default async function RootLayout({ children }: LayoutProps<'/'>) {
         </a>
         <TooltipProvider>{children}</TooltipProvider>
         <Toaster position="bottom-center" />
+        {process.env.NODE_ENV === 'development' ? (
+          <DevDatasetToggle
+            active={parseDevDataset(
+              (await cookies()).get(DEV_DATASET_COOKIE)?.value
+            )}
+          />
+        ) : null}
       </body>
     </html>
   );

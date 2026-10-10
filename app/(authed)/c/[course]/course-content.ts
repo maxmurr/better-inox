@@ -23,7 +23,15 @@ async function readContentFile(slugs: readonly string[], extension: string) {
   }
 
   try {
-    return await readFile(join(CONTENT_DIR, ...slugs) + extension, 'utf8');
+    const source = await readFile(
+      join(CONTENT_DIR, ...slugs) + extension,
+      'utf8'
+    );
+    if (process.env.NODE_ENV === 'development') {
+      const { devContentSource } = await import('@/app/_lib/dev-data/fixtures');
+      return await devContentSource(slugs, extension, source);
+    }
+    return source;
   } catch (err) {
     if (err instanceof Error && 'code' in err && err.code === 'ENOENT') {
       return;

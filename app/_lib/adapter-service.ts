@@ -57,6 +57,13 @@ export function createAdapter<TArgs extends unknown[], TResult>({
 
       return stubSchema.parse(stubPayload);
     }
+    if (process.env.NODE_ENV === 'development') {
+      const { devAdapterFixture } = await import('./dev-data/fixtures');
+      const fixture = await devAdapterFixture(name);
+      if (fixture !== undefined) {
+        return stubSchema.parse(fixture);
+      }
+    }
     return callback(...args);
   };
 
