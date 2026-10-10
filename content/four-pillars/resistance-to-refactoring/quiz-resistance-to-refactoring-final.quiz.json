@@ -1,0 +1,102 @@
+{
+  "intro": "Review what you've learned about the four pillars.",
+  "passThreshold": 0.5,
+  "questions": [
+    {
+      "id": "q1",
+      "kind": "single",
+      "prompt": "Which test type is more resistant to refactoring: white-box or black-box?",
+      "options": [
+        {
+          "id": "a",
+          "text": "White-box"
+        },
+        {
+          "id": "b",
+          "text": "Black-box"
+        },
+        {
+          "id": "c",
+          "text": "Both score the same"
+        }
+      ],
+      "correctOptionIds": ["b"]
+    },
+    {
+      "id": "q2",
+      "kind": "single",
+      "prompt": "Which test type should you prioritize for an app with complex business rules, a simple UI, and limited CI time?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Unit tests"
+        },
+        {
+          "id": "b",
+          "text": "Integration tests"
+        },
+        {
+          "id": "c",
+          "text": "E2E tests"
+        },
+        {
+          "id": "d",
+          "text": "Smoke tests"
+        }
+      ],
+      "correctOptionIds": ["a"]
+    },
+    {
+      "id": "q3",
+      "kind": "multiple",
+      "prompt": "Which tests should you prioritize first in a legacy app with no tests, and why?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Unit tests, because they are easier to create"
+        },
+        {
+          "id": "b",
+          "text": "Integration tests, because they run faster"
+        },
+        {
+          "id": "c",
+          "text": "Unit tests, because they provide the strongest protection against regressions"
+        },
+        {
+          "id": "d",
+          "text": "E2E tests, because they provide the strongest resistance to refactoring"
+        },
+        {
+          "id": "e",
+          "text": "Integration tests, because they offer the best balance across all four pillars"
+        }
+      ],
+      "correctOptionIds": ["e"]
+    },
+    {
+      "id": "q4",
+      "kind": "single",
+      "prompt": "Which two attributes should every automated test maximize?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Feedback speed and maintainability"
+        },
+        {
+          "id": "b",
+          "text": "Maintainability and protection against regressions"
+        },
+        {
+          "id": "c",
+          "text": "Resistance to refactoring and protection against regressions"
+        },
+        {
+          "id": "d",
+          "text": "Maintainability and resistance to refactoring"
+        }
+      ],
+      "correctOptionIds": ["d"]
+    }
+  ]
+}

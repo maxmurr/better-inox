@@ -13,25 +13,25 @@ import {
   startAppSpanAdapter,
 } from '@/app/_lib/adapters/monitoring.adapters';
 import { getCurrentUser } from '@/app/(authed)/auth';
-import { lessonHref } from '@/app/(authed)/c/four-pillars/course-href';
+import { lessonHref } from '@/app/(authed)/c/[course]/course-href';
 import {
-  FourPillarsCourseHeader,
-  FourPillarsCourseMain,
-} from '@/app/(authed)/c/four-pillars/course-page-shell';
-import { LessonLearningResults } from '@/app/(authed)/c/four-pillars/lesson-learning-results';
+  CoursePageHeader,
+  CoursePageMain,
+} from '@/app/(authed)/c/[course]/course-page-shell';
+import { LessonLearningResults } from '@/app/(authed)/c/[course]/lesson-learning-results';
 
-import { findLesson, FOUR_PILLARS_COURSE_SLUG } from '../../../curriculum';
-import { findQuiz } from '../../../quiz-content';
+import { loadCourse, loadLesson } from '../../../course-content';
+import { findLesson } from '../../../curriculum';
 
-async function loadLessonLearningResults(lessonId: string) {
+async function loadLessonLearningResults(courseSlug: string, lessonId: string) {
   return await startAppSpanAdapter(
-    { name: 'loadFourPillarsLessonResults', op: 'function.nextjs' },
+    { name: 'loadLessonLearningResults', op: 'function.nextjs' },
     async () => {
       const sessionId = (await cookies()).get(SESSION_COOKIE)?.value;
 
       try {
         return await getLessonLearningResultsAdapter(
-          FOUR_PILLARS_COURSE_SLUG,
+          courseSlug,
           lessonId,
           sessionId
         );
@@ -49,36 +49,37 @@ async function loadLessonLearningResults(lessonId: string) {
 
 export async function generateMetadata({
   params,
-}: PageProps<'/c/four-pillars/[section]/[lesson]/results'>): Promise<Metadata> {
-  const { section, lesson } = await params;
-  const lessonTitle = findLesson(section, lesson)?.title;
+}: PageProps<'/c/[course]/[section]/[lesson]/results'>): Promise<Metadata> {
+  const { course: courseSlug, section, lesson } = await params;
+  const course = await loadCourse(courseSlug);
+  const lessonTitle =
+    course && findLesson(course.sections, section, lesson)?.title;
 
   return { title: lessonTitle ? `${lessonTitle} results` : 'Lesson results' };
 }
 
 export default async function Page({
   params,
-}: PageProps<'/c/four-pillars/[section]/[lesson]/results'>) {
-  const { section, lesson } = await params;
-  const currentLesson = findLesson(section, lesson);
+}: PageProps<'/c/[course]/[section]/[lesson]/results'>) {
+  const { course: courseSlug, section, lesson } = await params;
+  const course = await loadCourse(courseSlug);
+  const currentLesson = course && findLesson(course.sections, section, lesson);
 
-  if (!currentLesson) {
+  if (!course || !currentLesson) {
     notFound();
   }
 
-  const [user, results] = await Promise.all([
+  const [user, results, { quiz }] = await Promise.all([
     getCurrentUser(),
-    loadLessonLearningResults(currentLesson.id),
+    loadLessonLearningResults(course.slug, currentLesson.id),
+    loadLesson(course.slug, section, lesson),
   ]);
-  const originalLessonHref = lessonHref(
-    FOUR_PILLARS_COURSE_SLUG,
-    section,
-    lesson
-  );
+  const originalLessonHref = lessonHref(course.slug, section, lesson);
 
   return (
     <>
-      <FourPillarsCourseHeader
+      <CoursePageHeader
+        courseTitle={course.title}
         actions={
           <UserMenu username={user.username} avatarUrl={user.avatarUrl} />
         }
@@ -89,7 +90,7 @@ export default async function Page({
         titleAs="p"
       />
 
-      <FourPillarsCourseMain maxWidth="5xl">
+      <CoursePageMain maxWidth="5xl">
         <header className="flex flex-col gap-2">
           <p className="text-base font-medium text-muted-foreground sm:text-sm">
             Lesson results
@@ -103,11 +104,8 @@ export default async function Page({
           </p>
         </header>
 
-        <LessonLearningResults
-          results={results}
-          hasQuiz={Boolean(findQuiz(section, lesson))}
-        />
-      </FourPillarsCourseMain>
+        <LessonLearningResults results={results} hasQuiz={Boolean(quiz)} />
+      </CoursePageMain>
     </>
   );
 }

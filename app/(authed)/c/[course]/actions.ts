@@ -17,10 +17,21 @@ import {
   reportAppErrorAdapter,
 } from '@/app/_lib/adapters/monitoring.adapters';
 
-import { findLessonById, FOUR_PILLARS_COURSE_SLUG } from './curriculum';
-import { findQuiz } from './quiz-content';
+import { loadCourse, loadLesson } from './course-content';
+import { findLessonById } from './curriculum';
+
+async function findCourseLesson(courseSlug: string, lessonId: string) {
+  const course = await loadCourse(courseSlug);
+  const lesson = course && findLessonById(course.sections, lessonId);
+  if (!course || !lesson) {
+    throw new NotFoundError('Unknown lesson');
+  }
+
+  return { course, ...lesson };
+}
 
 export async function saveLessonCompletion(
+  courseSlug: string,
   lessonId: string,
   completed: boolean
 ) {
@@ -29,15 +40,12 @@ export async function saveLessonCompletion(
     { recordResponse: true },
     async () => {
       try {
-        const lesson = findLessonById(lessonId);
-        if (!lesson) {
-          throw new NotFoundError('Unknown lesson');
-        }
+        const lesson = await findCourseLesson(courseSlug, lessonId);
 
         const sessionId = (await cookies()).get(SESSION_COOKIE)?.value;
         const saved = await setLessonCompletionAdapter(
           {
-            courseSlug: FOUR_PILLARS_COURSE_SLUG,
+            courseSlug: lesson.course.slug,
             lessonId: lesson.lesson.id,
             completed,
           },
@@ -64,6 +72,7 @@ export async function saveLessonCompletion(
 }
 
 export async function saveQuizSubmission(
+  courseSlug: string,
   lessonId: string,
   selections: QuizSelections
 ) {
@@ -72,12 +81,13 @@ export async function saveQuizSubmission(
     { recordResponse: false },
     async () => {
       try {
-        const lesson = findLessonById(lessonId);
-        if (!lesson) {
-          throw new NotFoundError('Unknown lesson');
-        }
+        const lesson = await findCourseLesson(courseSlug, lessonId);
 
-        const quiz = findQuiz(lesson.section.slug, lesson.lesson.slug);
+        const { quiz } = await loadLesson(
+          lesson.course.slug,
+          lesson.section.slug,
+          lesson.lesson.slug
+        );
         if (!quiz) {
           throw new NotFoundError('Lesson does not contain a quiz');
         }
@@ -85,7 +95,7 @@ export async function saveQuizSubmission(
         const sessionId = (await cookies()).get(SESSION_COOKIE)?.value;
         const saved = await submitQuizAdapter(
           {
-            courseSlug: FOUR_PILLARS_COURSE_SLUG,
+            courseSlug: lesson.course.slug,
             lessonId: lesson.lesson.id,
             selections,
           },

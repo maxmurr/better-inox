@@ -1,0 +1,82 @@
+{
+  "intro": "Review how integration and E2E tests protect against regressions.",
+  "passThreshold": 0.5,
+  "questions": [
+    {
+      "id": "q1",
+      "kind": "single",
+      "prompt": "Why do integration tests provide more protection against regressions than unit tests?",
+      "options": [
+        {
+          "id": "a",
+          "text": "They run faster and cover less logic."
+        },
+        {
+          "id": "b",
+          "text": "They cover multiple components and out-of-process dependencies"
+        },
+        {
+          "id": "c",
+          "text": "They cover the entire system, so they replace E2E tests."
+        },
+        {
+          "id": "d",
+          "text": "They mock every dependency to provide complete isolation."
+        },
+        {
+          "id": "e",
+          "text": "They cover every logical branch in a use case."
+        }
+      ],
+      "correctOptionIds": ["b"]
+    },
+    {
+      "id": "q2",
+      "kind": "single",
+      "prompt": "Why do E2E tests offer the strongest protection against bugs?",
+      "options": [
+        {
+          "id": "a",
+          "text": "They run only pure in-memory functions with no external effects."
+        },
+        {
+          "id": "b",
+          "text": "They handle UI interactions."
+        },
+        {
+          "id": "c",
+          "text": "They run the full application as the user experiences it, including real APIs, databases, and external systems."
+        },
+        {
+          "id": "d",
+          "text": "They need less setup and are easier to maintain than integration tests."
+        }
+      ],
+      "correctOptionIds": ["c"]
+    },
+    {
+      "id": "q3",
+      "kind": "single",
+      "prompt": "Which scenario is best suited to an E2E test?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Check whether the createQuizModel function trims whitespace."
+        },
+        {
+          "id": "b",
+          "text": "Check quiz creation with fake adapters and stubbed network responses."
+        },
+        {
+          "id": "c",
+          "text": "Check whether isolated UI components render correctly in Storybook."
+        },
+        {
+          "id": "d",
+          "text": "Verify that an authenticated user can create a quiz through the full application."
+        }
+      ],
+      "correctOptionIds": ["d"]
+    }
+  ]
+}

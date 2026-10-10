@@ -1,0 +1,54 @@
+{
+  "intro": "Review what you've learned about resistance to refactoring.",
+  "passThreshold": 0.5,
+  "questions": [
+    {
+      "id": "q1",
+      "kind": "single",
+      "prompt": "What does resistance to refactoring mean for automated tests?",
+      "options": [
+        {
+          "id": "a",
+          "text": "How well a test detects internal implementation changes"
+        },
+        {
+          "id": "b",
+          "text": "How fast tests run after code cleanup"
+        },
+        {
+          "id": "c",
+          "text": "How many refactorings occur before a test fails"
+        },
+        {
+          "id": "d",
+          "text": "How well a test suite stays green after refactoring that preserves behavior"
+        }
+      ],
+      "correctOptionIds": ["d"]
+    },
+    {
+      "id": "q2",
+      "kind": "single",
+      "prompt": "Which type of test is more likely to produce false positives?",
+      "options": [
+        {
+          "id": "a",
+          "text": "A test that asserts inputs and outputs from the user's perspective"
+        },
+        {
+          "id": "b",
+          "text": "A test that checks observable behavior through public APIs or UI interactions"
+        },
+        {
+          "id": "c",
+          "text": "A test that checks specific internal steps, components, or intermediate states"
+        },
+        {
+          "id": "d",
+          "text": "A test that fails only when business rules change"
+        }
+      ],
+      "correctOptionIds": ["c"]
+    }
+  ]
+}

@@ -21,7 +21,7 @@ import { Checkbox } from '@/app/_components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/app/_components/ui/radio-group';
 import { Separator } from '@/app/_components/ui/separator';
 import { cn } from '@/app/_components/utils';
-import { saveQuizSubmission } from '@/app/(authed)/c/four-pillars/actions';
+import { saveQuizSubmission } from '@/app/(authed)/c/[course]/actions';
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
@@ -279,8 +279,13 @@ function Question({
 }
 
 export function QuizView({ lesson }: { lesson: QuizLesson }) {
-  const { isQuizComplete, applyQuizResult, quizResult, getSelections } =
-    useCourse();
+  const {
+    courseSlug,
+    isQuizComplete,
+    applyQuizResult,
+    quizResult,
+    getSelections,
+  } = useCourse();
   const result = quizResult(lesson.id);
   const complete = isQuizComplete(lesson);
   const [submitError, setSubmitError] = useState<string>();
@@ -301,7 +306,11 @@ export function QuizView({ lesson }: { lesson: QuizLesson }) {
 
     startTransition(async () => {
       try {
-        const response = await saveQuizSubmission(lesson.id, selections);
+        const response = await saveQuizSubmission(
+          courseSlug,
+          lesson.id,
+          selections
+        );
         if ('error' in response) {
           setSubmitError(response.error);
           toast.error(response.error);

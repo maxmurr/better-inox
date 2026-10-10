@@ -9,11 +9,17 @@ import { buttonVariants } from '@/app/_components/ui/button';
 import { cn } from '@/app/_components/utils';
 
 import { lessonHref } from './course-href';
-import { firstUnfinishedLesson, FOUR_PILLARS_COURSE_SLUG } from './curriculum';
+import { firstUnfinishedLesson, type CourseSection } from './curriculum';
 
-export function CourseContinueLink() {
+export function CourseContinueLink({
+  courseSlug,
+  sections,
+}: {
+  courseSlug: string;
+  sections: readonly CourseSection[];
+}) {
   const { completedLessonIds } = useCourse();
-  const next = firstUnfinishedLesson(completedLessonIds);
+  const next = firstUnfinishedLesson(sections, completedLessonIds);
 
   if (!next) {
     return null;
@@ -21,11 +27,7 @@ export function CourseContinueLink() {
 
   return (
     <Link
-      href={lessonHref(
-        FOUR_PILLARS_COURSE_SLUG,
-        next.section.slug,
-        next.lesson.slug
-      )}
+      href={lessonHref(courseSlug, next.section.slug, next.lesson.slug)}
       aria-label={`Continue with lesson: ${next.lesson.title}`}
       className={cn(buttonVariants({ size: 'lg', variant: 'outline' }))}
     >

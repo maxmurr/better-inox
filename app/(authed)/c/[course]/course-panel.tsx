@@ -29,16 +29,13 @@ import {
   InputGroupTextarea,
 } from '@/app/_components/ui/input-group';
 import { cn } from '@/app/_components/utils';
-import { lessonHref } from '@/app/(authed)/c/four-pillars/course-href';
-import type {
-  CourseSection,
-  FourPillarsCourseSlug,
-} from '@/app/(authed)/c/four-pillars/course-outline';
+import { lessonHref } from '@/app/(authed)/c/[course]/course-href';
+import type { CourseSection } from '@/app/(authed)/c/[course]/course-outline';
 import {
   COURSE_PANEL_ID,
   useCoursePanel,
-} from '@/app/(authed)/c/four-pillars/course-panel-context';
-import { LessonCompletionStatus } from '@/app/(authed)/c/four-pillars/lesson-completion-status';
+} from '@/app/(authed)/c/[course]/course-panel-context';
+import { LessonCompletionStatus } from '@/app/(authed)/c/[course]/lesson-completion-status';
 
 const PANEL_TITLES = { comments: 'Comments', lessons: 'Lessons' } as const;
 
@@ -46,7 +43,7 @@ export function CoursePanel({
   courseSlug,
   sections,
 }: {
-  courseSlug: FourPillarsCourseSlug;
+  courseSlug: string;
   sections: readonly CourseSection[];
 }) {
   const { panel, isOpen, isModal, panelRef, close } = useCoursePanel();
@@ -89,7 +86,7 @@ export function CoursePanel({
 }
 
 function activeSectionSlug(
-  courseSlug: FourPillarsCourseSlug,
+  courseSlug: string,
   sections: readonly CourseSection[],
   pathname: string
 ) {
@@ -104,7 +101,7 @@ function LessonsPanel({
   courseSlug,
   sections,
 }: {
-  courseSlug: FourPillarsCourseSlug;
+  courseSlug: string;
   sections: readonly CourseSection[];
 }) {
   const { isOpen } = useCoursePanel();

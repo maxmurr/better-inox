@@ -13,8 +13,8 @@ import {
 import {
   COURSE_PANEL_ID,
   useCoursePanel,
-} from '@/app/(authed)/c/four-pillars/course-panel-context';
-import type { CoursePanelId } from '@/app/(authed)/c/four-pillars/course-panel-state';
+} from '@/app/(authed)/c/[course]/course-panel-context';
+import type { CoursePanelId } from '@/app/(authed)/c/[course]/course-panel-state';
 
 function PanelToggle({
   panel,

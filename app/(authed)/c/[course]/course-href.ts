@@ -1,19 +1,14 @@
-import type { FourPillarsCourseSlug } from './curriculum';
+/** Route to one lesson's learner results. */
+export type LessonResultsHref = `/c/${string}/${string}/${string}/results`;
 
-/** Route to one four-pillars lesson's learner results. */
-export type LessonResultsHref =
-  `/c/${FourPillarsCourseSlug}/${string}/${string}/results`;
-
-export function courseHref(
-  courseSlug: FourPillarsCourseSlug
-): `/c/${FourPillarsCourseSlug}` {
+export function courseHref(courseSlug: string): `/c/${string}` {
   return `/c/${courseSlug}`;
 }
 
 export function sectionHref<SectionSlug extends string>(
-  courseSlug: FourPillarsCourseSlug,
+  courseSlug: string,
   sectionSlug: SectionSlug
-): `/c/${FourPillarsCourseSlug}/${SectionSlug}` {
+): `/c/${string}/${SectionSlug}` {
   return `/c/${courseSlug}/${sectionSlug}`;
 }
 
@@ -21,10 +16,10 @@ export function lessonHref<
   SectionSlug extends string,
   LessonSlug extends string,
 >(
-  courseSlug: FourPillarsCourseSlug,
+  courseSlug: string,
   sectionSlug: SectionSlug,
   lessonSlug: LessonSlug
-): `/c/${FourPillarsCourseSlug}/${SectionSlug}/${LessonSlug}` {
+): `/c/${string}/${SectionSlug}/${LessonSlug}` {
   return `/c/${courseSlug}/${sectionSlug}/${lessonSlug}`;
 }
 
@@ -33,9 +28,9 @@ export function lessonResultsHref<
   SectionSlug extends string,
   LessonSlug extends string,
 >(
-  courseSlug: FourPillarsCourseSlug,
+  courseSlug: string,
   sectionSlug: SectionSlug,
   lessonSlug: LessonSlug
-): `/c/${FourPillarsCourseSlug}/${SectionSlug}/${LessonSlug}/results` {
+): `/c/${string}/${SectionSlug}/${LessonSlug}/results` {
   return `/c/${courseSlug}/${sectionSlug}/${lessonSlug}/results`;
 }

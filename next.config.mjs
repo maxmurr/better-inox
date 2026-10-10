@@ -49,7 +49,7 @@ const nextConfig = {
   output: 'standalone',
   distDir: process.env.NEXT_TEST_DIST_DIR ?? '.next',
   outputFileTracingIncludes: {
-    '/*': ['./drizzle/migrations/**/*'],
+    '/*': ['./drizzle/migrations/**/*', './content/**/*'],
   },
   deploymentId: process.env.RAILWAY_GIT_COMMIT_SHA,
   poweredByHeader: false,

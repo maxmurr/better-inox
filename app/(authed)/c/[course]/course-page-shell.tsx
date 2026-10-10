@@ -6,10 +6,9 @@ import { ArrowLeftIcon } from 'lucide-react';
 import { buttonVariants } from '@/app/_components/ui/button';
 import { cn } from '@/app/_components/utils';
 
-const FOUR_PILLARS_COURSE_TITLE = 'The 4 Pillars of Automated Tests';
-
-type FourPillarsCourseHeaderProps<T extends string> =
+type CoursePageHeaderProps<T extends string> =
   React.ComponentProps<'header'> & {
+    courseTitle: string;
     actions: React.ReactNode;
     back?: {
       href: Route<T>;
@@ -18,14 +17,15 @@ type FourPillarsCourseHeaderProps<T extends string> =
     titleAs?: 'h1' | 'p';
   };
 
-/** Renders the shared four-pillars course title bar and optional back link. */
-export function FourPillarsCourseHeader<T extends string = string>({
+/** Renders the shared course title bar and optional back link. */
+export function CoursePageHeader<T extends string = string>({
+  courseTitle,
   actions,
   back,
   className,
   titleAs = 'h1',
   ...props
-}: FourPillarsCourseHeaderProps<T>) {
+}: CoursePageHeaderProps<T>) {
   const Title = titleAs;
 
   return (
@@ -53,7 +53,7 @@ export function FourPillarsCourseHeader<T extends string = string>({
               : 'min-w-0 font-heading text-base/snug font-semibold tracking-tight text-balance text-foreground sm:text-lg'
           }
         >
-          {FOUR_PILLARS_COURSE_TITLE}
+          {courseTitle}
         </Title>
       </div>
       {actions}
@@ -61,18 +61,18 @@ export function FourPillarsCourseHeader<T extends string = string>({
   );
 }
 
-type FourPillarsCourseMainProps = React.ComponentProps<'main'> & {
+type CoursePageMainProps = React.ComponentProps<'main'> & {
   maxWidth?: '3xl' | '5xl';
 };
 
-/** Renders the shared scrolling content container for four-pillars pages. */
-export function FourPillarsCourseMain({
+/** Renders the shared scrolling content container for course pages. */
+export function CoursePageMain({
   children,
   className,
   id = 'main-content',
   maxWidth = '3xl',
   ...props
-}: FourPillarsCourseMainProps) {
+}: CoursePageMainProps) {
   return (
     <main
       id={id}

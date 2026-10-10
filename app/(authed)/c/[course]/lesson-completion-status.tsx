@@ -2,7 +2,7 @@ import { CircleCheckIcon, CircleIcon } from 'lucide-react';
 
 import { cn } from '@/app/_components/utils';
 
-/** Shows whether one four-pillars lesson is complete. */
+/** Shows whether one lesson is complete. */
 export function LessonCompletionStatus({
   children,
   className,

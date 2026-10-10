@@ -13,6 +13,7 @@ import {
 const NO_SELECTIONS: readonly string[] = [];
 
 type CourseContextValue = {
+  courseSlug: string;
   completedLessonIds: ReadonlySet<string>;
   isLessonCompleted: (lessonId: string) => boolean;
   applyLessonCompletion: (lessonId: string, completed: boolean) => void;
@@ -55,9 +56,11 @@ export function useCourse() {
 }
 
 export function CourseProvider({
+  courseSlug,
   initialProgress,
   children,
 }: {
+  courseSlug: string;
   initialProgress: LearnerCourseProgress;
   children: ReactNode;
 }) {
@@ -187,6 +190,7 @@ export function CourseProvider({
   return (
     <CourseContext.Provider
       value={{
+        courseSlug,
         completedLessonIds,
         isLessonCompleted,
         applyLessonCompletion,

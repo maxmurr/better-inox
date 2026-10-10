@@ -1,0 +1,62 @@
+{
+  "intro": "Review how out-of-process dependencies affect a test's maintainability.",
+  "passThreshold": 0.5,
+  "questions": [
+    {
+      "id": "q1",
+      "kind": "multiple",
+      "prompt": "Which options are examples of out-of-process dependencies?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Local storage"
+        },
+        {
+          "id": "b",
+          "text": "Event loop"
+        },
+        {
+          "id": "c",
+          "text": "A database"
+        },
+        {
+          "id": "d",
+          "text": "A utility package such as Lodash"
+        },
+        {
+          "id": "e",
+          "text": "An external API"
+        }
+      ],
+      "correctOptionIds": ["a", "c", "e"]
+    },
+    {
+      "id": "q2",
+      "kind": "multiple",
+      "prompt": "Which options increase a test's maintainability?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Using for loops"
+        },
+        {
+          "id": "b",
+          "text": "Setting up intercepted API responses"
+        },
+        {
+          "id": "c",
+          "text": "Separating Arrange, Act, and Assert blocks"
+        },
+        {
+          "id": "d",
+          "text": "Using descriptive variable names"
+        },
+        {
+          "id": "e",
+          "text": "Using Scenario, Action, Outcome descriptions"
+        }
+      ],
+      "correctOptionIds": ["c", "d", "e"]
+    }
+  ]
+}

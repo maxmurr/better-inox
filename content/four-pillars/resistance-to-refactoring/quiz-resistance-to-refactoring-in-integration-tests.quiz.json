@@ -1,0 +1,30 @@
+{
+  "intro": "Review how integration tests resist changes to implementation details.",
+  "passThreshold": 0.5,
+  "questions": [
+    {
+      "id": "q1",
+      "kind": "single",
+      "prompt": "Why are integration tests more resistant to refactoring than unit tests?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Because they rely less on external dependencies"
+        },
+        {
+          "id": "b",
+          "text": "Because they are easier to maintain"
+        },
+        {
+          "id": "c",
+          "text": "Because they test the code in isolation"
+        },
+        {
+          "id": "d",
+          "text": "Because they test from the user's perspective instead of checking implementation details"
+        }
+      ],
+      "correctOptionIds": ["d"]
+    }
+  ]
+}

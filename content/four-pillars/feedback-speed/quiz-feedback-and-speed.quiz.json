@@ -1,0 +1,50 @@
+{
+  "intro": "Review what you've learned about feedback and speed.",
+  "passThreshold": 0.5,
+  "questions": [
+    {
+      "id": "q1",
+      "kind": "single",
+      "prompt": "What is the purpose of feedback during software development?",
+      "options": [
+        {
+          "id": "a",
+          "text": "To collect users' opinions about the software's visual design."
+        },
+        {
+          "id": "b",
+          "text": "To find ways to improve code performance before deployment."
+        },
+        {
+          "id": "c",
+          "text": "To determine whether recent changes moved the system closer to solving the intended problem."
+        }
+      ],
+      "correctOptionIds": ["c"]
+    },
+    {
+      "id": "q2",
+      "kind": "single",
+      "prompt": "Why does feedback speed matter during software development?",
+      "options": [
+        {
+          "id": "a",
+          "text": "It lets developers finish features faster, regardless of quality."
+        },
+        {
+          "id": "b",
+          "text": "Fast cycles remove the need to analyze requirements or adjust designs."
+        },
+        {
+          "id": "c",
+          "text": "Fast feedback makes sure the product looks appealing before release."
+        },
+        {
+          "id": "d",
+          "text": "Fast feedback catches errors and misunderstandings before they create more rework."
+        }
+      ],
+      "correctOptionIds": ["d"]
+    }
+  ]
+}

@@ -1,0 +1,165 @@
+{
+  "title": "The 4 Pillars of Automated Tests",
+  "sections": [
+    {
+      "slug": "maintainability",
+      "title": "The First Pillar - Maintainability",
+      "lessons": [
+        {
+          "slug": "good-and-bad-automated-tests",
+          "title": "Good and Bad Automated Tests"
+        },
+        {
+          "slug": "readability",
+          "title": "Readability"
+        },
+        {
+          "slug": "which-test-is-easier-to-maintain",
+          "title": "Which test is easier to maintain?"
+        },
+        {
+          "slug": "maintainability",
+          "title": "Maintainability"
+        },
+        {
+          "slug": "quiz-maintainability",
+          "title": "Quiz - Maintainability"
+        },
+        {
+          "slug": "maintainability-in-the-test-pyramid",
+          "title": "Maintainability in the Test Pyramid"
+        },
+        {
+          "slug": "how-each-type-of-test-scores-in-maintainability",
+          "title": "How each type of test scores in Maintainability"
+        }
+      ]
+    },
+    {
+      "slug": "feedback-speed",
+      "title": "The Second Pillar - Feedback Speed",
+      "lessons": [
+        {
+          "slug": "the-importance-of-feedback",
+          "title": "The importance of feedback"
+        },
+        {
+          "slug": "the-importance-of-speed",
+          "title": "The importance of speed"
+        },
+        {
+          "slug": "quiz-feedback-and-speed",
+          "title": "Quiz - Feedback and Speed"
+        },
+        {
+          "slug": "tests-as-feedback",
+          "title": "Tests as Feedback"
+        },
+        {
+          "slug": "how-each-type-of-test-scores-in-fast-feedback",
+          "title": "How each type of test scores in Fast Feedback"
+        },
+        {
+          "slug": "quiz-fast-feedback",
+          "title": "Quiz - Fast Feedback"
+        }
+      ]
+    },
+    {
+      "slug": "protection-against-regression",
+      "title": "The Third Pillar - Protection Against Regression",
+      "lessons": [
+        {
+          "slug": "regressions",
+          "title": "Regressions"
+        },
+        {
+          "slug": "quiz-protection-against-regressions",
+          "title": "Quiz - Protection Against Regressions"
+        },
+        {
+          "slug": "the-3-attributes-that-matter",
+          "title": "The 3 attributes that matter"
+        },
+        {
+          "slug": "quiz-the-3-attributes-that-matter",
+          "title": "Quiz - The 3 attributes that matter"
+        },
+        {
+          "slug": "protection-in-unit-tests",
+          "title": "Protection in Unit Tests"
+        },
+        {
+          "slug": "protection-in-integration-tests",
+          "title": "Protection in Integration Tests"
+        },
+        {
+          "slug": "protection-in-e2e-tests",
+          "title": "Protection in E2E Tests"
+        },
+        {
+          "slug": "quiz-integration-and-e2e-protection",
+          "title": "Quiz - Integration and E2E Protection"
+        },
+        {
+          "slug": "how-each-type-of-test-scores-in-protection",
+          "title": "How each type of test scores in Protection"
+        }
+      ]
+    },
+    {
+      "slug": "resistance-to-refactoring",
+      "title": "The Fourth Pillar - Resistance to Refactoring",
+      "lessons": [
+        {
+          "slug": "but-first-what-is-refactoring",
+          "title": "But first, what is refactoring?"
+        },
+        {
+          "slug": "quiz-define-refactoring",
+          "title": "Quiz - Define Refactoring"
+        },
+        {
+          "slug": "examples-of-refactoring",
+          "title": "Examples of Refactoring"
+        },
+        {
+          "slug": "resistance-to-refactoring",
+          "title": "Resistance to Refactoring"
+        },
+        {
+          "slug": "quiz-resistance-to-refactoring",
+          "title": "Quiz - Resistance to Refactoring"
+        },
+        {
+          "slug": "resistance-to-refactoring-in-unit-tests",
+          "title": "Resistance to Refactoring in Unit Tests"
+        },
+        {
+          "slug": "resistance-to-refactoring-in-unit-tests-part-2",
+          "title": "Resistance to Refactoring in Unit Tests - Part 2"
+        },
+        {
+          "slug": "resistance-to-refactoring-in-integration-tests",
+          "title": "Resistance to Refactoring in Integration Tests"
+        },
+        {
+          "slug": "quiz-resistance-to-refactoring-in-integration-tests",
+          "title": "Quiz - Resistance to Refactoring in Integration Tests"
+        },
+        {
+          "slug": "resistance-to-refactoring-in-e2e-tests",
+          "title": "Resistance to Refactoring in E2E Tests"
+        },
+        {
+          "slug": "how-each-type-of-test-scores-in-resistancce-to-refactoring",
+          "title": "How each type of test scores in Resistance to Refactoring"
+        },
+        {
+          "slug": "quiz-resistance-to-refactoring-final",
+          "title": "Quiz - Resistance to Refactoring (Final)"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "intro": "Review what you've learned about protection against regressions.",
+  "passThreshold": 0.5,
+  "questions": [
+    {
+      "id": "q1",
+      "kind": "single",
+      "prompt": "Which factors determine how strongly a test protects against regressions?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Test readability, code style consistency, and the number of mocks used"
+        },
+        {
+          "id": "b",
+          "text": "The programming language, the test framework, and the CI provider"
+        },
+        {
+          "id": "c",
+          "text": "Test coverage, code complexity, and the business importance of the tested behavior"
+        },
+        {
+          "id": "d",
+          "text": "Test execution time, the test author's experience, and the size of the codebase"
+        }
+      ],
+      "correctOptionIds": ["c"]
+    },
+    {
+      "id": "q2",
+      "kind": "single",
+      "prompt": "Why do tests of complex or business-critical code offer stronger protection against regressions?",
+      "options": [
+        {
+          "id": "a",
+          "text": "They run faster, so they detect problems more often."
+        },
+        {
+          "id": "b",
+          "text": "They use fewer dependencies, so they fail less often."
+        },
+        {
+          "id": "c",
+          "text": "Trivial code is unstable and changes more often."
+        },
+        {
+          "id": "d",
+          "text": "Complex, business-critical code is more prone to bugs and changes, and failures there have greater impact."
+        }
+      ],
+      "correctOptionIds": ["d"]
+    }
+  ]
+}

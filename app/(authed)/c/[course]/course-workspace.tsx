@@ -6,17 +6,14 @@ import { usePathname } from 'next/navigation';
 import type { LearnerCourseProgress } from '@/src/entities/models/course-progress';
 
 import { CourseProvider } from '@/app/_components/course-provider';
-import { lessonHref } from '@/app/(authed)/c/four-pillars/course-href';
-import type {
-  CourseSection,
-  FourPillarsCourseSlug,
-} from '@/app/(authed)/c/four-pillars/course-outline';
-import { CoursePanel } from '@/app/(authed)/c/four-pillars/course-panel';
+import { lessonHref } from '@/app/(authed)/c/[course]/course-href';
+import type { CourseSection } from '@/app/(authed)/c/[course]/course-outline';
+import { CoursePanel } from '@/app/(authed)/c/[course]/course-panel';
 import {
   CoursePanelProvider,
   useCoursePanel,
-} from '@/app/(authed)/c/four-pillars/course-panel-context';
-import type { CoursePanelState } from '@/app/(authed)/c/four-pillars/course-panel-state';
+} from '@/app/(authed)/c/[course]/course-panel-context';
+import type { CoursePanelState } from '@/app/(authed)/c/[course]/course-panel-state';
 
 export function CourseWorkspace({
   courseSlug,
@@ -25,7 +22,7 @@ export function CourseWorkspace({
   initialProgress,
   children,
 }: {
-  courseSlug: FourPillarsCourseSlug;
+  courseSlug: string;
   sections: readonly CourseSection[];
   panelState: CoursePanelState;
   initialProgress: LearnerCourseProgress;
@@ -40,7 +37,7 @@ export function CourseWorkspace({
 
   return (
     <CoursePanelProvider initialState={panelState}>
-      <CourseProvider initialProgress={initialProgress}>
+      <CourseProvider courseSlug={courseSlug} initialProgress={initialProgress}>
         <div className="fixed inset-0 flex overflow-hidden pr-[env(safe-area-inset-right)] pl-[env(safe-area-inset-left)] [--course-panel-width:22rem]">
           <CourseMain showsCoursePanel={showsCoursePanel}>
             {children}

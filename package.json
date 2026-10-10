@@ -23,6 +23,7 @@
     "db:check": "drizzle-kit check",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
+    "course:check": "vitest run course-content pop-question curriculum",
     "test": "vitest",
     "test:run": "vitest run",
     "coverage": "vitest run --coverage",

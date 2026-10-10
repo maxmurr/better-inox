@@ -1,0 +1,53 @@
+{
+  "passThreshold": 0.5,
+  "questions": [
+    {
+      "id": "q1",
+      "kind": "single",
+      "prompt": "Why does protection against regressions matter more as a software system grows?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Larger systems have fewer bugs, so they need tests only when someone introduces a regression intentionally."
+        },
+        {
+          "id": "b",
+          "text": "Growing codebases gain hidden coupling and unpredictable interactions, so small changes can break existing behavior."
+        },
+        {
+          "id": "c",
+          "text": "Regression tests remove the need to refactor, so teams can focus only on new features."
+        },
+        {
+          "id": "d",
+          "text": "Regressions occur only in legacy systems because modern applications resist them."
+        }
+      ],
+      "correctOptionIds": ["b"]
+    },
+    {
+      "id": "q2",
+      "kind": "single",
+      "prompt": "What does protection against regressions measure for an automated test?",
+      "options": [
+        {
+          "id": "a",
+          "text": "How quickly the test runs compared with other test types."
+        },
+        {
+          "id": "b",
+          "text": "How well the test catches previously working behavior that breaks after a code change."
+        },
+        {
+          "id": "c",
+          "text": "How easy the test suite is to maintain over time."
+        },
+        {
+          "id": "d",
+          "text": "How many features developers can add before updating the test."
+        }
+      ],
+      "correctOptionIds": ["b"]
+    }
+  ]
+}

@@ -11,11 +11,8 @@ import { cn } from '@/app/_components/utils';
 import {
   lessonHref,
   type LessonResultsHref,
-} from '@/app/(authed)/c/four-pillars/course-href';
-import type {
-  CourseLesson,
-  FourPillarsCourseSlug,
-} from '@/app/(authed)/c/four-pillars/course-outline';
+} from '@/app/(authed)/c/[course]/course-href';
+import type { CourseLesson } from '@/app/(authed)/c/[course]/course-outline';
 
 type LessonTarget = {
   section: { slug: string };
@@ -27,7 +24,7 @@ function LessonNavButton({
   target,
   direction,
 }: {
-  courseSlug: FourPillarsCourseSlug;
+  courseSlug: string;
   target: LessonTarget | undefined;
   direction: 'previous' | 'next';
 }) {
@@ -68,7 +65,7 @@ export function LessonHeader({
   next,
   resultsHref,
 }: {
-  courseSlug: FourPillarsCourseSlug;
+  courseSlug: string;
   title: string;
   position: number;
   total: number;

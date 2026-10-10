@@ -1,0 +1,54 @@
+{
+  "intro": "Review what you've learned about tests and feedback speed.",
+  "passThreshold": 0.5,
+  "questions": [
+    {
+      "id": "q1",
+      "kind": "single",
+      "prompt": "What main benefit does an automated test provide?",
+      "options": [
+        {
+          "id": "a",
+          "text": "It automatically covers every possible edge case."
+        },
+        {
+          "id": "b",
+          "text": "It reduces future refactoring by locking the system's design."
+        },
+        {
+          "id": "c",
+          "text": "It tells you whether the system behaves as intended."
+        },
+        {
+          "id": "d",
+          "text": "It guarantees that every future feature will be easier to build, regardless of complexity."
+        }
+      ],
+      "correctOptionIds": ["c"]
+    },
+    {
+      "id": "q2",
+      "kind": "single",
+      "prompt": "Why use integration and end-to-end tests when unit tests score highest in maintainability and feedback speed?",
+      "options": [
+        {
+          "id": "a",
+          "text": "High-level tests become faster than unit tests as a system grows."
+        },
+        {
+          "id": "b",
+          "text": "Unit tests alone do not verify that all parts work together."
+        },
+        {
+          "id": "c",
+          "text": "Integration and E2E tests automatically document the system's architecture."
+        },
+        {
+          "id": "d",
+          "text": "Unit tests become obsolete once a project has integration tests."
+        }
+      ],
+      "correctOptionIds": ["b"]
+    }
+  ]
+}

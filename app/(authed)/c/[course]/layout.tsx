@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 
 import { UnauthenticatedError } from '@/src/entities/errors/auth';
 
@@ -10,20 +10,20 @@ import {
   reportAppErrorAdapter,
   startAppSpanAdapter,
 } from '@/app/_lib/adapters/monitoring.adapters';
-import { CourseWorkspace } from '@/app/(authed)/c/four-pillars/course-workspace';
+import { CourseWorkspace } from '@/app/(authed)/c/[course]/course-workspace';
 
+import { loadCourse } from './course-content';
 import { parseCoursePanelState } from './course-panel-state';
-import { FOUR_PILLARS_COURSE_SLUG, FOUR_PILLARS_SECTIONS } from './curriculum';
 
-async function loadCourseProgress(sessionId: string | undefined) {
+async function loadCourseProgress(
+  courseSlug: string,
+  sessionId: string | undefined
+) {
   return await startAppSpanAdapter(
-    { name: 'loadFourPillarsProgress', op: 'function.nextjs' },
+    { name: 'loadCourseProgress', op: 'function.nextjs' },
     async () => {
       try {
-        return await getCourseProgressAdapter(
-          FOUR_PILLARS_COURSE_SLUG,
-          sessionId
-        );
+        return await getCourseProgressAdapter(courseSlug, sessionId);
       } catch (err) {
         if (err instanceof UnauthenticatedError) {
           redirect('/sign-in');
@@ -38,19 +38,26 @@ async function loadCourseProgress(sessionId: string | undefined) {
 
 export default async function Layout({
   children,
-}: LayoutProps<'/c/four-pillars'>) {
+  params,
+}: LayoutProps<'/c/[course]'>) {
+  const course = await loadCourse((await params).course);
+  if (!course) {
+    notFound();
+  }
+
   const cookieStore = await cookies();
   const panelState = parseCoursePanelState(
     cookieStore.get(COURSE_PANEL_COOKIE)?.value
   );
   const progress = await loadCourseProgress(
+    course.slug,
     cookieStore.get(SESSION_COOKIE)?.value
   );
 
   return (
     <CourseWorkspace
-      courseSlug={FOUR_PILLARS_COURSE_SLUG}
-      sections={FOUR_PILLARS_SECTIONS}
+      courseSlug={course.slug}
+      sections={course.sections}
       panelState={panelState}
       initialProgress={progress}
     >

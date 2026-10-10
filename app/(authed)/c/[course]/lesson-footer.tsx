@@ -24,6 +24,7 @@ export function LessonFooter<T extends string>({
   requiredPopQuestionIds: readonly string[];
 }) {
   const {
+    courseSlug,
     isLessonCompleted,
     applyLessonCompletion,
     hasSavedQuizResult,
@@ -48,6 +49,7 @@ export function LessonFooter<T extends string>({
     startTransition(async () => {
       try {
         const response = await saveLessonCompletion(
+          courseSlug,
           lessonId,
           desiredCompletion
         );

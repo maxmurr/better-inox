@@ -13,14 +13,10 @@ import {
 import { Button } from '@/app/_components/ui/button';
 
 import { lessonHref } from './course-href';
-import type { CourseSection, FourPillarsCourseSlug } from './curriculum';
+import type { CourseSection } from './curriculum';
 import { LessonCompletionStatus } from './lesson-completion-status';
 
-export type {
-  CourseLesson,
-  CourseSection,
-  FourPillarsCourseSlug,
-} from './curriculum';
+export type { CourseLesson, CourseSection } from './curriculum';
 
 function firstUnfinishedSection(
   sections: readonly CourseSection[],
@@ -35,7 +31,7 @@ export function CourseOutline({
   courseSlug,
   sections,
 }: {
-  courseSlug: FourPillarsCourseSlug;
+  courseSlug: string;
   sections: readonly CourseSection[];
 }) {
   const { completedLessonIds, isLessonCompleted } = useCourse();

@@ -1,0 +1,54 @@
+{
+  "intro": "Review what you've learned about refactoring.",
+  "passThreshold": 0.5,
+  "questions": [
+    {
+      "id": "q1",
+      "kind": "single",
+      "prompt": "Which description best defines refactoring?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Improving performance even when the outputs change slightly"
+        },
+        {
+          "id": "b",
+          "text": "Rewriting the entire codebase to meet new architectural requirements"
+        },
+        {
+          "id": "c",
+          "text": "Changing internal structure without changing external, observable behavior"
+        },
+        {
+          "id": "d",
+          "text": "Changing the system's behavior to add features faster"
+        }
+      ],
+      "correctOptionIds": ["c"]
+    },
+    {
+      "id": "q2",
+      "kind": "single",
+      "prompt": "Which scenario is an example of refactoring?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Change the logic so the same input returns a different output."
+        },
+        {
+          "id": "b",
+          "text": "Replace a loop with clearer functional code while preserving the same input and output."
+        },
+        {
+          "id": "c",
+          "text": "Add an endpoint that introduces new externally visible behavior."
+        },
+        {
+          "id": "d",
+          "text": "Update UI text after marketing requests new wording."
+        }
+      ],
+      "correctOptionIds": ["b"]
+    }
+  ]
+}
