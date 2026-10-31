@@ -1,0 +1,23 @@
+{
+  "runtimes": { "node": "24" },
+  "setup": [
+    "corepack enable pnpm",
+    "COREPACK_ENABLE_DOWNLOAD_PROMPT=0 corepack install",
+    "pnpm install --frozen-lockfile"
+  ],
+  "checks": {
+    "test": "pnpm coverage",
+    "lint": "pnpm lint",
+    "typecheck": "pnpm typecheck",
+    "build": "pnpm build"
+  },
+  "env": [
+    { "name": "DATABASE_URL", "purpose": "Postgres connection for the running app and the Playwright integration suite; the recipe checks skip env validation and do not read it", "required": false },
+    { "name": "REDIS_URL", "purpose": "Redis connection for the running app and the Playwright integration suite; not read by the recipe checks", "required": false },
+    { "name": "GOOGLE_CLIENT_ID", "purpose": "Google OAuth client for sign-in in the running app and the Playwright integration suite; not read by the recipe checks", "required": false },
+    { "name": "GOOGLE_CLIENT_SECRET", "purpose": "Google OAuth client secret for the running app and the Playwright integration suite; not read by the recipe checks", "required": false },
+    { "name": "GOOGLE_REDIRECT_URI", "purpose": "Google OAuth callback URL for the running app and the Playwright integration suite; not read by the recipe checks", "required": false },
+    { "name": "SENTRY_AUTH_TOKEN", "purpose": "Lets the Sentry plugin upload source maps during pnpm build; the build passes without it", "required": false }
+  ],
+  "warmKey": ["pnpm-lock.yaml", "package.json", "pnpm-workspace.yaml"]
+}
